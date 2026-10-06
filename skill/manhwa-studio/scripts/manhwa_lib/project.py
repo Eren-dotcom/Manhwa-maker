@@ -1,9 +1,9 @@
 """
-Project data model: series.json / characters/*.json / episodes/*.json.
+Project data model: series.json / characters/*.json / episodes/*.json + the
+approval ledger.
 
-The whole pipeline is file-driven on purpose: every artefact is plain JSON +
-PNG on disk, so a human, a script, or an LLM agent can read and edit any stage
-without a database or a running app.
+File-driven on purpose: every artefact is plain JSON + PNG on disk, so a human, a
+script or an LLM agent can read and edit any stage without a database.
 """
 from __future__ import annotations
 
@@ -11,16 +11,16 @@ import json
 from datetime import date, timedelta
 from pathlib import Path
 
-from .specs import DEFAULT_GEOMETRY, PACING_GAPS, resolve_platform
+from .specs import (DEFAULT_GEOMETRY, DENSITY_TIERS, MASTER_WIDTH, PACING_GAPS,
+                    resolve_platform)
 
 PROJECT_DIRS = [
-    "characters", "episodes", "art", "output", "promptpack",
-    "assets/fonts", "assets/refs", "reviews", "docs",
+    "refined", "characters", "episodes", "art", "output", "promptpack", "reviews",
+    "reference_art", "reference_sheets", "assets/fonts", "assets/refs", "assets/loras",
+    "your_files", "docs",
 ]
 
 
-# --------------------------------------------------------------------------- #
-# load / save
 # --------------------------------------------------------------------------- #
 def load_json(path: Path) -> dict:
     with open(path, "r", encoding="utf-8") as fh:
@@ -35,7 +35,6 @@ def save_json(path: Path, data) -> None:
 
 
 def find_root(start: Path) -> Path:
-    """Walk up looking for series.json."""
     p = start.resolve()
     if p.is_file():
         p = p.parent
@@ -45,13 +44,14 @@ def find_root(start: Path) -> Path:
     return p
 
 
+# --------------------------------------------------------------------------- #
 class Project:
     def __init__(self, root: Path):
         self.root = Path(root)
         self.series = load_json(self.root / "series.json")
         self.platform = resolve_platform(self.series.get("platform", "webtoons"))
         self.geometry = {**DEFAULT_GEOMETRY, **self.series.get("geometry", {})}
-        self.geometry["width"] = self.geometry.get("width") or self.platform["width"]
+        self.geometry["width"] = self.geometry.get("width") or MASTER_WIDTH
         if self.series.get("background"):
             self.geometry["bg"] = self.series["background"]
 
@@ -77,47 +77,79 @@ class Project:
         return self.root / "episodes"
 
     def episodes(self) -> list[Path]:
-        return sorted(self.ep_dir.glob("ep*.json"))
+        found = sorted(self.ep_dir.glob("*.json"))
+        return found
 
     def episode(self, ref) -> tuple[Path, dict]:
         ref = str(ref)
-        if ref.isdigit():
-            p = self.ep_dir / f"ep{int(ref):03d}.json"
+        candidates = []
+        m = None
+        import re
+        m = re.fullmatch(r"(?:ep|ch|chapter)?0*(\d+)", ref, re.I)
+        if m:
+            n = int(m.group(1))
+            candidates = [self.ep_dir / f"ep{n:03d}.json", self.ep_dir / f"ch{n:03d}.json",
+                          self.ep_dir / f"ep{n}.json"]
         else:
-            p = Path(ref)
-            if not p.exists() and (self.ep_dir / f"{ref}.json").exists():
-                p = self.ep_dir / f"{ref}.json"
-        if not p.exists():
-            raise FileNotFoundError(f"episode not found: {ref}")
-        return p, load_json(p)
+            candidates = [Path(ref), self.ep_dir / f"{ref}.json"]
+        for c in candidates:
+            if c.exists():
+                return c, load_json(c)
+        raise FileNotFoundError(f"episode not found: {ref}")
 
     def panel_image_path(self, ep_no: int, panel_id: str, image: str | None) -> Path | None:
-        """Resolve a panel's art file. Explicit path wins, then art/epNNN/pid.png."""
         if image:
             cand = self.root / image
             if cand.exists():
                 return cand
-        for ext in (".png", ".jpg", ".jpeg", ".webp"):
-            cand = self.root / "art" / f"ep{int(ep_no):03d}" / f"{panel_id}{ext}"
-            if cand.exists():
-                return cand
+        for base in (self.root / "art" / f"ep{int(ep_no):03d}",
+                     self.root / f"ch{int(ep_no):03d}" / "panels"):
+            for ext in (".png", ".jpg", ".jpeg", ".webp"):
+                cand = base / f"{panel_id}{ext}"
+                if cand.exists():
+                    return cand
         return None
 
+    # -- approval ledger -------------------------------------------------- #
+    @property
+    def approvals_path(self) -> Path:
+        return self.root / "approvals.json"
+
+    def approvals(self) -> dict:
+        return load_json(self.approvals_path) if self.approvals_path.exists() else {"approved": []}
+
+    def is_approved(self, kind: str, ident: str) -> bool:
+        return f"{kind}:{ident}" in (self.approvals().get("approved") or [])
+
+    def approve(self, kind: str, ident: str, note: str = "") -> dict:
+        data = self.approvals()
+        key = f"{kind}:{ident}"
+        entries = data.setdefault("entries", {})
+        if key not in (data.get("approved") or []):
+            data.setdefault("approved", []).append(key)
+        entries[key] = {"note": note, "at": date.today().isoformat()}
+        save_json(self.approvals_path, data)
+        return data
+
 
 # --------------------------------------------------------------------------- #
-# init
+# init / scaffold
 # --------------------------------------------------------------------------- #
-def scaffold(root: Path, title: str, platform: str = "webtoons", language: str = "en") -> Path:
+def scaffold(root: Path, title: str, platform: str = "webtoons", language: str = "en",
+             density: str = "standard") -> Path:
     root = Path(root)
     for d in PROJECT_DIRS:
         (root / d).mkdir(parents=True, exist_ok=True)
+    (root / "ch001" / "panels").mkdir(parents=True, exist_ok=True)
+    (root / "ch001" / "lettered").mkdir(parents=True, exist_ok=True)
     if not (root / "series.json").exists():
-        save_json(root / "series.json", series_template(title, platform, language))
+        save_json(root / "series.json", series_template(title, platform, language, density))
     (root / "PROJECT.md").write_text(project_md(title), encoding="utf-8")
     return root
 
 
-def series_template(title: str, platform: str = "webtoons", language: str = "en") -> dict:
+def series_template(title: str, platform: str = "webtoons", language: str = "en",
+                    density: str = "standard") -> dict:
     spec = resolve_platform(platform)
     return {
         "title": title,
@@ -129,37 +161,61 @@ def series_template(title: str, platform: str = "webtoons", language: str = "en"
         "platform": spec["key"],
         "release_language": language,
         "release_schedule": "weekly",
-        "target_panels_per_episode": 55,
+        "density": density in DENSITY_TIERS and density or "standard",
+        "target_panels_per_episode": DENSITY_TIERS.get(density, DENSITY_TIERS["standard"])["panels"],
+        "craft_rules": [
+            "(paste the rules you extracted from the named reference chapter here -- "
+            "they are printed in every QC report)",
+        ],
         "art_direction": {
             "style_block": (
-                "Korean webtoon manhwa illustration, clean confident line art, soft cel shading "
+                "Korean webtoon manhwa illustration, clean confident ink line art, soft cel shading "
                 "with painterly backgrounds, cinematic colour grading, dramatic rim lighting, "
                 "highly detailed, vertical-scroll composition, full colour"
             ),
             "negative_block": (
-                "text, letters, speech bubble, caption, watermark, signature, logo, ui, "
-                "extra fingers, extra limbs, deformed hands, bad anatomy, blurry, lowres, "
-                "jpeg artifacts, multiple views, character sheet layout"
+                "text, letters, words, speech bubble, caption box, watermark, signature, logo, ui elements, "
+                "extra fingers, extra limbs, fused fingers, deformed hands, bad anatomy, bad proportions, "
+                "blurry, lowres, jpeg artifacts, character sheet, multiple views, split panel, manga page"
             ),
             "palette": {"key": "#2b3a55", "accent": "#e8b04b", "shadow": "#141a26", "highlight": "#f2e9d8"},
             "grading_note": "Cool shadows, warm practical lights. Keep skin tones constant across panels.",
         },
-        "geometry": dict(DEFAULT_GEOMETRY, width=spec["width"]),
-        "lettering": {
-            "base_font_size": 30,          # at 800px width; scales with geometry.width
-            "font_regular": None,          # e.g. "assets/fonts/Bangers-Regular.ttf"
-            "font_bold": None,
-            "caps": False,                 # set true for traditional all-caps lettering
-            "max_words_per_bubble": 30,
-            "bubble_max_width_ratio": 0.62,
+        # palette shifts mark scenes: each location / time gets its own grade
+        "scenes": {
+            "default": {"tint": None, "strength": 0.0, "shadow": None,
+                        "note": "add one entry per location or time period"},
         },
+        # effect languages stay distinct per faction -- never mix them
+        "effect_languages": {
+            "protagonist": {"color": "#cfe9ff", "shape": "outward pale-blue arcs",
+                            "note": "outward, pale blue"},
+            "antagonist": {"color": "#3a2f7a", "shape": "inward indigo-black voids",
+                           "note": "inward, indigo-black"},
+        },
+        "geometry": dict(DEFAULT_GEOMETRY, width=MASTER_WIDTH, side_margin=0,
+                         top_margin=60, bottom_margin=120),
+        "lettering": {
+            "base_font_size": 40,               # the reference figure, at the 1080 master
+            "font_regular": None,
+            "font_bold": None,
+            "font_condensed": None,
+            "font_brush": None,
+            "caps": False,
+            "max_words_per_bubble": 20,         # reference spec: 20 max, 1-2 lines
+            "bubble_max_width_ratio": 0.72,     # ~780px wrap at 1080
+            "voices": {},                       # override VOICES if needed
+        },
+        "title_card": {"enabled": True, "art": None, "title": None, "subtitle": None},
         "ai_disclosure": (
             "AI-assisted production. Story, character design, panel direction and lettering by "
             "<your name>; panel artwork generated with <models/tools> and retouched by hand."
         ),
         "characters": [],
         "arcs": [
-            {"name": "Arc 1 - title", "episodes": "1-8", "beats": ["hook", "reversal", "midpoint", "climax", "cliffhanger"]},
+            {"name": "Arc 1 - title", "episodes": "1-8",
+             "beats": ["engine", "introduction", "past life", "reversal", "midpoint", "climax",
+                       "end question"]},
         ],
     }
 
@@ -169,44 +225,58 @@ def character_template(cid: str, name: str, role: str = "support") -> dict:
         "id": cid,
         "name": name,
         "role": role,                       # lead | support | antagonist | minor
+        "faction": "protagonist",
         "age": "",
+        # ---- written sheet: everything the artist needs, in one place ----- #
         "one_line": "Who they are in one line.",
         "want": "What they chase.",
         "flaw": "What breaks them.",
+        "build": "Tall, narrow shoulders, heavy boots.",
+        "face": "Sharp narrow eyes, high cheekbones, a habit of looking off-centre.",
+        "costume": "Grey rain jacket, collar up; black high-neck top; satchel strap.",
+        "identifying_props": ["silver dog-tag necklace", "the brow scar"],
+        "acting_rules": "Never smiles with her eyes. Looks away before she answers.",
+        "effect_language": "outward pale-blue arcs (protagonist register)",
+        "injury_continuity": "None yet. If she takes a wound, fix the side and keep it.",
+        "dos": ["keep the fringe blunt", "collar up outdoors, down indoors"],
+        "donts": ["never change hair length", "never remove the brow scar"],
+        # ---- generation --------------------------------------------------- #
         "prompt_block": (
             "1girl, long black hair in a low ponytail, sharp dark eyes, small scar on left brow, "
             "grey rain jacket with the collar up, black high-neck top, always slightly damp"
         ),
-        "lora": {
-            "file": None,                   # e.g. "assets/loras/sera_v1.safetensors"
-            "token": "sera_arch",           # trigger word the LoRA was trained with
-            "weight": 0.85,
-        },
+        "lora": {"file": None, "token": None, "weight": 0.85},
         "seed": 48151623,
-        "ref_images": ["assets/refs/sera_front.png", "assets/refs/sera_3q.png"],
+        "ref_images": ["assets/refs/PLACEHOLDER_sheet.png", "assets/refs/PLACEHOLDER_faces.png"],
+        "portrait": "assets/refs/PLACEHOLDER_portrait.png",
         "palette": {"hair": "#141414", "skin": "#e6c3a5", "outfit": "#4a5561", "accent": "#2fb6a8"},
         "wardrobe": {
             "default": "grey rain jacket, collar up, black high-neck top",
-            "indoor":   "black high-neck top, silver dog-tag necklace",
+            "indoor": "black high-neck top, silver dog-tag necklace",
         },
         "expressions": ["neutral", "wary", "angry", "hollow", "small smile"],
-        "consistency_notes": "Never change hair length, never remove the brow scar, keep the jacket collar up.",
+        "consistency_notes": "Never change hair length, never remove the brow scar, keep the collar up.",
     }
 
 
-def episode_template(no: int, title: str, panels: list[dict] | None = None) -> dict:
+def episode_template(no: int, title: str, panels: list[dict] | None = None,
+                     density: str = "standard") -> dict:
     return {
         "episode": no,
         "title": title,
         "arc": "Arc 1",
-        "logline": "What changes for the reader by the end of this episode?",
-        "purpose": "characterise | worldbuild | plot | setpiece",
+        "chapter_idea": "The one visual idea this chapter states in its first 3-5 panels.",
+        "logline": "What changes for the reader by the end of this chapter?",
+        "introduces": "Who is introduced or re-introduced here, and how (hero shot?).",
+        "past_life_beat": "The memory fragment / enemy sigil / marked blade in this chapter.",
+        "end_question": "The question the final panel forces the reader to scroll for.",
+        "panel_budget": DENSITY_TIERS.get(density, DENSITY_TIERS["standard"])["panels"],
         "scroll_target_screens": 8,
         "language": "en",
-        "status": "scripted",   # scripted | storyboarded | art | lettered | published
+        "status": "scripted",   # scripted | refined | storyboarded | art | lettered | published
         "panels": panels or [panel_template("p001")],
-        "end_note": "Next episode in the series.",
-        "ai_disclosure": None,  # falls back to series-level disclosure
+        "end_note": "Next chapter in the series.",
+        "ai_disclosure": None,
     }
 
 
@@ -215,15 +285,22 @@ def panel_template(pid: str, shot: str = "medium", beat: str = "setup") -> dict:
         "id": pid,
         "shot": shot,
         "beat": beat,
-        "pace": "normal",        # fast | normal | dramatic | transition | silent
-        "height": None,          # None => derive from the art's aspect ratio
-        "bleed": False,          # True => full platform width, no side margin
+        "pace": "normal",        # fast | normal | dramatic | transition | silence | white_out | black_out
+        "height": None,          # None => derived from the art's aspect ratio
+        "bleed": False,
         "fit": "crop",           # crop | contain | width
         "crop_bias": "center",   # center | top | bottom
-        "image": None,           # art/epNNN/pXXX.png by default
+        "image": None,
+        "scene": None,           # key into series.scenes -> palette shift
+        "tint": None,            # per-panel override of the scene tint
+        "fill": None,            # "#ffffff" / "#000000" for white-out / black-out beats
+        "fx": [],                # speed_radial | speed_horizontal | speed_rage | smear | flash | tremble
+        "fx_faction": None,      # effect language tag (never mix factions in one scene)
         "characters": [],
-        "outfit": {},            # {"sera": "indoor"}
+        "outfit": {},
         "action": "What is happening in this panel.",
+        "focus_guard": ["face", "hands"],   # what the balloon must never cover
+        "technique": None,       # for technique panels: {name, step, note}
         "prompt_override": None,
         "negative_override": None,
         "notes": "",
@@ -232,44 +309,57 @@ def panel_template(pid: str, shot: str = "medium", beat: str = "setup") -> dict:
 
 
 def dialogue_template(character: str = "narration", text: str = "", style: str = "speech",
-                     anchor: str = "auto") -> dict:
+                      anchor: str = "auto") -> dict:
     return {
         "character": character,
         "text": text,
-        "style": style,          # speech|whisper|shout|thought|narration|system|radio|sfx
-        "anchor": anchor,        # auto|top-left|...|"@0.5,0.25" (panel fractions)
-        "tail": "auto",          # auto|down|up|left|right|none
-        "tail_to": None,         # {"x":0.5,"y":0.8} panel fractions for the tail tip
+        "style": style,          # speech|shout|thought|whisper|narration|dark|urgent|recognition|
+                                 # symbol|hesitant|continuing|system|radio|technique|prop|sfx
+        "voice": None,           # clean_bold | condensed_block | hand_brushed
+        "anchor": anchor,        # auto | top-left | ... | @0.5,0.25 | border | gutter
+        "anchor_lock": False,
+        "place": None,           # None | gutter | border
+        "tail": "auto",          # auto | up | down | left | right | none
+        "tail_to": None,         # {"x":0.5,"y":0.8} panel fractions
         "size_scale": 1.0,
-        "rotation": 0.0,
+        "rotation": 0.0,         # sfx / prop
+        "shake": False,          # hand-brushed shake
+        "blur": 0.0,             # motion-blur ghosts
+        "fx": "neutral",         # sfx colour code: violence|cold|mystery|impact|neutral
+        "prop_rect": None,       # {"x":..,"y":..,"w":..,"h":..} for style: prop
     }
 
 
 def project_md(title: str) -> str:
     return f"""# {title} -- production project
 
-Folder map (everything the pipeline reads):
-
 ```
-series.json           series bible: style block, palette, platform, disclosure
-characters/*.json     one character sheet per cast member (the consistency lock)
-episodes/epNNN.json   script + storyboard + dialogue for one episode
-art/epNNN/pNNN.png    rendered panel art (AI output goes here)
-assets/refs/          character reference sheets
-assets/fonts/         lettering fonts (drop a comic font here)
-promptpack/           generated prompt packs -- one per tool
-output/epNNN/         assembled strip, tiles, manifest, preview, QC report
-reviews/              QC reports you printed for a human pass
+series.json            the bible: style block, palette, scenes, effect languages, craft rules
+refined/               canonical script + refine report + CHANGES.md
+characters/*.json      written sheets + prompt blocks (the consistency lock)
+episodes/epNNN.json    the panel sheet for one chapter
+reference_art/         individual portraits
+reference_sheets/      labelled faction group sheets
+art/epNNN/pNNN.png     raw panel art (also copied to chNNN/panels/)
+chNNN/panels/          raw panels      chNNN/lettered/  lettered panels
+chNNN/contact-sheet.png · match-check-<char>.png · lettering-qc.png   (the QC gates)
+promptpack/            per-tool prompt packs + queue.json + comfy runner
+output/epNNN/          strip-master · strip-web · upload/ · delivery/ · manifest
+your_files/            deliverables (<series>-chNNN.pdf)
 ```
 
-Commands:
+## Commands
 
 ```bash
-python manhwa.py status                      # where the production stands
-python manhwa.py prompts episodes/ep001.json --tool sdxl
-python manhwa.py assemble episodes/ep001.json
-python manhwa.py check episodes/ep001.json
-python manhwa.py plan --episodes 8 --team small
+python manhwa.py status                                  # where the production stands
+python manhwa.py refine 1 [--source script.md] [--pad]   # the no-slop / structure pass
+python manhwa.py prompts 1 --tool sdxl                   # character sheets first, then panels
+python manhwa.py approve cast 1 --note "sheets look right"
+python manhwa.py assemble 1                              # master + web + tiles + PDF
+python manhwa.py check 1 --final                         # numeric QC gates
+python manhwa.py sheets 1                                # contact sheet + match-check + lettering QC
+python manhwa.py restage p009 --as silhouette            # when a generation is refused
+python manhwa.py plan --episodes 12 --team solo
 ```
 """
 
@@ -278,34 +368,31 @@ python manhwa.py plan --episodes 8 --team small
 # production planning (studio staggered pipeline)
 # --------------------------------------------------------------------------- #
 TEAM_PRESETS = {
-    "solo":   {"label": "Solo (AI-assisted)",     "ep_per_week": 1.0, "lead_days": 4,  "stages": ["script", "storyboard", "art", "letter+qc"]},
-    "two":    {"label": "Two people",             "ep_per_week": 1.0, "lead_days": 5,  "stages": ["script", "storyboard", "art", "letter+qc"]},
-    "small":  {"label": "Small team (3-5)",       "ep_per_week": 1.0, "lead_days": 7,  "stages": ["script", "storyboard", "lineart+colour", "letter+qc"]},
-    "studio": {"label": "Studio pipeline (6-12)", "ep_per_week": 1.0, "lead_days": 21, "stages": ["script", "storyboard", "lineart", "colour", "background", "vfx", "letter+qc"]},
+    "solo":   {"label": "Solo (AI-assisted)",     "ep_per_week": 1.0, "lead_days": 4,
+               "stages": ["script", "sheets", "art", "letter+qc"]},
+    "two":    {"label": "Two people",             "ep_per_week": 1.0, "lead_days": 5,
+               "stages": ["script", "sheets", "art", "letter+qc"]},
+    "small":  {"label": "Small team (3-5)",       "ep_per_week": 1.0, "lead_days": 7,
+               "stages": ["script", "sheets", "art", "letter+qc"]},
+    "studio": {"label": "Studio pipeline (6-12)", "ep_per_week": 1.0, "lead_days": 21,
+               "stages": ["script", "storyboard", "lineart", "colour", "background", "vfx", "letter+qc"]},
 }
 
-STAGE_ORDER = ["script", "storyboard", "lineart", "colour", "background", "vfx", "letter+qc"]
+STAGE_ORDER = ["script", "sheets", "storyboard", "lineart", "colour", "background", "vfx", "letter+qc"]
 
 
 def production_plan(episodes: int, team: str = "solo", start: date | None = None,
                     cadence: str = "weekly") -> list[dict]:
-    """
-    Studio logic: work is *staggered*, not sequential. Each week ships one
-    finished episode while later episodes sit in earlier stages, so the
-    pipeline always has 3-6 episodes in flight (see docs/01).
-    """
     preset = TEAM_PRESETS.get(team, TEAM_PRESETS["solo"])
     stages = preset["stages"]
     start = start or date.today()
-    # map each stage to a week offset: stage i of episode n starts at week (n - 1 + i*(lead/len))
     span = max(1, len(stages))
-    weeks = max(episodes, 1) + span  # a couple of weeks of runway
+    weeks = max(episodes, 1) + span
     rows = []
     for w in range(weeks):
         row = {"week": w + 1, "date": (start + timedelta(weeks=w)).isoformat(), "stages": []}
         for ep in range(1, episodes + 1):
             for i, st in enumerate(stages):
-                start_week = (ep - 1) + i * (preset["lead_days"] / 7.0) / span * span / max(1.0, len(stages) / 2)
                 start_week = (ep - 1) + i * (preset["lead_days"] / 7.0) / 2
                 end_week = start_week + max(1.0, preset["lead_days"] / 7.0 / 2)
                 if start_week <= w < end_week:

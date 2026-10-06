@@ -22,29 +22,49 @@ a skill/program that helps an AI make manhwa. This repo is the answer to all thr
 | **`examples/neon-archive/`** | A finished reference episode: real generated art, lettered, sliced, QC'd. |
 | **`skill/manhwa-studio/requirements.txt`** | One dependency (Pillow). |
 
-## Status of the attached SKILL.md
+## Status of the attached SKILL.md — reconciled
 
-The `SKILL.md` attached to the first message did **not** arrive in the workspace (the uploads folder
-was empty), so its specific points have not been analysed or merged yet. Everything here was built
-from the research and from the task description. **Send the file again (or paste its points) and it
-will be reconciled against `skill/manhwa-studio/SKILL.md` — gaps folded in, contradictions flagged.**
+The attached `manhwa-maker` spec was pasted into chat and is now **fully reconciled**:
+`docs/07-skill-file-reconciliation.md` is the point-by-point analysis (ADOPTED / MERGED / NEW /
+CONFLICT), and every point is implemented in `skill/manhwa-studio/` — not just documented.
+
+What it changed in the toolkit:
+
+| The spec's requirement | Where it lives now |
+|---|---|
+| 1080px production master, platform-width export | `assemble --width 1080 --export-width 800`; tiles cut ≤1728px from the master and downscaled (sharper uploads) |
+| ~110–130 panels at reference tier, density from **cuts not plot** | `target_panels_per_episode` tiers (`standard`/`dense`/`reference`) + `refine --pad` |
+| Four mandatory beats: engine, introductions, past-life/villain, end question | beat vocabulary + QC `S008`–`S011` |
+| Refine a supplied script before any art | `manhwa.py refine` — slop linter, panel-count verification, `refined/CHANGES.md` |
+| Full balloon vocabulary, three lettering voices, gutter balloons, prop text, technique captions | `lettering.py` (`BUBBLE_STYLES` ×16, `voices`, `place: "gutter"`, `style: "prop"` / `"technique"`) |
+| SFX colour-coded, border-breaking, with speed lines / smears / flashes | `effects.py` + `SFX_PALETTE` |
+| Visual QC gates, never skipped | `manhwa.py sheets` → contact sheet, per-character match-check, lettering QC; `check --final` fails if they're missing or stale |
+| Never lock a design without explicit approval | `manhwa.py approve` ledger + QC `C006` |
+| Refusal ⇒ restage, never retry | `manhwa.py restage --as silhouette\|aftermath\|detail\|environment\|reaction` |
+| File conventions (`refined/`, `reference_art/`, `reference_sheets/`, `chXX/panels\|lettered/`, `your_files/*.pdf`) | scaffolded by `init`, written by `assemble` |
+
+The three genuine conflicts (master width, panel density, balloon word cap) are documented with their
+resolutions in `docs/07`.
 
 ## Quickstart
 
 ```bash
 pip install -r skill/manhwa-studio/requirements.txt
 
-# see the whole pipeline work on a finished 10-panel episode
+# see the whole pipeline work on a finished 18-panel reference episode
 python skill/manhwa-studio/scripts/manhwa.py demo my-first-series
+open my-first-series/output/ep001/preview.html   # read it like a phone
 
 # or start a real project
 python skill/manhwa-studio/scripts/manhwa.py init my-series --title "MY SERIES"
 cd my-series
+python ../skill/manhwa-studio/scripts/manhwa.py refine 1 --source script.md  # fix the script first
 python ../skill/manhwa-studio/scripts/manhwa.py prompts 1 --tool sdxl   # or flux / midjourney / gemini
-#   -> generate art/, drop the files in
-python ../skill/manhwa-studio/scripts/manhwa.py assemble 1              # strip + tiles + preview
+#   -> generate the character sheets, get them approved, then generate art/ and drop the files in
+python ../skill/manhwa-studio/scripts/manhwa.py approve character sera:sheet --note "approved"
+python ../skill/manhwa-studio/scripts/manhwa.py assemble 1              # master + tiles + PDF + preview
+python ../skill/manhwa-studio/scripts/manhwa.py sheets 1                # contact / match-check / lettering QC
 python ../skill/manhwa-studio/scripts/manhwa.py check 1 --final         # QC gate
-open output/ep001/preview.html                                          # read it like a phone
 ```
 
 ## The one-paragraph summary of the research

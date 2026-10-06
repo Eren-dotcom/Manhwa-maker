@@ -1,11 +1,31 @@
 {
   "id": "kael",
   "name": "Kael",
-  "role": "support",
+  "role": "antagonist",
+  "faction": "antagonist",
   "age": "40s",
   "one_line": "A broker who sells memories he was never given permission to own.",
   "want": "To retire before someone retires him.",
   "flaw": "He keeps one copy of everything. Including this.",
+  "build": "Tall, heavy-shouldered, still, occupies doorways.",
+  "face": "Weathered, grey stubble, a deep vertical scar on the right jaw.",
+  "costume": "Dark long coat over a rumpled shirt, fingerless gloves, umbrella held low.",
+  "identifying_props": [
+    "the right-jaw scar",
+    "the low black umbrella",
+    "fingerless gloves"
+  ],
+  "acting_rules": "Never hurries. Speaks with his weight on one leg. Looks at people the way he looks at merchandise.",
+  "effect_language": "inward indigo-black voids (antagonist register)",
+  "injury_continuity": "Jaw scar, right side only.",
+  "dos": [
+    "gloves always on",
+    "umbrella held low and open"
+  ],
+  "donts": [
+    "never show him running",
+    "never a clean shirt"
+  ],
   "prompt_block": "1man, 40s, tall and heavy-shouldered, weathered face, grey stubble, deep vertical scar on the right jaw, dark long coat over a rumpled shirt, fingerless gloves, umbrella held low, unreadable expression",
   "lora": {
     "file": null,
@@ -14,8 +34,10 @@
   },
   "seed": 77012233,
   "ref_images": [
-    "assets/refs/kael_sheet.png"
+    "assets/refs/kael_sheet.png",
+    "assets/refs/kael_portrait.png"
   ],
+  "portrait": "assets/refs/kael_portrait.png",
   "palette": {
     "hair": "#2a2a2e",
     "skin": "#d8ab8b",

@@ -3,7 +3,7 @@
   "alt_titles": {
     "ko": "네온 아카이브"
   },
-  "logline": "A memory courier in a rain-drowned megacity plays a stolen recording and sees her own death in it.",
+  "logline": "A memory courier plays a stolen recording and sees her own death in it.",
   "genre": [
     "cyberpunk",
     "mystery",
@@ -14,10 +14,20 @@
   "platform": "webtoons",
   "release_language": "en",
   "release_schedule": "weekly",
-  "target_panels_per_episode": 48,
+  "density": "reference",
+  "target_panels_per_episode": 120,
+  "craft_rules": [
+    "Panels are panels: one action each, one clear shot, never two events.",
+    "Balloons live in upper thirds and clean skies, never over faces, blades or clues.",
+    "Detail crops (eyes, mouths, hands, boots) carry the cutting rhythm between big beats.",
+    "Close-ups dominate; no more than 2-3 establishing shots per chapter.",
+    "Effect languages never mix: pale-blue arcs outward for the courier, indigo voids inward for the broker.",
+    "Techniques read start pose -> force direction -> contact -> result -> cost, in that order.",
+    "The last panel asks a question the reader has to scroll for."
+  ],
   "art_direction": {
     "style_block": "Korean webtoon manhwa illustration, clean confident ink line art, soft cel shading over painterly backgrounds, cinematic anamorphic framing, heavy atmosphere, rain and neon, dramatic rim lighting, rich saturated accents on a desaturated base, full colour, highly detailed, single vertical panel composition",
-    "negative_block": "text, letters, words, speech bubble, caption box, watermark, signature, logo, ui elements, extra fingers, extra limbs, fused fingers, deformed hands, bad anatomy, bad proportions, blurry, lowres, jpeg artifacts, character sheet, multiple views, split panel, manga page",
+    "negative_block": "text, letters, words, speech bubble, caption box, watermark, signature, logo, ui elements, speed lines, motion blur streaks, impact flash, extra fingers, extra limbs, fused fingers, deformed hands, bad anatomy, bad proportions, blurry, lowres, jpeg artifacts, character sheet, multiple views, split panel, manga page",
     "palette": {
       "key": "#22304a",
       "accent": "#e0603c",
@@ -27,25 +37,70 @@
     },
     "grading_note": "Cool blue-grey base, one warm accent (amber or rust) per panel, teal neon only for the archive tech. Skin tones never shift between panels."
   },
+  "scenes": {
+    "street_night": {
+      "tint": "#1b2a3a",
+      "strength": 0.2,
+      "shadow": "#070b12",
+      "note": "the rain-drowned arcade"
+    },
+    "room_night": {
+      "tint": "#241d33",
+      "strength": 0.16,
+      "shadow": "#0d0a14",
+      "note": "her rented room, one warm lamp"
+    },
+    "memory": {
+      "tint": "#8a8577",
+      "strength": 0.3,
+      "shadow": "#2a2620",
+      "note": "past life / recording register"
+    },
+    "aftermath": {
+      "tint": "#3a1f1c",
+      "strength": 0.24,
+      "shadow": "#120807",
+      "note": "the broken window"
+    }
+  },
+  "effect_languages": {
+    "protagonist": {
+      "color": "#cfe9ff",
+      "shape": "outward pale-blue arcs",
+      "note": "outward, pale blue"
+    },
+    "antagonist": {
+      "color": "#3a2f7a",
+      "shape": "inward indigo-black voids",
+      "note": "inward, indigo-black"
+    }
+  },
   "geometry": {
-    "width": 800,
-    "side_margin": 40,
-    "top_margin": 70,
-    "bottom_margin": 160,
+    "width": 1080,
+    "side_margin": 0,
+    "top_margin": 40,
+    "bottom_margin": 140,
     "gutter": 200,
     "bg": "#ffffff",
     "frame": "none",
     "corner_radius": 0
   },
   "lettering": {
-    "base_font_size": 30,
+    "base_font_size": 40,
     "font_regular": null,
     "font_bold": null,
+    "font_condensed": null,
+    "font_brush": null,
     "caps": false,
-    "max_words_per_bubble": 30,
-    "bubble_max_width_ratio": 0.62
+    "max_words_per_bubble": 20,
+    "bubble_max_width_ratio": 0.72
   },
-  "ai_disclosure": "AI-assisted production. Story, character design, panel direction, lettering and editing by the creator; panel artwork generated with Illustrious XL + a character LoRA, then retouched, composited and lettered by hand. Feedback welcome.",
+  "title_card": {
+    "enabled": true,
+    "title": "NEON ARCHIVE",
+    "subtitle": "CHAPTER 1 — THE SHARD"
+  },
+  "ai_disclosure": "AI-assisted production. Story, character design, panel direction, lettering and editing by the creator; panel artwork generated with an AI model from locked character sheets, then retouched, composited and lettered by hand. Feedback welcome.",
   "characters": [
     "sera",
     "kael"

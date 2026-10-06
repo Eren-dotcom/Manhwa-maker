@@ -1,6 +1,23 @@
 __pycache__/
 *.pyc
 .DS_Store
-# generated output (keep if you want upload history in git)
-# examples/*/output/**
-# examples/*/art/**
+
+# --- generated output -------------------------------------------------------------------------
+# Raw generated art IS tracked (it is the expensive, non-reproducible input).
+# Everything under output/ is derived and reproducible with two commands:
+#     manhwa.py assemble <ep> && manhwa.py sheets <ep>
+examples/*/output/**
+!examples/*/output/ep*/manifest.json
+!examples/*/output/ep*/layout.json
+!examples/*/output/ep*/preview.html
+!examples/*/output/ep*/UPLOAD.md
+!examples/*/output/ep*/qc-report.md
+!examples/*/output/ep*/qc-report.json
+examples/*/ch*/lettered/
+examples/*/ch*/panels/
+examples/*/ch*/lettering-qc.png
+examples/*/your_files/
+
+# keep the small QC evidence that proves the episode was gated
+!examples/*/ch*/contact-sheet.png
+!examples/*/ch*/match-check-*.png

@@ -4,150 +4,393 @@
   "episode_title": "The Shard",
   "platform": "webtoons",
   "platform_label": "WEBTOON Canvas (webtoons.com)",
-  "width": 800,
-  "total_height": 7230,
-  "panels": 10,
+  "master_width": 1080,
+  "export_width": 800,
+  "width": 1080,
+  "total_height": 33171,
+  "export_height": 24571,
+  "panels": 19,
   "tiles": [
     {
       "index": 1,
       "file": "upload/ep001_001.png",
       "format": "png",
       "width": 800,
-      "height": 1000,
+      "height": 1280,
       "y0": 0,
-      "y1": 1000,
-      "bytes": 29881
+      "y1": 1728,
+      "bytes": 319021
     },
     {
       "index": 2,
       "file": "upload/ep001_002.png",
       "format": "png",
       "width": 800,
-      "height": 1000,
-      "y0": 1000,
-      "y1": 2000,
-      "bytes": 37820
+      "height": 1280,
+      "y0": 1728,
+      "y1": 3456,
+      "bytes": 1486486
     },
     {
       "index": 3,
       "file": "upload/ep001_003.png",
       "format": "png",
       "width": 800,
-      "height": 1000,
-      "y0": 2000,
-      "y1": 3000,
-      "bytes": 24204
+      "height": 1280,
+      "y0": 3456,
+      "y1": 5184,
+      "bytes": 1106490
     },
     {
       "index": 4,
       "file": "upload/ep001_004.png",
       "format": "png",
       "width": 800,
-      "height": 1000,
-      "y0": 3000,
-      "y1": 4000,
-      "bytes": 20219
+      "height": 1073,
+      "y0": 5184,
+      "y1": 6632,
+      "bytes": 843730
     },
     {
       "index": 5,
       "file": "upload/ep001_005.png",
       "format": "png",
       "width": 800,
-      "height": 1060,
-      "y0": 4000,
-      "y1": 5060,
-      "bytes": 23106
+      "height": 1234,
+      "y0": 6632,
+      "y1": 8298,
+      "bytes": 1173946
     },
     {
       "index": 6,
       "file": "upload/ep001_006.png",
       "format": "png",
       "width": 800,
-      "height": 1000,
-      "y0": 5060,
-      "y1": 6060,
-      "bytes": 21566
+      "height": 1141,
+      "y0": 8298,
+      "y1": 9838,
+      "bytes": 989934
     },
     {
       "index": 7,
       "file": "upload/ep001_007.png",
       "format": "png",
       "width": 800,
-      "height": 1170,
-      "y0": 6060,
-      "y1": 7230,
-      "bytes": 37085
+      "height": 1280,
+      "y0": 9838,
+      "y1": 11566,
+      "bytes": 887480
+    },
+    {
+      "index": 8,
+      "file": "upload/ep001_008.png",
+      "format": "png",
+      "width": 800,
+      "height": 1280,
+      "y0": 11566,
+      "y1": 13294,
+      "bytes": 774947
+    },
+    {
+      "index": 9,
+      "file": "upload/ep001_009.png",
+      "format": "png",
+      "width": 800,
+      "height": 1073,
+      "y0": 13294,
+      "y1": 14742,
+      "bytes": 671500
+    },
+    {
+      "index": 10,
+      "file": "upload/ep001_010.png",
+      "format": "png",
+      "width": 800,
+      "height": 1279,
+      "y0": 14742,
+      "y1": 16468,
+      "bytes": 99631
+    },
+    {
+      "index": 11,
+      "file": "upload/ep001_011.png",
+      "format": "png",
+      "width": 800,
+      "height": 1073,
+      "y0": 16468,
+      "y1": 17916,
+      "bytes": 231425
+    },
+    {
+      "index": 12,
+      "file": "upload/ep001_012.png",
+      "format": "png",
+      "width": 800,
+      "height": 1280,
+      "y0": 17916,
+      "y1": 19644,
+      "bytes": 181089
+    },
+    {
+      "index": 13,
+      "file": "upload/ep001_013.png",
+      "format": "png",
+      "width": 800,
+      "height": 1099,
+      "y0": 19644,
+      "y1": 21128,
+      "bytes": 164358
+    },
+    {
+      "index": 14,
+      "file": "upload/ep001_014.png",
+      "format": "png",
+      "width": 800,
+      "height": 1073,
+      "y0": 21128,
+      "y1": 22576,
+      "bytes": 73792
+    },
+    {
+      "index": 15,
+      "file": "upload/ep001_015.png",
+      "format": "png",
+      "width": 800,
+      "height": 1280,
+      "y0": 22576,
+      "y1": 24304,
+      "bytes": 133606
+    },
+    {
+      "index": 16,
+      "file": "upload/ep001_016.png",
+      "format": "png",
+      "width": 800,
+      "height": 1265,
+      "y0": 24304,
+      "y1": 26012,
+      "bytes": 54363
+    },
+    {
+      "index": 17,
+      "file": "upload/ep001_017.png",
+      "format": "png",
+      "width": 800,
+      "height": 1073,
+      "y0": 26012,
+      "y1": 27460,
+      "bytes": 27433
+    },
+    {
+      "index": 18,
+      "file": "upload/ep001_018.png",
+      "format": "png",
+      "width": 800,
+      "height": 1280,
+      "y0": 27460,
+      "y1": 29188,
+      "bytes": 39586
+    },
+    {
+      "index": 19,
+      "file": "upload/ep001_019.png",
+      "format": "png",
+      "width": 800,
+      "height": 1204,
+      "y0": 29188,
+      "y1": 30814,
+      "bytes": 97577
+    },
+    {
+      "index": 20,
+      "file": "upload/ep001_020.png",
+      "format": "png",
+      "width": 800,
+      "height": 1280,
+      "y0": 30814,
+      "y1": 32542,
+      "bytes": 53019
+    },
+    {
+      "index": 21,
+      "file": "upload/ep001_021.png",
+      "format": "png",
+      "width": 800,
+      "height": 466,
+      "y0": 32542,
+      "y1": 33171,
+      "bytes": 2211
     }
   ],
-  "tile_count": 7,
+  "tile_count": 21,
   "tile_height_cap": 1280,
-  "total_bytes": 193881,
-  "words": 57,
-  "est_read_seconds": 28.6,
-  "est_read_screens": 5.6,
+  "total_bytes": 9411624,
+  "words": 75,
+  "est_read_seconds": 44.3,
+  "est_read_screens": 19.2,
   "lettering": {
-    "bubbles": 10,
-    "words": 57,
-    "sfx": 3
+    "bubbles": 20,
+    "words": 75,
+    "sfx": 5,
+    "gutter": 1,
+    "prop": 1
   },
+  "placement_issues": [],
   "placeholders": [
-    "p001",
-    "p002",
-    "p003",
-    "p004",
-    "p005",
-    "p006",
     "p007",
     "p008",
     "p009",
-    "p010"
+    "p010",
+    "p011",
+    "p012",
+    "p013",
+    "p014",
+    "p015",
+    "p016",
+    "p017"
   ],
+  "gutter_reserved": {
+    "p016": 305
+  },
   "gap_profile": [
     {
+      "id": "title",
+      "pace": "normal",
+      "gap_after_master": 270,
+      "gap_after_export": 200
+    },
+    {
       "id": "p001",
-      "pace": "dramatic",
-      "gap_after": 600
+      "pace": "normal",
+      "gap_after_master": 270,
+      "gap_after_export": 200
     },
     {
       "id": "p002",
       "pace": "normal",
-      "gap_after": 200
+      "gap_after_master": 270,
+      "gap_after_export": 200
     },
     {
       "id": "p003",
-      "pace": "normal",
-      "gap_after": 200
+      "pace": "fast",
+      "gap_after_master": 94,
+      "gap_after_export": 70
     },
     {
       "id": "p004",
       "pace": "normal",
-      "gap_after": 200
+      "gap_after_master": 270,
+      "gap_after_export": 200
     },
     {
       "id": "p005",
-      "pace": "fast",
-      "gap_after": 80
+      "pace": "normal",
+      "gap_after_master": 270,
+      "gap_after_export": 200
     },
     {
       "id": "p006",
       "pace": "transition",
-      "gap_after": 700
+      "gap_after_master": 945,
+      "gap_after_export": 700
     },
     {
       "id": "p007",
       "pace": "normal",
-      "gap_after": 200
+      "gap_after_master": 270,
+      "gap_after_export": 200
     },
     {
       "id": "p008",
       "pace": "dramatic",
-      "gap_after": 600
+      "gap_after_master": 810,
+      "gap_after_export": 600
     },
     {
       "id": "p009",
+      "pace": "fast",
+      "gap_after_master": 94,
+      "gap_after_export": 70
+    },
+    {
+      "id": "p010",
+      "pace": "dramatic",
+      "gap_after_master": 810,
+      "gap_after_export": 600
+    },
+    {
+      "id": "p011",
       "pace": "normal",
-      "gap_after": 200
+      "gap_after_master": 270,
+      "gap_after_export": 200
+    },
+    {
+      "id": "p012",
+      "pace": "silent",
+      "gap_after_master": 270,
+      "gap_after_export": 200
+    },
+    {
+      "id": "p013",
+      "pace": "fast",
+      "gap_after_master": 94,
+      "gap_after_export": 70
+    },
+    {
+      "id": "p014",
+      "pace": "fast",
+      "gap_after_master": 94,
+      "gap_after_export": 70
+    },
+    {
+      "id": "p015",
+      "pace": "fast",
+      "gap_after_master": 94,
+      "gap_after_export": 70
+    },
+    {
+      "id": "p016",
+      "pace": "normal",
+      "gap_after_master": 305,
+      "gap_after_export": 226
+    },
+    {
+      "id": "p017",
+      "pace": "normal",
+      "gap_after_master": 270,
+      "gap_after_export": 200
     }
   ],
-  "ai_disclosure": "AI-assisted production. Story, character design, panel direction, lettering and editing by the creator; panel artwork generated with Illustrious XL + a character LoRA, then retouched, composited and lettered by hand. Feedback welcome."
+  "fx": {
+    "p002": [
+      "speed_horizontal"
+    ],
+    "p005": [
+      "tremble"
+    ],
+    "p010": [
+      "speed_radial"
+    ],
+    "p012": [
+      "flash",
+      "speed_radial"
+    ],
+    "p014": [
+      "speed_horizontal"
+    ],
+    "p015": [
+      "smear"
+    ],
+    "p017": [
+      "tremble"
+    ]
+  },
+  "pdf": "output/ep001/delivery/neon-archive-ch001.pdf",
+  "per_panel": {
+    "dir": "ch001",
+    "raw": 6,
+    "lettered": 19
+  },
+  "ai_disclosure": "AI-assisted production. Story, character design, panel direction, lettering and editing by the creator; panel artwork generated with an AI model from locked character sheets, then retouched, composited and lettered by hand. Feedback welcome."
 }

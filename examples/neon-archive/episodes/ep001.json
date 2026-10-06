@@ -2,89 +2,115 @@
   "episode": 1,
   "title": "The Shard",
   "arc": "Arc 1 - The Courier",
+  "chapter_idea": "A courier who trusts recordings plays one and finds herself inside it.",
   "logline": "Sera takes one last delivery and it turns out to be a recording of her own murder.",
-  "purpose": "hook",
-  "panel_budget": 10,
-  "scroll_target_screens": 6,
+  "introduces": "Sera (hero shot, backlit, p002) and Kael (face hidden in the doorway, p011).",
+  "past_life_beat": "p010 - the desaturated memory fragment inside the recording.",
+  "end_question": "Who recorded it - and how does the tape know her coat?",
+  "panel_budget": 18,
+  "scroll_target_screens": 12,
   "language": "en",
   "status": "scripted",
   "panels": [
     {
       "id": "p001",
-      "shot": "establishing_wide",
-      "beat": "hook",
-      "pace": "dramatic",
-      "height": 420,
+      "shot": "opener_tall",
+      "beat": "engine",
+      "pace": "normal",
       "bleed": true,
+      "scene": "street_night",
       "characters": [],
-      "action": "Rain-drowned megacity at night, stacked towers receding into fog, a single courier's umbrella light far below, neon signage bleeding into wet asphalt.",
-      "notes": "No faces. Set the world in one image. Big top gutter above this panel.",
+      "focus_guard": [],
+      "action": "Tall vertical establishing: rain-drowned megacity at night, stacked towers climbing out of frame into fog, one tiny umbrella light far below in the flooded arcade.",
+      "notes": "The chapter's visual idea, stated in one image. No faces.",
       "dialogue": [
         {
           "character": "sfx",
           "text": "KRRRSH",
           "style": "sfx",
-          "anchor": "@0.78,0.72",
+          "anchor": "@0.62,0.74",
+          "voice": null,
+          "anchor_lock": false,
+          "place": null,
           "tail": "auto",
           "tail_to": null,
-          "size_scale": 0.85,
-          "rotation": -8
+          "size_scale": 0.9,
+          "rotation": -7,
+          "shake": false,
+          "blur": 0.0,
+          "fx": "cold",
+          "prop_rect": null
         }
       ]
     },
     {
       "id": "p002",
-      "shot": "wide",
-      "beat": "setup",
+      "shot": "hero_backlit",
+      "beat": "introduction",
       "pace": "normal",
-      "height": 400,
+      "scene": "street_night",
       "characters": [
         "sera"
       ],
-      "action": "Sera walks the flooded arcade alone, ponytail soaked, jacket collar up, satchel held tight.",
+      "fx": [
+        {
+          "type": "speed_horizontal",
+          "count": 34
+        }
+      ],
+      "fx_faction": "protagonist",
+      "action": "Sera stands alone in the flooded arcade, backlit by a wall of neon, coat moving, silhouette rimmed in pale blue.",
+      "notes": "Introduction hero shot: backlit, low angle, rim light.",
       "dialogue": [
         {
           "character": "narration",
           "text": "The rain in Sector 9 doesn't clean anything.",
           "style": "narration",
           "anchor": "top-left",
+          "voice": null,
+          "anchor_lock": false,
+          "place": null,
           "tail": "auto",
           "tail_to": null,
           "size_scale": 1.0,
-          "rotation": 0.0
-        },
-        {
-          "character": "narration",
-          "text": "It just moves the dirt somewhere you can't see it.",
-          "style": "narration",
-          "anchor": "bottom-left",
-          "tail": "auto",
-          "tail_to": null,
-          "size_scale": 1.0,
-          "rotation": 0.0
+          "rotation": 0.0,
+          "shake": false,
+          "blur": 0.0,
+          "fx": "neutral",
+          "prop_rect": null
         }
       ]
     },
     {
       "id": "p003",
-      "shot": "close",
+      "shot": "detail_eyes",
       "beat": "setup",
-      "pace": "normal",
-      "height": 340,
+      "pace": "fast",
+      "scene": "street_night",
       "characters": [
         "sera"
       ],
-      "action": "Close-up on Sera's eyes reflecting a red neon sign, rain on her lashes.",
+      "focus_guard": [
+        "eyes"
+      ],
+      "action": "Extreme close-up: her eyes catching a red neon sign, rain beaded on her lashes.",
       "dialogue": [
         {
           "character": "sera",
-          "text": "One more delivery. Then I'm done.",
+          "text": "One more delivery.",
           "style": "speech",
           "anchor": "top-left",
-          "tail": "auto",
+          "voice": null,
+          "anchor_lock": false,
+          "place": null,
+          "tail": "down",
           "tail_to": null,
           "size_scale": 1.0,
-          "rotation": 0.0
+          "rotation": 0.0,
+          "shake": false,
+          "blur": 0.0,
+          "fx": "neutral",
+          "prop_rect": null
         }
       ]
     },
@@ -93,45 +119,94 @@
       "shot": "ots",
       "beat": "inciting",
       "pace": "normal",
-      "height": 400,
+      "scene": "street_night",
       "characters": [
         "sera",
         "kael"
       ],
-      "action": "Over Sera's shoulder: a tall man under a low umbrella holds out a cracked data shard.",
+      "focus_guard": [
+        "the shard"
+      ],
+      "action": "Over Sera's shoulder: Kael under a low umbrella holds out a cracked data shard.",
       "dialogue": [
         {
           "character": "kael",
-          "text": "Play it before sunrise. Or don't play it at all.",
+          "text": "Play it before sunrise.",
           "style": "speech",
           "anchor": "top-right",
+          "voice": null,
+          "anchor_lock": false,
+          "place": null,
           "tail": "auto",
-          "tail_to": null,
+          "tail_to": {
+            "x": 0.62,
+            "y": 0.62
+          },
           "size_scale": 1.0,
-          "rotation": 0.0
+          "rotation": 0.0,
+          "shake": false,
+          "blur": 0.0,
+          "fx": "neutral",
+          "prop_rect": null
         }
       ]
     },
     {
       "id": "p005",
-      "shot": "insert",
+      "shot": "detail_prop",
       "beat": "inciting",
-      "pace": "fast",
-      "height": 300,
+      "pace": "normal",
+      "scene": "street_night",
       "characters": [
         "sera"
       ],
-      "action": "Insert: the shard in her open palm, faint teal light pulsing inside the crack.",
+      "focus_guard": [
+        "the shard",
+        "the label"
+      ],
+      "fx": [
+        "tremble"
+      ],
+      "action": "Insert: the shard in her open palm, faint teal light pulsing inside the crack, a hand-written label gummed to the case.",
       "dialogue": [
         {
           "character": "narration",
           "text": "It was warm. Memories shouldn't be warm.",
           "style": "narration",
           "anchor": "bottom-left",
+          "voice": null,
+          "anchor_lock": false,
+          "place": null,
           "tail": "auto",
           "tail_to": null,
           "size_scale": 1.0,
-          "rotation": 0.0
+          "rotation": 0.0,
+          "shake": false,
+          "blur": 0.0,
+          "fx": "neutral",
+          "prop_rect": null
+        },
+        {
+          "character": "prop",
+          "text": "JOB 77-C",
+          "style": "prop",
+          "anchor": "@0.5,0.5",
+          "voice": null,
+          "anchor_lock": false,
+          "place": null,
+          "tail": "auto",
+          "tail_to": null,
+          "size_scale": 0.8,
+          "rotation": -4,
+          "shake": false,
+          "blur": 0.0,
+          "fx": "neutral",
+          "prop_rect": {
+            "x": 0.44,
+            "y": 0.62,
+            "w": 0.34,
+            "h": 0.14
+          }
         }
       ]
     },
@@ -140,10 +215,9 @@
       "shot": "environment",
       "beat": "comedown",
       "pace": "transition",
-      "height": 460,
+      "scene": "room_night",
       "characters": [],
-      "action": "Her rented room: rain crawling down a tall window, one chair, one lamp, the city bokeh beyond.",
-      "notes": "Transition panel -- 700px of air after it, then the room lands.",
+      "action": "Her rented room: rain crawling down a tall window, one chair, one lamp, city bokeh beyond.",
       "dialogue": []
     },
     {
@@ -151,21 +225,53 @@
       "shot": "medium",
       "beat": "build",
       "pace": "normal",
-      "height": 380,
+      "scene": "room_night",
       "characters": [
         "sera"
       ],
-      "action": "Sera seated at the table, the shard projected as a flickering figure collapsing in an alley.",
+      "focus_guard": [
+        "the projection"
+      ],
+      "action": "Sera at the table, the shard projecting a translucent figure collapsing in a rainy alley.",
+      "technique": {
+        "name": "ARCHIVE PLAYBACK",
+        "step": "activation",
+        "note": "the shard opens"
+      },
       "dialogue": [
         {
           "character": "sfx",
           "text": "THUD",
           "style": "sfx",
           "anchor": "@0.72,0.66",
+          "voice": null,
+          "anchor_lock": false,
+          "place": null,
           "tail": "auto",
           "tail_to": null,
-          "size_scale": 0.7,
-          "rotation": 6
+          "size_scale": 0.62,
+          "rotation": 5,
+          "shake": false,
+          "blur": 0.0,
+          "fx": "impact",
+          "prop_rect": null
+        },
+        {
+          "character": "technique",
+          "text": "ARCHIVE PLAYBACK",
+          "style": "technique",
+          "anchor": "top-right",
+          "voice": "condensed_block",
+          "anchor_lock": false,
+          "place": null,
+          "tail": "auto",
+          "tail_to": null,
+          "size_scale": 1.0,
+          "rotation": 0.0,
+          "shake": false,
+          "blur": 0.0,
+          "fx": "neutral",
+          "prop_rect": null
         }
       ]
     },
@@ -174,75 +280,399 @@
       "shot": "extreme_close",
       "beat": "reveal",
       "pace": "dramatic",
-      "height": 400,
+      "scene": "room_night",
       "characters": [
         "sera"
       ],
-      "action": "Extreme close-up of Sera's eyes going wide, teal projection light across her face.",
-      "notes": "Thought bubble on an extreme close-up: keep it short, the eyes are the panel.",
+      "focus_guard": [
+        "eyes"
+      ],
+      "action": "Extreme close-up: her eyes going wide, teal projection light across her face.",
       "dialogue": [
         {
           "character": "sera",
           "text": "That's my coat. That's my hair...",
           "style": "thought",
           "anchor": "top-left",
+          "voice": null,
+          "anchor_lock": false,
+          "place": null,
           "tail": "auto",
           "tail_to": null,
           "size_scale": 1.0,
-          "rotation": 0.0
+          "rotation": 0.0,
+          "shake": false,
+          "blur": 0.0,
+          "fx": "neutral",
+          "prop_rect": null
         }
       ]
     },
     {
       "id": "p009",
-      "shot": "medium_low",
-      "beat": "midpoint_hook",
-      "pace": "normal",
-      "height": 400,
+      "shot": "detail_hands",
+      "beat": "reaction",
+      "pace": "fast",
+      "scene": "room_night",
       "characters": [
-        "sera",
-        "kael"
+        "sera"
       ],
-      "action": "Low angle: Sera turns in her chair. A silhouette fills the open doorway behind her, umbrella dripping on the floorboards.",
+      "focus_guard": [
+        "hands"
+      ],
+      "action": "Her hands, gripping the table edge, knuckles white.",
       "dialogue": [
         {
-          "character": "unknown",
-          "text": "You weren't supposed to see that one.",
-          "style": "speech",
-          "anchor": "top-center",
+          "character": "sera",
+          "text": "That's me.",
+          "style": "urgent",
+          "anchor": "bottom-center",
+          "voice": null,
+          "anchor_lock": false,
+          "place": null,
           "tail": "auto",
           "tail_to": null,
-          "size_scale": 1.0,
-          "rotation": 0.0
+          "size_scale": 0.95,
+          "rotation": 0.0,
+          "shake": false,
+          "blur": 0.0,
+          "fx": "neutral",
+          "prop_rect": null
         }
       ]
     },
     {
       "id": "p010",
       "shot": "wide",
-      "beat": "cliffhanger",
-      "pace": "silent",
-      "height": 520,
-      "bleed": true,
+      "beat": "past_life",
+      "pace": "dramatic",
+      "scene": "memory",
       "characters": [
         "sera"
       ],
-      "action": "The window bursts inward, glass and rain suspended, Sera thrown back, the whole neon city staring through the hole.",
-      "notes": "Cliffhanger. End on the image, not on a line.",
+      "fx": [
+        "speed_radial"
+      ],
+      "fx_faction": "antagonist",
+      "action": "The recording's own image: the same alley, the same coat, a figure going down in the rain, filmed from a window above.",
+      "dialogue": [
+        {
+          "character": "sfx",
+          "text": "FZZT",
+          "style": "sfx",
+          "anchor": "@0.30,0.28",
+          "voice": null,
+          "anchor_lock": false,
+          "place": null,
+          "tail": "auto",
+          "tail_to": null,
+          "size_scale": 0.7,
+          "rotation": -10,
+          "shake": false,
+          "blur": 0.0,
+          "fx": "mystery",
+          "prop_rect": null
+        },
+        {
+          "character": "narration",
+          "text": "Sector 9. Third night of the rains.",
+          "style": "narration",
+          "anchor": "bottom-left",
+          "voice": null,
+          "anchor_lock": false,
+          "place": null,
+          "tail": "auto",
+          "tail_to": null,
+          "size_scale": 1.0,
+          "rotation": 0.0,
+          "shake": false,
+          "blur": 0.0,
+          "fx": "neutral",
+          "prop_rect": null
+        }
+      ]
+    },
+    {
+      "id": "p011",
+      "shot": "medium_low",
+      "beat": "villain",
+      "pace": "normal",
+      "scene": "room_night",
+      "characters": [
+        "sera",
+        "kael"
+      ],
+      "focus_guard": [
+        "the doorway"
+      ],
+      "fx_faction": "antagonist",
+      "action": "Low angle: Sera turns in her chair; behind her the doorway is filled by a backlit silhouette, umbrella dripping on the floorboards.",
+      "dialogue": [
+        {
+          "character": "kael",
+          "text": "You weren't supposed to see that one.",
+          "style": "dark",
+          "anchor": "top-center",
+          "voice": null,
+          "anchor_lock": false,
+          "place": null,
+          "tail": "auto",
+          "tail_to": {
+            "x": 0.72,
+            "y": 0.42
+          },
+          "size_scale": 1.0,
+          "rotation": 0.0,
+          "shake": false,
+          "blur": 0.0,
+          "fx": "neutral",
+          "prop_rect": null
+        }
+      ]
+    },
+    {
+      "id": "p012",
+      "shot": "sfx_full",
+      "beat": "impact",
+      "pace": "silent",
+      "bleed": true,
+      "scene": "aftermath",
+      "characters": [],
+      "fx": [
+        "flash",
+        "speed_radial"
+      ],
+      "action": "Full-height impact: the window bursts inward, glass and rain suspended, the whole neon city staring through the hole.",
       "dialogue": [
         {
           "character": "sfx",
           "text": "CRASH",
           "style": "sfx",
-          "anchor": "@0.36,0.34",
+          "anchor": "@0.42,0.38",
+          "voice": null,
+          "anchor_lock": false,
+          "place": null,
           "tail": "auto",
           "tail_to": null,
-          "size_scale": 1.1,
-          "rotation": -12
+          "size_scale": 1.15,
+          "rotation": -9,
+          "shake": false,
+          "blur": 0.0,
+          "fx": "violence",
+          "prop_rect": null
+        }
+      ]
+    },
+    {
+      "id": "p013",
+      "shot": "close",
+      "beat": "reaction",
+      "pace": "fast",
+      "scene": "aftermath",
+      "characters": [
+        "sera"
+      ],
+      "focus_guard": [
+        "face"
+      ],
+      "action": "Sera thrown back, arm up against the glass, mouth open.",
+      "dialogue": [
+        {
+          "character": "sera",
+          "text": "Kael, wait—",
+          "style": "hesitant",
+          "anchor": "top-left",
+          "voice": null,
+          "anchor_lock": false,
+          "place": null,
+          "tail": "auto",
+          "tail_to": null,
+          "size_scale": 0.95,
+          "rotation": 0.0,
+          "shake": false,
+          "blur": 0.0,
+          "fx": "neutral",
+          "prop_rect": null
+        }
+      ]
+    },
+    {
+      "id": "p014",
+      "shot": "detail_boots",
+      "beat": "action",
+      "pace": "fast",
+      "scene": "aftermath",
+      "characters": [],
+      "fx": [
+        {
+          "type": "speed_horizontal",
+          "count": 60
+        }
+      ],
+      "action": "Boots on wet floorboards, mid-stride, away from the room.",
+      "dialogue": []
+    },
+    {
+      "id": "p015",
+      "shot": "medium",
+      "beat": "build",
+      "pace": "fast",
+      "scene": "street_night",
+      "characters": [
+        "sera"
+      ],
+      "fx": [
+        {
+          "type": "smear",
+          "direction": "right",
+          "strength": 0.18
+        }
+      ],
+      "fx_faction": "protagonist",
+      "action": "She runs, coat streaming, through the flooded arcade, neon dragging past her.",
+      "dialogue": [
+        {
+          "character": "sfx",
+          "text": "WHUMP",
+          "style": "sfx",
+          "anchor": "@0.7,0.72",
+          "voice": null,
+          "anchor_lock": false,
+          "place": null,
+          "tail": "auto",
+          "tail_to": null,
+          "size_scale": 0.7,
+          "rotation": 4,
+          "shake": false,
+          "blur": 0.0,
+          "fx": "cold",
+          "prop_rect": null
+        }
+      ]
+    },
+    {
+      "id": "p016",
+      "shot": "medium_high",
+      "beat": "midpoint_hook",
+      "pace": "normal",
+      "scene": "street_night",
+      "characters": [
+        "sera"
+      ],
+      "focus_guard": [
+        "face"
+      ],
+      "place_note": "balloon lives in the gutter below this panel",
+      "action": "High angle: Sera stops, looks back up the arcade, rain sheeting between her and the camera.",
+      "dialogue": [
+        {
+          "character": "sera",
+          "text": "He's not following. He's waiting.",
+          "style": "speech",
+          "anchor": "gutter",
+          "voice": null,
+          "anchor_lock": false,
+          "place": "gutter",
+          "tail": "up",
+          "tail_to": {
+            "x": 0.38,
+            "y": 0.92
+          },
+          "size_scale": 1.0,
+          "rotation": 0.0,
+          "shake": false,
+          "blur": 0.0,
+          "fx": "neutral",
+          "prop_rect": null
+        }
+      ]
+    },
+    {
+      "id": "p017",
+      "shot": "cowboy",
+      "beat": "turn",
+      "pace": "normal",
+      "scene": "street_night",
+      "characters": [
+        "kael"
+      ],
+      "focus_guard": [
+        "face"
+      ],
+      "fx": [
+        "tremble"
+      ],
+      "action": "Kael under the umbrella, unmoving, watching her go, one gloved hand still raised.",
+      "dialogue": [
+        {
+          "character": "kael",
+          "text": "You already played it. That's the part",
+          "style": "continuing",
+          "anchor": "top-left",
+          "voice": null,
+          "anchor_lock": false,
+          "place": null,
+          "tail": "auto",
+          "tail_to": {
+            "x": 0.34,
+            "y": 0.55
+          },
+          "size_scale": 1.0,
+          "rotation": 0.0,
+          "shake": false,
+          "blur": 0.0,
+          "fx": "neutral",
+          "prop_rect": null
+        },
+        {
+          "character": "kael",
+          "text": "he's going to come for.",
+          "style": "continuing",
+          "anchor": "@0.30,0.30",
+          "voice": null,
+          "anchor_lock": false,
+          "place": null,
+          "tail": "up",
+          "tail_to": null,
+          "size_scale": 1.0,
+          "rotation": 0.0,
+          "shake": false,
+          "blur": 0.0,
+          "fx": "neutral",
+          "prop_rect": null
+        }
+      ]
+    },
+    {
+      "id": "p018",
+      "shot": "opener_tall",
+      "beat": "end_question",
+      "pace": "black_out",
+      "bleed": true,
+      "scene": "street_night",
+      "characters": [],
+      "action": "The arcade from above, empty, one umbrella light and one shard-light still lit, rain closing over both.",
+      "dialogue": [
+        {
+          "character": "sera",
+          "text": "Who recorded it?",
+          "style": "speech",
+          "anchor": "top-center",
+          "voice": "hand_brushed",
+          "anchor_lock": false,
+          "place": null,
+          "tail": "down",
+          "tail_to": null,
+          "size_scale": 1.05,
+          "rotation": 0.0,
+          "shake": false,
+          "blur": 0.0,
+          "fx": "neutral",
+          "prop_rect": null
         }
       ]
     }
   ],
-  "end_note": "Next episode: The Broker's Price.",
+  "end_note": "Next chapter: The Broker's Price.",
   "ai_disclosure": null
 }

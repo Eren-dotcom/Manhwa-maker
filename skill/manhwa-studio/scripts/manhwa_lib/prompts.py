@@ -1,33 +1,40 @@
 """
 Prompt pack generator.
 
-The same panel means different things to different tools, so the pack is built
-once from the story data and then *rendered* per tool:
-  sdxl / illustrious  -> booru tags + <lora:...> + negative prompt
-  flux / qwen         -> natural-language paragraph
-  midjourney          -> prose + --ar --no --cref flags
-  gemini / chatgpt    -> instruction aimed at a reference image
-  generic             -> neutral text you can paste anywhere
+One panel, six tools, six dialects. Built once from the story data, then rendered
+per tool:
+  sdxl/illustrious  booru tags + <lora:...> + negative prompt
+  flux/qwen         natural-language paragraph
+  midjourney        prose + --ar/--cref flags
+  gemini/chatgpt    instruction aimed at a reference image
+  generic           neutral text
 
-Deterministic seeds per (character, panel) are emitted so re-rolls drift less.
-See references/03-prompt-adapters.md.
+Also generates the reference-sheet set the reference spec requires: turnaround,
+expression, portrait, and a labelled faction group sheet per faction — all of them
+BEFORE any panel is generated.
 """
 from __future__ import annotations
 
 import csv
 import hashlib
 import json
+import os
 from pathlib import Path
 
 from .project import Project, save_json
-from .specs import SHOT_PRESETS
+from .specs import MASTER_WIDTH, SHOT_PRESETS
 
 TOOLS = ["sdxl", "illustrious", "flux", "qwen", "midjourney", "gemini", "chatgpt", "generic"]
 
 QUALITY_TAGS = "masterpiece, best quality, very aesthetic, absurdres, newest"
 
-# beat -> lighting / mood fragment (keeps the whole episode graded consistently)
 BEAT_LIGHT = {
+    "engine": "bold graphic lighting, high contrast, the chapter's key image",
+    "introduction": "dramatic rim light, subject isolated from the background",
+    "hero_shot": "backlit, blown-out background, strong rim light, low angle",
+    "past_life": "desaturated hazy memory light, soft vignette, flat contrast",
+    "villain": "cold hard light from below, deep shadow, one hot accent",
+    "end_question": "hard backlight, silhouette edge, unanswered, one bright accent",
     "hook": "cold ambient light, high contrast, ominous calm",
     "establish": "wide ambient light, soft haze, establishing mood",
     "setup": "neutral soft light, readable, low drama",
@@ -43,15 +50,14 @@ BEAT_LIGHT = {
     "reaction": "single soft key light on the eyes",
     "cliffhanger": "hard backlight, silhouette edge, unanswered",
     "sting": "single hard light source, everything else crushed to black",
+    "silence": "flat ambient light, almost no contrast, quiet",
 }
 
 
 # --------------------------------------------------------------------------- #
-# sizes & seeds
-# --------------------------------------------------------------------------- #
 def gen_size(panel_w: int, panel_h: int, budget: float = 1_150_000, multiple: int = 64,
              lo: int = 768, hi: int = 1536) -> tuple[int, int]:
-    """Nearest model-friendly pixel size (multiple of 64, ~budget pixels) to the panel AR."""
+    """Model-friendly size (multiple of 64, ~budget px) matching the panel's ratio."""
     if panel_w <= 0 or panel_h <= 0:
         return 1024, 1024
     ar = panel_w / panel_h
@@ -59,14 +65,13 @@ def gen_size(panel_w: int, panel_h: int, budget: float = 1_150_000, multiple: in
     def snap(v, mult):
         return max(mult, int(round(v / mult)) * mult)
 
-    # try w first, then h
     best = None
     for w in range(lo, hi + 1, multiple):
         h = snap(w / ar, multiple)
         if h < multiple:
             continue
-        score = abs(w * h - budget)
         if h <= hi + multiple:
+            score = abs(w * h - budget)
             if best is None or score < best[0]:
                 best = (score, w, h)
     if best:
@@ -82,17 +87,14 @@ def panel_seed(character_token: str, panel_id: str, salt: str = "") -> int:
 
 
 def _ar_phrase(ar: float) -> str:
-    for label, val in (("16:9", 16 / 9), ("3:2", 1.5), ("4:3", 4 / 3), ("1:1", 1.0),
-                       ("3:4", 0.75), ("2:3", 2 / 3), ("9:16", 9 / 16)):
-        if abs(ar - val) < 0.06:
+    for label, val in (("16:9", 16 / 9), ("2:1", 2.0), ("3:2", 1.5), ("4:3", 4 / 3),
+                       ("1:1", 1.0), ("4:5", 0.8), ("3:4", 0.75), ("2:3", 2 / 3),
+                       ("1:2", 0.5), ("1:3", 1 / 3)):
+        if abs(ar - val) < 0.04:
             return label
-    if ar > 1.9:
+    if ar > 1.0:
         return f"{ar:.1f}:1"
-    if ar > 1.25:
-        return "3:2"
-    if ar > 1.05:
-        return "4:3"
-    return "1:1"
+    return f"1:{1/ar:.1f}"
 
 
 # --------------------------------------------------------------------------- #
@@ -103,6 +105,26 @@ def character_clause(char: dict, outfit: str | None = None) -> str:
     if outfit and char.get("wardrobe", {}).get(outfit):
         return f"{base}, wearing {char['wardrobe'][outfit]}"
     return base
+
+
+def _composition_note(panel: dict, shot: dict) -> str:
+    """Empty space for balloons: upper thirds, clean skies -- never over key detail."""
+    dlgs = [d for d in (panel.get("dialogue") or []) if str(d.get("text", "")).strip()]
+    if not dlgs:
+        return ""
+    guard = [str(g).lower() for g in (panel.get("focus_guard") or [])]
+    if any(str(d.get("place", "")).lower() in ("gutter", "gutter_after") for d in dlgs):
+        return ("leave the lower edge of the composition clean and uncluttered -- a balloon will sit "
+                "in the gutter below it")
+    anchors = [d.get("anchor", "auto") for d in dlgs if d.get("style", "speech") != "sfx"]
+    anchor = next((a for a in anchors if a and a not in ("auto", "none", "gutter")), None)
+    where = anchor.replace("-", " ") if anchor else "upper third"
+    if where in ("top center", "top left", "top right"):
+        where = f"{where} of the frame"
+    keep = (" Keep the following unobstructed and clearly readable: "
+            + ", ".join(guard) + ".") if guard else ""
+    return (f"compose clean empty space in the {where} for a speech balloon; "
+            f"clean sky or negative space, never blocking the subject.{keep}")
 
 
 def build_panel_prompt(project: Project, ep_no: int, panel: dict, chars: dict) -> dict:
@@ -121,46 +143,67 @@ def build_panel_prompt(project: Project, ep_no: int, panel: dict, chars: dict) -
               "token": chars[c]["lora"].get("token")}
              for c in present if chars[c].get("lora", {}).get("file")]
 
-    bubble_note = ""
-    dlgs = panel.get("dialogue") or []
-    if dlgs:
-        anchors = [d.get("anchor", "auto") for d in dlgs if d.get("style", "speech") != "sfx"]
-        anchor = next((a for a in anchors if a and a not in ("auto", "none")), None) or shot.get("bubble", "top-left")
-        if anchor and anchor != "none":
-            bubble_note = f"leave clean negative space in the {anchor.replace('-', ' ')} area for a speech bubble"
-
+    composition = _composition_note(panel, shot)
     beat = panel.get("beat", "setup")
     lighting = BEAT_LIGHT.get(beat, "")
 
-    # size target: the panel's on-strip aspect
-    pw = (panel.get("height") and panel["height"] * 1.0) or None
+    # presentation rules per the reference spec
+    presentation = ""
+    if beat in ("introduction", "hero_shot"):
+        presentation = ("hero presentation: backlit low angle, rim light outlining the silhouette, "
+                        "standing tall, cloak or coat moving")
+    elif panel.get("mystery") or shot_key == "silhouette":
+        presentation = "mystery figure: face hidden in shadow, rim light only, identity withheld"
+
+    # target geometry: the panel as it sits on the master strip
+    side = 0 if panel.get("bleed") else int(project.geometry.get("side_margin", 0) * MASTER_WIDTH / 800.0)
+    content_w = int(project.geometry.get("width", MASTER_WIDTH)) - 2 * side
     if panel.get("height"):
-        rect_ar = 720 / float(panel["height"])
+        rect_ar = content_w / float(panel["height"])
+        tw, th = content_w, int(panel["height"])
     else:
-        rect_ar = float(shot.get("ar", 1.3))
-    tw = 720
-    th = max(160, int(round(tw / rect_ar)))
+        rect_ar = float(shot.get("ar", 0.92))
+        tw = content_w
+        th = max(160, int(round(content_w / rect_ar)))
     gw, gh = gen_size(tw, th)
 
     action = (panel.get("action") or "").strip()
-    parts_tags = [p for p in [QUALITY_TAGS if False else "", style] if p]
-    tag_parts = [style, *char_clauses, shot["prompt"], action, lighting, bubble_note]
-    tag_prompt = ", ".join(p.strip().strip(",") for p in tag_parts if p and p.strip())
+    tech = panel.get("technique") or {}
+    tech_note = ""
+    if tech:
+        tech_note = (f"technique beat: {tech.get('name','')} ({tech.get('step','')}) "
+                     f"{tech.get('note','')}").strip()
+
+    tag_parts = [style, *char_clauses, shot["prompt"], presentation, action, tech_note,
+                 lighting, composition]
+    tag_prompt = ", ".join(p.strip().strip(",") for p in tag_parts if p and str(p).strip())
 
     nl_parts = [f"{style}." if style else ""]
     if char_clauses:
         nl_parts.append("Cast: " + "; ".join(char_clauses) + ".")
     nl_parts.append(f"Camera: {shot['prompt']}.")
+    if presentation:
+        nl_parts.append(f"Presentation: {presentation}.")
     if action:
         nl_parts.append(f"Scene: {action}.")
+    if tech_note:
+        nl_parts.append(f"Beat: {tech_note}.")
     if lighting:
         nl_parts.append(f"Lighting: {lighting}.")
-    if bubble_note:
-        nl_parts.append(f"Composition: {bubble_note}.")
-    nl_parts.append("No text, no letters, no speech bubbles, no watermark.")
+    if composition:
+        nl_parts.append(f"Composition: {composition}.")
+    nl_parts.append("No text, no words, no letters, no speech balloons, no captions, no watermark.")
     nl_prompt = " ".join(p for p in nl_parts if p)
 
-    negative = ad.get("negative_block", "") + ", " + panel.get("negative_override", "") if panel.get("negative_override") else ad.get("negative_block", "")
+    negative = ad.get("negative_block", "")
+    if panel.get("negative_override"):
+        negative = (negative + ", " + panel["negative_override"]).strip(", ")
+
+    fx_note = ""
+    if panel.get("fx"):
+        names = [f if isinstance(f, str) else f.get("type") for f in panel["fx"]]
+        fx_note = ("do not draw speed lines, motion smears or impact flashes -- those are composited "
+                   f"afterwards ({', '.join(str(n) for n in names if n)})")
 
     return {
         "kind": "panel",
@@ -168,6 +211,7 @@ def build_panel_prompt(project: Project, ep_no: int, panel: dict, chars: dict) -
         "id": pid,
         "shot": shot_key,
         "beat": beat,
+        "band": shot.get("band"),
         "seed": panel_seed(",".join(tokens) or "nochar", pid, series.get("title", "")),
         "target_panel_px": [tw, th],
         "gen_px": [gw, gh],
@@ -177,41 +221,79 @@ def build_panel_prompt(project: Project, ep_no: int, panel: dict, chars: dict) -
         "prompt_tags": tag_prompt,
         "prompt_nl": nl_prompt,
         "negative": negative,
-        "bubble_space": bubble_note,
+        "composition": composition,
+        "focus_guard": panel.get("focus_guard") or [],
+        "fx_note": fx_note,
         "action": action,
-        "dialogue": [d.get("text", "") for d in dlgs],
+        "dialogue": [d.get("text", "") for d in (panel.get("dialogue") or [])],
         "out_file": f"art/ep{ep_no:03d}/{pid}.png",
         "notes": panel.get("notes", ""),
     }
 
 
-def build_character_sheet(project: Project, char: dict, ep_no: int = 1) -> list[dict]:
+# --------------------------------------------------------------------------- #
+# reference sheets (before any panel)
+# --------------------------------------------------------------------------- #
+SHEET_KINDS = [
+    ("sheet", "turnaround", "character reference sheet, front view, three-quarter view, side view, "
+                            "back view, same character in every view, identical outfit, full body, "
+                            "plain light background, no text labels",
+     "The single most valuable image in the production. Lock it, version it, never regenerate casually."),
+    ("faces", "expression", "expression sheet, six head-and-shoulders studies of the same face: "
+                            "neutral, wary, angry, sorrowful, small smile, wide-eyed shock, "
+                            "plain light background",
+     "Feed this back as a reference for every emotional close-up."),
+    ("portrait", "portrait", "single chest-up character portrait, three-quarter view, neutral "
+                             "expression, plain background, clean line art",
+     "The likeness card: this is what every match-check sheet compares panels against."),
+]
+
+
+def build_character_sheets(project: Project, char: dict, ep_no: int = 1) -> list[dict]:
     ad = project.series.get("art_direction", {})
     style = ad.get("style_block", "")
     cid = char.get("id")
     base = character_clause(char)
     neg = ad.get("negative_block", "")
     out = []
-    for pid, extra, note in (
-        ("sheet", "character reference sheet, front view, three-quarter view, side view, back view, "
-                  "same character in every view, identical outfit, full body, plain light background, "
-                  "no text labels",
-         "The single most valuable image you will generate. Lock it, version it, never regenerate it casually."),
-        ("faces", "expression sheet, six head-and-shoulders studies of the same face: neutral, wary, "
-                  "angry, sorrowful, small smile, wide-eyed shock, plain light background",
-         "Feed this to the model as a reference every time an emotional panel comes up."),
-    ):
+    for tag, kind, extra, note in SHEET_KINDS:
         out.append({
-            "kind": "sheet", "episode": ep_no, "id": f"{cid}_{pid}", "character": cid,
-            "seed": int(char.get("seed", 12345)), "gen_px": [1024, 1536] if pid == "sheet" else [1536, 1024],
-            "aspect": "2:3" if pid == "sheet" else "3:2",
+            "kind": "sheet", "sheet": kind, "episode": ep_no, "id": f"{cid}_{tag}",
+            "character": cid,
+            "seed": int(char.get("seed", 12345)) + (0 if kind == "turnaround" else 7),
+            "gen_px": [1024, 1536] if kind == "turnaround" else ([1536, 1024] if kind == "expression"
+                                                                 else [1024, 1280]),
+            "aspect": "2:3" if kind == "turnaround" else ("3:2" if kind == "expression" else "4:5"),
             "prompt_tags": f"{style}, {base}, {extra}",
             "prompt_nl": f"{style}. {base}. {extra}. Plain background, no text.",
             "negative": neg,
-            "out_file": f"assets/refs/{cid}_{pid}.png",
+            "out_file": f"assets/refs/{cid}_{tag}.png",
             "notes": note,
         })
     return out
+
+
+def build_faction_sheet(project: Project, faction: str, members: list[dict], ep_no: int = 1) -> dict:
+    ad = project.series.get("art_direction", {})
+    style = ad.get("style_block", "")
+    langs = project.series.get("effect_languages", {})
+    lang = langs.get(faction, {})
+    clause = "; ".join(f"{m.get('name', m.get('id'))}: {character_clause(m)}" for m in members)
+    return {
+        "kind": "sheet", "sheet": "faction", "episode": ep_no, "id": f"faction_{faction}",
+        "character": None, "faction": faction, "members": [m.get("id") for m in members],
+        "seed": 5150, "gen_px": [1536, 1024], "aspect": "3:2",
+        "prompt_tags": (f"{style}, labelled faction group sheet, lineup of {len(members)} standing "
+                        f"characters in a row, full body, consistent style and lighting, plain "
+                        f"background, faction palette {lang.get('color','')}, {clause}"),
+        "prompt_nl": (f"{style}. Faction group sheet: a lineup of {len(members)} full-body characters "
+                      f"standing in a row against a plain background, consistent lighting and palette. "
+                      f"Effect language for this faction: {lang.get('shape','')}. "
+                      f"{clause} No text, no labels."),
+        "negative": ad.get("negative_block", ""),
+        "out_file": f"reference_sheets/{faction}_sheet.png",
+        "notes": "The faction sheet fixes relative scale, silhouette and shared palette in one image.",
+    }
 
 
 def build_cover(project: Project, chars: dict, ep_no: int = 1) -> dict:
@@ -228,43 +310,97 @@ def build_cover(project: Project, chars: dict, ep_no: int = 1) -> dict:
                       "with empty space at the top for a title. No text, no letters, no logo."),
         "negative": ad.get("negative_block", ""),
         "out_file": f"assets/refs/cover_ep{ep_no:03d}.png",
-        "notes": "Platform thumbnails: 1080x1080 square and 1080x1920 vertical (under 500KB / 700KB).",
+        "notes": "Platform thumbnails: 1080x1080 square (<500KB) and 1080x1920 vertical (<700KB).",
     }
+
+
+# --------------------------------------------------------------------------- #
+# restaging a refused generation
+# --------------------------------------------------------------------------- #
+RESTAGE_KINDS = {
+    "silhouette": ("backlit silhouette of the same subject, rim light only, face and detail unreadable, "
+                   "distance, motion implied"),
+    "aftermath": ("aftermath framing: the empty space where the action happened, scattered objects, "
+                  "no figure in frame, consequence and mood only"),
+    "detail": ("tight detail crop instead of the whole figure: hands, boots, a fallen object, "
+               "shallow depth of field"),
+    "environment": ("the location itself with no characters in frame, atmosphere and mood carrying "
+                    "the beat"),
+    "reaction": ("a bystander's reaction instead of the event: face and shoulders, watching, off-centre"),
+}
+
+
+def restage(project: Project, ep_no: int, ep_path: Path, ep: dict, panel_id: str,
+            as_kind: str, save: bool = True) -> dict:
+    """
+    Rewrite a panel's prompt after a policy refusal -- a genuinely different shot,
+    never a retry of the same request.
+    """
+    if as_kind not in RESTAGE_KINDS:
+        raise KeyError(f"unknown restage kind {as_kind!r}; pick {sorted(RESTAGE_KINDS)}")
+    panels = ep.get("panels", [])
+    target = next((p for p in panels if p.get("id") == panel_id), None)
+    if target is None:
+        raise KeyError(f"panel {panel_id} not found in episode {ep_no}")
+    original = dict(target)
+    target["shot"] = {"silhouette": "silhouette", "aftermath": "environment",
+                      "detail": "detail_prop", "environment": "environment",
+                      "reaction": "close"}[as_kind]
+    target["action"] = RESTAGE_KINDS[as_kind]
+    target["restaged_from"] = {"action": original.get("action"), "shot": original.get("shot"),
+                              "reason": "generation refused on policy grounds"}
+    target["prompt_override"] = (
+        f"{project.series.get('art_direction', {}).get('style_block','')}, "
+        f"{RESTAGE_KINDS[as_kind]}, no text, no letters, no watermark"
+    )
+    target["notes"] = (target.get("notes", "") + " | restaged from the original shot after a refusal; "
+                                                  "never resend the original request").strip(" |")
+    if save:
+        save_json(ep_path, ep)
+    return {"panel": panel_id, "restaged_as": as_kind, "new_shot": target["shot"],
+            "note": "prompt rewritten, not retried -- regenerate from the prompt pack"}
 
 
 # --------------------------------------------------------------------------- #
 # rendering per tool
 # --------------------------------------------------------------------------- #
 def render_entry(entry: dict, tool: str, series: dict) -> str:
-    kind = entry["kind"]
     if tool in ("sdxl", "illustrious", "comfy"):
-        loras = " ".join(f"<lora:{Path(l['file']).stem}:{l['weight']}>" for l in entry.get("loras") or [] if l.get("file"))
+        loras = " ".join(f"<lora:{Path(l['file']).stem}:{l['weight']}>"
+                         for l in entry.get("loras") or [] if l.get("file"))
         toks = " ".join(l["token"] for l in entry.get("loras") or [] if l.get("token"))
-        body = ", ".join(p for p in [(", ".join([t for t in [toks] if t])), entry["prompt_tags"], loras] if p)
+        body = ", ".join(p for p in [toks, entry["prompt_tags"], loras] if p)
         return body
     if tool in ("flux", "qwen"):
         return entry["prompt_nl"]
     if tool == "midjourney":
-        flags = f"--ar {entry['aspect'].replace(':', ':')} --style raw --no text, speech bubble, watermark, signature"
-        neg = entry.get("negative", "")
-        return f"{entry['prompt_nl']} {flags}"
+        return (f"{entry['prompt_nl']} --ar {entry['aspect']} --style raw "
+                f"--no text, speech bubble, watermark, signature")
     if tool in ("gemini", "chatgpt"):
         refs = entry.get("characters") or ([entry["character"]] if entry.get("character") else [])
         ref_line = (f"Use the attached reference images for {', '.join(refs)} and keep the face, hair "
                     f"and outfit identical to the references. " if refs else "")
-        return (f"{ref_line}Draw one vertical webtoon panel, no text and no speech bubbles. "
-                f"{entry['prompt_nl']}")
+        return (f"{ref_line}Draw one vertical webtoon panel. No text, no words, no letters, no speech "
+                f"balloons, no captions. {entry['prompt_nl']}")
     return entry["prompt_nl"]
 
 
 def build_pack(project: Project, ep_no: int, ep: dict, tool: str = "sdxl",
-               include_sheets: bool = True, include_cover: bool = True) -> dict:
+               include_sheets: bool = True, include_cover: bool = True,
+               include_factions: bool = True) -> dict:
     chars = project.characters()
     entries: list[dict] = []
     if include_sheets:
         for cid, c in chars.items():
             if c.get("role") in ("lead", "antagonist", "support"):
-                entries += build_character_sheet(project, c, ep_no)
+                entries += build_character_sheets(project, c, ep_no)
+    if include_factions:
+        factions: dict[str, list[dict]] = {}
+        for c in chars.values():
+            factions.setdefault(c.get("faction") or "unassigned", []).append(c)
+        for faction, members in factions.items():
+            if len(members) > 1 or faction not in ("unassigned",):
+                entries.append(build_faction_sheet(project, faction, members, ep_no))
     if include_cover:
         entries.append(build_cover(project, chars, ep_no))
     for p in ep.get("panels", []):
@@ -277,26 +413,24 @@ def build_pack(project: Project, ep_no: int, ep: dict, tool: str = "sdxl",
     out_dir.mkdir(parents=True, exist_ok=True)
     stem = f"{tool}-ep{ep_no:03d}"
 
-    # ---- markdown ---- #
-    md = [f"# Prompt pack - {project.series.get('title')} ep {ep_no:03d}",
-          "",
-          f"Tool adapter: **{tool}**  |  panels: **{len(ep.get('panels', []))}**  |  "
-          f"entries: **{len(entries)}** (character sheets + cover + panels)",
-          "",
-          "Work order: generate the character sheets FIRST, approve them, then feed them back as",
-          "references for every panel. Regenerating a sheet after 40 panels exist is a disaster.",
-          ""]
+    md = [f"# Prompt pack - {project.series.get('title')} ch{ep_no:03d}", "",
+          f"Tool adapter: **{tool}** · panel entries: **{len(ep.get('panels', []))}** · "
+          f"total entries: **{len(entries)}**", "",
+          "**Work order: sheets first, panels second.** Generate every reference sheet, get them",
+          "approved (`manhwa.py approve character <id>:sheet`), then attach them to each panel job.", ""]
     if tool in ("sdxl", "illustrious", "comfy"):
-        md += ["For ComfyUI: `comfy_batch.py` + `comfy_workflow_template.json` in this folder run the",
-               "whole queue headlessly. Replace `%CHECKPOINT%` with your own model file.", ""]
+        md += ["For ComfyUI: `comfy_batch.py` + `comfy_workflow_template.json` run the queue headlessly.",
+               "Replace `%CHECKPOINT%` with your own model file.", ""]
     for e in entries:
         head = {"panel": f"### {e['id']} - {e.get('shot','')} / {e.get('beat','')}",
-                "sheet": f"### {e['id']} (character sheet - {e.get('character')})",
+                "sheet": f"### {e['id']} (reference sheet - {e.get('sheet')}"
+                         + (f" - {e.get('character')}" if e.get("character") else "") + ")",
                 "cover": "### cover key visual"}[e["kind"]]
         md += [head, ""]
         if e["kind"] == "panel":
             md.append(f"- strip size **{e['target_panel_px'][0]}x{e['target_panel_px'][1]}** "
-                      f"({e['aspect']}) -> generate at **{e['gen_px'][0]}x{e['gen_px'][1]}**")
+                      f"({e['aspect']}, band `{e.get('band')}`) -> generate at "
+                      f"**{e['gen_px'][0]}x{e['gen_px'][1]}**")
         else:
             md.append(f"- generate at **{e['gen_px'][0]}x{e['gen_px'][1]}** ({e['aspect']})")
         md.append(f"- seed: `{e['seed']}`")
@@ -308,8 +442,10 @@ def build_pack(project: Project, ep_no: int, ep: dict, tool: str = "sdxl",
             md.append(f"- action: {e['action']}")
         if e.get("dialogue"):
             md.append("- dialogue in this panel: " + " / ".join(f'"{t}"' for t in e["dialogue"] if t))
-        if e.get("bubble_space"):
-            md.append(f"- **{e['bubble_space']}**")
+        if e.get("composition"):
+            md.append(f"- **{e['composition']}**")
+        if e.get("fx_note"):
+            md.append(f"- fx: {e['fx_note']}")
         if e.get("notes"):
             md.append(f"- note: {e['notes']}")
         md += ["", "```text", e["rendered"], "```", ""]
@@ -318,25 +454,24 @@ def build_pack(project: Project, ep_no: int, ep: dict, tool: str = "sdxl",
         md += [f"save as: `{e['out_file']}`", ""]
     (out_dir / f"{stem}.md").write_text("\n".join(md), encoding="utf-8")
 
-    # ---- csv ---- #
     with open(out_dir / f"{stem}.csv", "w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh)
-        w.writerow(["id", "kind", "out_file", "width", "height", "seed", "prompt", "negative"])
+        w.writerow(["id", "kind", "sheet", "out_file", "width", "height", "seed", "prompt", "negative"])
         for e in entries:
-            w.writerow([e["id"], e["kind"], e["out_file"], e["gen_px"][0], e["gen_px"][1],
-                        e["seed"], e["rendered"], e.get("negative", "")])
+            w.writerow([e["id"], e["kind"], e.get("sheet", ""), e["out_file"], e["gen_px"][0],
+                        e["gen_px"][1], e["seed"], e["rendered"], e.get("negative", "")])
 
-    # ---- queue json (machine readable, one job per line) ---- #
     queue = [{
-        "id": e["id"], "kind": e["kind"], "out_file": e["out_file"],
-        "width": e["gen_px"][0], "height": e["gen_px"][1], "seed": e["seed"],
-        "prompt": e["rendered"], "negative": e.get("negative", ""),
+        "id": e["id"], "kind": e["kind"], "sheet": e.get("sheet"),
+        "out_file": e["out_file"], "width": e["gen_px"][0], "height": e["gen_px"][1],
+        "seed": e["seed"], "prompt": e["rendered"], "negative": e.get("negative", ""),
         "loras": e.get("loras") or [], "refs": e.get("characters") or [],
     } for e in entries]
     save_json(out_dir / "queue.json", queue)
     save_json(out_dir / f"queue-{stem}.json", queue)
 
     result = {"tool": tool, "entries": len(entries), "panels": len(ep.get("panels", [])),
+              "sheets": sum(1 for e in entries if e["kind"] == "sheet"),
               "files": [str((out_dir / f"{stem}.md").relative_to(project.root)),
                         str((out_dir / f"{stem}.csv").relative_to(project.root)),
                         str((out_dir / "queue.json").relative_to(project.root))]}
@@ -372,19 +507,17 @@ COMFY_BATCH = '''#!/usr/bin/env python3
 """
 Run a promptpack/queue.json against a local ComfyUI instance.
 
-Usage:
   python comfy_batch.py --queue queue.json --out ../art/ep001 \\
-      --checkpoint "illustriousXL_v10.safetensors" [--dry-run] [--only p003,p004]
+      --checkpoint "illustriousXL_v10.safetensors" [--dry-run] [--only p003,p004] [--kind panel|sheet]
 
-This is a *generic* runner: it fills the placeholder template (or your own
-exported API workflow, as long as it contains the same %TOKENS%), posts one job
-at a time to /prompt, waits for /history, and writes the image to --out.
-If your workflow has more nodes, export it from ComfyUI (Workflow > Export API)
-and add the same %TOKENS% where the values belong.
+Fills the placeholder template (or your own exported API workflow, as long as it has
+the same %TOKENS%), posts one job at a time to /prompt, waits on /history, and writes
+the image to --out.
 """
 from __future__ import annotations
-import argparse, json, os, shutil, sys, time, urllib.request
+import argparse, json, time, urllib.parse, urllib.request
 from pathlib import Path
+
 
 def post(server, path, payload):
     req = urllib.request.Request(f"http://{server}{path}",
@@ -393,9 +526,11 @@ def post(server, path, payload):
     with urllib.request.urlopen(req, timeout=60) as r:
         return json.loads(r.read().decode())
 
+
 def get(server, path):
     with urllib.request.urlopen(f"http://{server}{path}", timeout=60) as r:
         return json.loads(r.read().decode())
+
 
 def fill(obj, tokens):
     if isinstance(obj, dict):
@@ -412,16 +547,18 @@ def fill(obj, tokens):
         return obj
     return obj
 
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--queue", default="queue.json")
     ap.add_argument("--template", default="comfy_workflow_template.json")
-    ap.add_argument("--out", required=True, help="folder for the rendered panels")
+    ap.add_argument("--out", required=True, help="folder for the rendered images")
     ap.add_argument("--checkpoint", required=True)
     ap.add_argument("--server", default="127.0.0.1:8188")
     ap.add_argument("--steps", type=int, default=28)
     ap.add_argument("--cfg", type=float, default=5.5)
     ap.add_argument("--only", default="", help="comma separated ids")
+    ap.add_argument("--kind", default="panel", choices=["panel", "sheet", "cover", "all"])
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--sleep", type=float, default=0.2)
     a = ap.parse_args()
@@ -430,8 +567,9 @@ def main():
     template = json.loads(Path(a.template).read_text())
     out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
     only = {s.strip() for s in a.only.split(",") if s.strip()}
-    jobs = [j for j in queue if j.get("kind") == "panel" and (not only or j["id"] in only)]
-    print(f"{len(jobs)} panel job(s)")
+    jobs = [j for j in queue
+            if (a.kind == "all" or j.get("kind") == a.kind) and (not only or j["id"] in only)]
+    print(f"{len(jobs)} job(s)")
 
     for j in jobs:
         lora = (j.get("loras") or [{}])[0]
@@ -453,14 +591,14 @@ def main():
             res = post(a.server, "/prompt", {"prompt": graph})
             pid = res.get("prompt_id")
             print(f'  queued {j["id"]} -> {pid}')
+            hist = {}
             for _ in range(1200):
                 hist = get(a.server, f"/history/{pid}")
                 if pid in hist and hist[pid].get("outputs"):
                     break
                 time.sleep(1)
-            outs = hist.get(pid, {}).get("outputs", {})
             saved = False
-            for node in outs.values():
+            for node in hist.get(pid, {}).get("outputs", {}).values():
                 for img in node.get("images", []):
                     q = urllib.parse.urlencode({"filename": img["filename"],
                                                 "subfolder": img.get("subfolder", ""),
@@ -478,6 +616,7 @@ def main():
         time.sleep(a.sleep)
     print("done")
 
+
 if __name__ == "__main__":
     main()
 '''
@@ -486,11 +625,6 @@ if __name__ == "__main__":
 def _write_comfy_batch(path: Path) -> None:
     path.write_text(COMFY_BATCH, encoding="utf-8")
     try:
-        os_chmod(path)
+        os.chmod(path, 0o755)
     except Exception:
         pass
-
-
-def os_chmod(path: Path):
-    import os
-    os.chmod(path, 0o755)
