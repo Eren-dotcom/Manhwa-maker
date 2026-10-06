@@ -26,8 +26,14 @@ Other numbers you'll need:
 
 **Draw bigger than you publish.** 800px is a *display* spec. Work at 1.5×–2.5× (1,200–2,000px wide)
 and downscale on export: you keep detail, you can crop, and you can go to print later. The toolkit's
-`--width` flag does the downscale, and every generation resolution it emits is chosen to be sharp at
-the output size.
+default **1080px master** does exactly that, cutting tiles at up to 1728px and downscaling to the
+platform width — sharper than publishing straight from an 800px canvas.
+
+**Ship JPG tiles, keep a PNG master.** Canvas accepts both, but the per-episode cap is 20 MB and a
+gouache-textured 800px PNG scroll blows through it: the reference pilot measured 19.1 MB as PNG and
+3.7 MB as JPG at quality 92, which is visually identical at 800px. `assemble` therefore writes JPG
+upload tiles by default (`--format png` if you want lossless line art) while the master strip stays
+PNG, because that is the file you re-crop and re-export from later.
 
 **Safe area:** keep faces, text and important detail inside the middle ~80% of the width — roughly
 40px of breathing room per side at 800px. Readers skim the edges.
