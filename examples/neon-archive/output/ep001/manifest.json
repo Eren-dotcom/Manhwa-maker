@@ -1,0 +1,153 @@
+{
+  "series": "NEON ARCHIVE",
+  "episode": 1,
+  "episode_title": "The Shard",
+  "platform": "webtoons",
+  "platform_label": "WEBTOON Canvas (webtoons.com)",
+  "width": 800,
+  "total_height": 7230,
+  "panels": 10,
+  "tiles": [
+    {
+      "index": 1,
+      "file": "upload/ep001_001.png",
+      "format": "png",
+      "width": 800,
+      "height": 1000,
+      "y0": 0,
+      "y1": 1000,
+      "bytes": 29881
+    },
+    {
+      "index": 2,
+      "file": "upload/ep001_002.png",
+      "format": "png",
+      "width": 800,
+      "height": 1000,
+      "y0": 1000,
+      "y1": 2000,
+      "bytes": 37820
+    },
+    {
+      "index": 3,
+      "file": "upload/ep001_003.png",
+      "format": "png",
+      "width": 800,
+      "height": 1000,
+      "y0": 2000,
+      "y1": 3000,
+      "bytes": 24204
+    },
+    {
+      "index": 4,
+      "file": "upload/ep001_004.png",
+      "format": "png",
+      "width": 800,
+      "height": 1000,
+      "y0": 3000,
+      "y1": 4000,
+      "bytes": 20219
+    },
+    {
+      "index": 5,
+      "file": "upload/ep001_005.png",
+      "format": "png",
+      "width": 800,
+      "height": 1060,
+      "y0": 4000,
+      "y1": 5060,
+      "bytes": 23106
+    },
+    {
+      "index": 6,
+      "file": "upload/ep001_006.png",
+      "format": "png",
+      "width": 800,
+      "height": 1000,
+      "y0": 5060,
+      "y1": 6060,
+      "bytes": 21566
+    },
+    {
+      "index": 7,
+      "file": "upload/ep001_007.png",
+      "format": "png",
+      "width": 800,
+      "height": 1170,
+      "y0": 6060,
+      "y1": 7230,
+      "bytes": 37085
+    }
+  ],
+  "tile_count": 7,
+  "tile_height_cap": 1280,
+  "total_bytes": 193881,
+  "words": 57,
+  "est_read_seconds": 28.6,
+  "est_read_screens": 5.6,
+  "lettering": {
+    "bubbles": 10,
+    "words": 57,
+    "sfx": 3
+  },
+  "placeholders": [
+    "p001",
+    "p002",
+    "p003",
+    "p004",
+    "p005",
+    "p006",
+    "p007",
+    "p008",
+    "p009",
+    "p010"
+  ],
+  "gap_profile": [
+    {
+      "id": "p001",
+      "pace": "dramatic",
+      "gap_after": 600
+    },
+    {
+      "id": "p002",
+      "pace": "normal",
+      "gap_after": 200
+    },
+    {
+      "id": "p003",
+      "pace": "normal",
+      "gap_after": 200
+    },
+    {
+      "id": "p004",
+      "pace": "normal",
+      "gap_after": 200
+    },
+    {
+      "id": "p005",
+      "pace": "fast",
+      "gap_after": 80
+    },
+    {
+      "id": "p006",
+      "pace": "transition",
+      "gap_after": 700
+    },
+    {
+      "id": "p007",
+      "pace": "normal",
+      "gap_after": 200
+    },
+    {
+      "id": "p008",
+      "pace": "dramatic",
+      "gap_after": 600
+    },
+    {
+      "id": "p009",
+      "pace": "normal",
+      "gap_after": 200
+    }
+  ],
+  "ai_disclosure": "AI-assisted production. Story, character design, panel direction, lettering and editing by the creator; panel artwork generated with Illustrious XL + a character LoRA, then retouched, composited and lettered by hand. Feedback welcome."
+}

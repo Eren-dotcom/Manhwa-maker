@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.DS_Store
+# generated output (keep if you want upload history in git)
+# examples/*/output/**
+# examples/*/art/**

@@ -1,0 +1,39 @@
+{
+  "id": "sera",
+  "name": "Sera Vane",
+  "role": "lead",
+  "age": "26",
+  "one_line": "A licensed memory courier who has stopped asking what she carries.",
+  "want": "One clean contract that pays off her debt and gets her out of Sector 9.",
+  "flaw": "She trusts recordings more than people.",
+  "prompt_block": "1girl, 26 years old, sharp narrow dark eyes with amber flecks, black hair in a wet low ponytail, blunt fringe, small pale scar through the left eyebrow, grey technical rain jacket with the collar up, black high-neck top, silver dog-tag necklace, courier satchel strap across the chest, tired expression",
+  "lora": {
+    "file": "assets/loras/sera_v1.safetensors",
+    "token": "seravane",
+    "weight": 0.85
+  },
+  "seed": 48151623,
+  "ref_images": [
+    "assets/refs/sera_sheet.png",
+    "assets/refs/sera_faces.png"
+  ],
+  "palette": {
+    "hair": "#12141a",
+    "skin": "#e3bfa2",
+    "outfit": "#4b5665",
+    "accent": "#e0603c"
+  },
+  "wardrobe": {
+    "default": "grey technical rain jacket, collar up, black high-neck top, satchel strap",
+    "indoor": "black high-neck top, silver dog-tag necklace"
+  },
+  "expressions": [
+    "neutral",
+    "wary",
+    "angry",
+    "hollow",
+    "small smile",
+    "shock"
+  ],
+  "consistency_notes": "Never change hair length or the fringe. Never remove the brow scar. Jacket collar stays up outdoors, down indoors. Amber flecks in the eyes are the tell that a panel is a close-up."
+}

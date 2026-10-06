@@ -1,0 +1,9 @@
+# manhwa-studio — dependencies
+# The deterministic half of the pipeline (layout, lettering, slicing, QC) needs Pillow only.
+Pillow>=10.0
+
+# Optional, only if you want the extra helpers in the docs:
+#   rembg          # character cutout matting for layered panels
+#   opencv-python  # alternative edge/energy analysis
+# Image generation itself is external (ComfyUI, A1111, or a hosted API) — see
+# references/08-toolchain-setup.md

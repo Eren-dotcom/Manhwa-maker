@@ -1,0 +1,69 @@
+{
+  "title": "NEON ARCHIVE",
+  "alt_titles": {
+    "ko": "네온 아카이브"
+  },
+  "logline": "A memory courier in a rain-drowned megacity plays a stolen recording and sees her own death in it.",
+  "genre": [
+    "cyberpunk",
+    "mystery",
+    "thriller"
+  ],
+  "audience": "16-28 mobile readers, WEBTOON action/mystery readers",
+  "tone": "cold, wet, intimate, quietly brutal",
+  "platform": "webtoons",
+  "release_language": "en",
+  "release_schedule": "weekly",
+  "target_panels_per_episode": 48,
+  "art_direction": {
+    "style_block": "Korean webtoon manhwa illustration, clean confident ink line art, soft cel shading over painterly backgrounds, cinematic anamorphic framing, heavy atmosphere, rain and neon, dramatic rim lighting, rich saturated accents on a desaturated base, full colour, highly detailed, single vertical panel composition",
+    "negative_block": "text, letters, words, speech bubble, caption box, watermark, signature, logo, ui elements, extra fingers, extra limbs, fused fingers, deformed hands, bad anatomy, bad proportions, blurry, lowres, jpeg artifacts, character sheet, multiple views, split panel, manga page",
+    "palette": {
+      "key": "#22304a",
+      "accent": "#e0603c",
+      "shadow": "#0d1220",
+      "highlight": "#cfe6ff",
+      "neon": "#39c6c0"
+    },
+    "grading_note": "Cool blue-grey base, one warm accent (amber or rust) per panel, teal neon only for the archive tech. Skin tones never shift between panels."
+  },
+  "geometry": {
+    "width": 800,
+    "side_margin": 40,
+    "top_margin": 70,
+    "bottom_margin": 160,
+    "gutter": 200,
+    "bg": "#ffffff",
+    "frame": "none",
+    "corner_radius": 0
+  },
+  "lettering": {
+    "base_font_size": 30,
+    "font_regular": null,
+    "font_bold": null,
+    "caps": false,
+    "max_words_per_bubble": 30,
+    "bubble_max_width_ratio": 0.62
+  },
+  "ai_disclosure": "AI-assisted production. Story, character design, panel direction, lettering and editing by the creator; panel artwork generated with Illustrious XL + a character LoRA, then retouched, composited and lettered by hand. Feedback welcome.",
+  "characters": [
+    "sera",
+    "kael"
+  ],
+  "arcs": [
+    {
+      "name": "Arc 1 - The Courier",
+      "episodes": "1-8",
+      "beats": [
+        "the shard",
+        "the buyer",
+        "the archive burns",
+        "who recorded it",
+        "the second tape",
+        "the name in the file",
+        "the courier's own death",
+        "the choice"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,327 @@
+{
+  "width": 800,
+  "total_height": 7230,
+  "panels": [
+    {
+      "id": "p001",
+      "rect": [
+        0,
+        70,
+        800,
+        490
+      ],
+      "art": null,
+      "placeholder": true,
+      "bubbles": [
+        {
+          "rect": [
+            500,
+            327,
+            748,
+            418
+          ],
+          "style": "sfx",
+          "text": "KRRRSH",
+          "font_size": 48,
+          "lines": 1
+        }
+      ]
+    },
+    {
+      "id": "p002",
+      "rect": [
+        40,
+        1090,
+        760,
+        1490
+      ],
+      "art": null,
+      "placeholder": true,
+      "bubbles": [
+        {
+          "rect": [
+            76,
+            1110,
+            527,
+            1211
+          ],
+          "style": "narration",
+          "text": "The rain in Sector 9 doesn't clean anything.",
+          "font_size": 30,
+          "lines": 2
+        },
+        {
+          "rect": [
+            76,
+            1344,
+            537,
+            1444
+          ],
+          "style": "narration",
+          "text": "It just moves the dirt somewhere you can't see it.",
+          "font_size": 30,
+          "lines": 2
+        }
+      ]
+    },
+    {
+      "id": "p003",
+      "rect": [
+        40,
+        1690,
+        760,
+        2030
+      ],
+      "art": null,
+      "placeholder": true,
+      "bubbles": [
+        {
+          "rect": [
+            76,
+            1707,
+            546,
+            1813
+          ],
+          "style": "speech",
+          "text": "One more delivery. Then I'm done.",
+          "font_size": 30,
+          "lines": 2
+        }
+      ]
+    },
+    {
+      "id": "p004",
+      "rect": [
+        40,
+        2230,
+        760,
+        2630
+      ],
+      "art": null,
+      "placeholder": true,
+      "bubbles": [
+        {
+          "rect": [
+            309,
+            2250,
+            724,
+            2356
+          ],
+          "style": "speech",
+          "text": "Play it before sunrise. Or don't play it at all.",
+          "font_size": 30,
+          "lines": 2
+        }
+      ]
+    },
+    {
+      "id": "p005",
+      "rect": [
+        40,
+        2830,
+        760,
+        3130
+      ],
+      "art": null,
+      "placeholder": true,
+      "bubbles": [
+        {
+          "rect": [
+            76,
+            3008,
+            462,
+            3108
+          ],
+          "style": "narration",
+          "text": "It was warm. Memories shouldn't be warm.",
+          "font_size": 30,
+          "lines": 2
+        }
+      ]
+    },
+    {
+      "id": "p006",
+      "rect": [
+        40,
+        3210,
+        760,
+        3670
+      ],
+      "art": null,
+      "placeholder": true,
+      "bubbles": []
+    },
+    {
+      "id": "p007",
+      "rect": [
+        40,
+        4370,
+        760,
+        4750
+      ],
+      "art": null,
+      "placeholder": true,
+      "bubbles": [
+        {
+          "rect": [
+            483,
+            4588,
+            634,
+            4653
+          ],
+          "style": "sfx",
+          "text": "THUD",
+          "font_size": 40,
+          "lines": 1
+        }
+      ]
+    },
+    {
+      "id": "p008",
+      "rect": [
+        40,
+        4950,
+        760,
+        5350
+      ],
+      "art": null,
+      "placeholder": true,
+      "bubbles": [
+        {
+          "rect": [
+            76,
+            4970,
+            391,
+            5175
+          ],
+          "style": "thought",
+          "text": "That's my coat. That's my hair...",
+          "font_size": 26,
+          "lines": 3
+        }
+      ]
+    },
+    {
+      "id": "p009",
+      "rect": [
+        40,
+        5950,
+        760,
+        6350
+      ],
+      "art": null,
+      "placeholder": true,
+      "bubbles": [
+        {
+          "rect": [
+            162,
+            5970,
+            638,
+            6076
+          ],
+          "style": "speech",
+          "text": "You weren't supposed to see that one.",
+          "font_size": 30,
+          "lines": 2
+        }
+      ]
+    },
+    {
+      "id": "p010",
+      "rect": [
+        0,
+        6550,
+        800,
+        7070
+      ],
+      "art": null,
+      "placeholder": true,
+      "bubbles": [
+        {
+          "rect": [
+            152,
+            6666,
+            424,
+            6788
+          ],
+          "style": "sfx",
+          "text": "CRASH",
+          "font_size": 63,
+          "lines": 1
+        }
+      ]
+    }
+  ],
+  "tiles": [
+    {
+      "index": 1,
+      "file": "upload/ep001_001.png",
+      "format": "png",
+      "width": 800,
+      "height": 1000,
+      "y0": 0,
+      "y1": 1000,
+      "bytes": 29881
+    },
+    {
+      "index": 2,
+      "file": "upload/ep001_002.png",
+      "format": "png",
+      "width": 800,
+      "height": 1000,
+      "y0": 1000,
+      "y1": 2000,
+      "bytes": 37820
+    },
+    {
+      "index": 3,
+      "file": "upload/ep001_003.png",
+      "format": "png",
+      "width": 800,
+      "height": 1000,
+      "y0": 2000,
+      "y1": 3000,
+      "bytes": 24204
+    },
+    {
+      "index": 4,
+      "file": "upload/ep001_004.png",
+      "format": "png",
+      "width": 800,
+      "height": 1000,
+      "y0": 3000,
+      "y1": 4000,
+      "bytes": 20219
+    },
+    {
+      "index": 5,
+      "file": "upload/ep001_005.png",
+      "format": "png",
+      "width": 800,
+      "height": 1060,
+      "y0": 4000,
+      "y1": 5060,
+      "bytes": 23106
+    },
+    {
+      "index": 6,
+      "file": "upload/ep001_006.png",
+      "format": "png",
+      "width": 800,
+      "height": 1000,
+      "y0": 5060,
+      "y1": 6060,
+      "bytes": 21566
+    },
+    {
+      "index": 7,
+      "file": "upload/ep001_007.png",
+      "format": "png",
+      "width": 800,
+      "height": 1170,
+      "y0": 6060,
+      "y1": 7230,
+      "bytes": 37085
+    }
+  ]
+}
