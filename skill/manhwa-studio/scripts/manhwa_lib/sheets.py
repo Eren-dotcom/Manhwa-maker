@@ -24,6 +24,19 @@ BG = (250, 250, 252)
 LABEL = (90, 96, 108)
 
 
+def _missing_label(p) -> str:
+    """A panel with no art is not always a defect: black_out / white_out beats and
+    explicit `fill` panels are painted by the compositor, so say what they are."""
+    if p.get("fill"):
+        return "filled"
+    pace = str(p.get("pace") or "")
+    if pace == "black_out":
+        return "black-out beat"
+    if pace == "white_out":
+        return "white-out beat"
+    return "no art"
+
+
 def _fx_names(fx):
     """Panel `fx` accepts "speed_radial" or {"type": "speed_radial", ...} -- normalise for labels."""
     names = []
@@ -75,7 +88,9 @@ def contact_sheet(project: Project, ep_no: int, ep: dict, cols: int = 6,
             art = project.panel_image_path(ep_no, p.get("id", ""), p.get("image"))
             src = art
         if src is None:
-            d.text((x + cell_w / 2, y + cell_h / 2), "no art", font=_font(18), fill=(190, 60, 50), anchor="mm")
+            label = _missing_label(p)
+            d.text((x + cell_w / 2, y + cell_h / 2), label, font=_font(18),
+                   fill=(90, 96, 108) if label != "no art" else (190, 60, 50), anchor="mm")
         else:
             with Image.open(src) as im:
                 fit = _fit(im.convert("RGB"), cell_w - 8, cell_h - 8)
@@ -158,7 +173,7 @@ def match_check(project: Project, ep_no: int, ep: dict, characters: list[str] | 
                 art = project.panel_image_path(ep_no, p.get("id", ""), p.get("image"))
                 src = art if art else None
             if src is None:
-                d.text((x + cell_w / 2, head + cell_h / 2), "no art", font=_font(16),
+                d.text((x + cell_w / 2, head + cell_h / 2), _missing_label(p), font=_font(16),
                        fill=(150, 156, 168), anchor="mm")
             else:
                 with Image.open(src) as im:
