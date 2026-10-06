@@ -1,7 +1,7 @@
 {
   "master_width": 1080,
   "export_width": 800,
-  "total_height": 37246,
+  "total_height": 38335,
   "panels": [
     {
       "id": "title",
@@ -565,10 +565,10 @@
         0,
         32811,
         1080,
-        34011
+        34421
       ],
-      "art": null,
-      "placeholder": true,
+      "art": "/home/user/Manhwa-maker/examples/neon-archive/art/ep001/p016.png",
+      "placeholder": false,
       "fill": null,
       "shot": "medium_high",
       "beat": "midpoint_hook",
@@ -578,9 +578,9 @@
         {
           "rect": [
             78,
-            66840,
+            34439,
             1002,
-            67110
+            34709
           ],
           "style": "speech",
           "text": "He's not following. He's waiting.",
@@ -589,7 +589,7 @@
           "gutter": true,
           "tail": [
             410,
-            66602
+            34292
           ],
           "fx": null
         }
@@ -599,12 +599,12 @@
       "id": "p017",
       "rect": [
         0,
-        34316,
+        34726,
         1080,
-        35572
+        36661
       ],
-      "art": null,
-      "placeholder": true,
+      "art": "/home/user/Manhwa-maker/examples/neon-archive/art/ep001/p017.png",
+      "placeholder": false,
       "fill": null,
       "shot": "cowboy",
       "beat": "turn",
@@ -616,9 +616,9 @@
         {
           "rect": [
             54,
-            34494,
+            34873,
             917,
-            34741
+            35120
           ],
           "style": "continuing",
           "text": "You already played it. That's the part",
@@ -627,16 +627,16 @@
           "gutter": false,
           "tail": [
             367,
-            34854
+            35233
           ],
           "fx": null
         },
         {
           "rect": [
             54,
-            34758,
+            35260,
             906,
-            35005
+            35507
           ],
           "style": "continuing",
           "text": "he's going to come for.",
@@ -645,7 +645,7 @@
           "gutter": false,
           "tail": [
             480,
-            34645
+            35147
           ],
           "fx": null
         }
@@ -655,9 +655,9 @@
       "id": "p018",
       "rect": [
         0,
-        35842,
+        36931,
         1080,
-        37057
+        38146
       ],
       "art": null,
       "placeholder": false,
@@ -670,9 +670,9 @@
         {
           "rect": [
             107,
-            35910,
+            36999,
             973,
-            36114
+            37203
           ],
           "style": "speech",
           "text": "Who recorded it?",
@@ -681,7 +681,7 @@
           "gutter": false,
           "tail": [
             540,
-            36242
+            37331
           ],
           "fx": null
         }
@@ -717,7 +717,7 @@
       "height": 1280,
       "y0": 3456,
       "y1": 5184,
-      "bytes": 270620
+      "bytes": 270922
     },
     {
       "index": 4,
@@ -727,7 +727,7 @@
       "height": 1073,
       "y0": 5184,
       "y1": 6632,
-      "bytes": 152698
+      "bytes": 153283
     },
     {
       "index": 5,
@@ -757,7 +757,7 @@
       "height": 1280,
       "y0": 9838,
       "y1": 11566,
-      "bytes": 151294
+      "bytes": 151297
     },
     {
       "index": 8,
@@ -767,7 +767,7 @@
       "height": 1280,
       "y0": 11566,
       "y1": 13294,
-      "bytes": 91625
+      "bytes": 91587
     },
     {
       "index": 9,
@@ -797,27 +797,27 @@
       "height": 1280,
       "y0": 16172,
       "y1": 17900,
-      "bytes": 205698
+      "bytes": 204124
     },
     {
       "index": 12,
       "file": "upload/ep001_012.jpg",
       "format": "jpg",
       "width": 800,
-      "height": 1055,
+      "height": 1058,
       "y0": 17900,
-      "y1": 19324,
-      "bytes": 107213
+      "y1": 19328,
+      "bytes": 105942
     },
     {
       "index": 13,
       "file": "upload/ep001_013.jpg",
       "format": "jpg",
       "width": 800,
-      "height": 1222,
-      "y0": 19324,
-      "y1": 20974,
-      "bytes": 178839
+      "height": 1209,
+      "y0": 19328,
+      "y1": 20960,
+      "bytes": 176067
     },
     {
       "index": 14,
@@ -825,9 +825,9 @@
       "format": "jpg",
       "width": 800,
       "height": 1280,
-      "y0": 20974,
-      "y1": 22702,
-      "bytes": 283455
+      "y0": 20960,
+      "y1": 22688,
+      "bytes": 280091
     },
     {
       "index": 15,
@@ -835,9 +835,9 @@
       "format": "jpg",
       "width": 800,
       "height": 1280,
-      "y0": 22702,
-      "y1": 24430,
-      "bytes": 118258
+      "y0": 22688,
+      "y1": 24416,
+      "bytes": 126217
     },
     {
       "index": 16,
@@ -845,9 +845,9 @@
       "format": "jpg",
       "width": 800,
       "height": 1280,
-      "y0": 24430,
-      "y1": 26158,
-      "bytes": 162130
+      "y0": 24416,
+      "y1": 26144,
+      "bytes": 161993
     },
     {
       "index": 17,
@@ -855,19 +855,19 @@
       "format": "jpg",
       "width": 800,
       "height": 1073,
-      "y0": 26158,
-      "y1": 27606,
-      "bytes": 149814
+      "y0": 26144,
+      "y1": 27592,
+      "bytes": 152368
     },
     {
       "index": 18,
       "file": "upload/ep001_018.jpg",
       "format": "jpg",
       "width": 800,
-      "height": 1262,
-      "y0": 27606,
+      "height": 1273,
+      "y0": 27592,
       "y1": 29310,
-      "bytes": 270707
+      "bytes": 270893
     },
     {
       "index": 19,
@@ -877,7 +877,7 @@
       "height": 1262,
       "y0": 29310,
       "y1": 31014,
-      "bytes": 266793
+      "bytes": 266605
     },
     {
       "index": 20,
@@ -894,30 +894,40 @@
       "file": "upload/ep001_021.jpg",
       "format": "jpg",
       "width": 800,
-      "height": 1073,
+      "height": 1267,
       "y0": 32718,
-      "y1": 34166,
-      "bytes": 20321
+      "y1": 34428,
+      "bytes": 200930
     },
     {
       "index": 22,
       "file": "upload/ep001_022.jpg",
       "format": "jpg",
       "width": 800,
-      "height": 1073,
-      "y0": 34166,
-      "y1": 35614,
-      "bytes": 66146
+      "height": 1280,
+      "y0": 34428,
+      "y1": 36156,
+      "bytes": 209121
     },
     {
       "index": 23,
       "file": "upload/ep001_023.jpg",
       "format": "jpg",
       "width": 800,
-      "height": 1209,
-      "y0": 35614,
-      "y1": 37246,
-      "bytes": 28504
+      "height": 1280,
+      "y0": 36156,
+      "y1": 37884,
+      "bytes": 116675
+    },
+    {
+      "index": 24,
+      "file": "upload/ep001_024.jpg",
+      "format": "jpg",
+      "width": 800,
+      "height": 334,
+      "y0": 37884,
+      "y1": 38335,
+      "bytes": 3352
     }
   ]
 }

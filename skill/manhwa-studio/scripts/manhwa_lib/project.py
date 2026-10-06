@@ -404,3 +404,26 @@ def production_plan(episodes: int, team: str = "solo", start: date | None = None
                 row["ships"] = shipped
         rows.append(row)
     return rows
+
+def strip_path(out_dir):
+    """The current master strip in an output dir.
+
+    The master can be written as .png or .jpg (assemble --format). Resolve it from the
+    manifest rather than guessing a filename: after a format change a stale file of the
+    other extension sits next to the new one, and every gate that hardcodes a name ends
+    up validating the stale image.
+    """
+    import json as _json
+    from pathlib import Path as _Path
+    out_dir = _Path(out_dir)
+    man = out_dir / "manifest.json"
+    if man.exists():
+        try:
+            name = _json.loads(man.read_text()).get("strip_file")
+            if name and (out_dir / name).exists():
+                return out_dir / name
+        except Exception:
+            pass
+    cands = [c for c in (out_dir / "strip-master.png", out_dir / "strip-master.jpg") if c.exists()]
+    return max(cands, key=lambda c: c.stat().st_mtime) if cands else None
+

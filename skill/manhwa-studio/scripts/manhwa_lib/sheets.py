@@ -16,7 +16,7 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
 
-from .project import Project, save_json
+from .project import Project, save_json, strip_path
 from .specs import find_fonts
 
 INK = (16, 18, 22)
@@ -176,15 +176,10 @@ def match_check(project: Project, ep_no: int, ep: dict, characters: list[str] | 
 # --------------------------------------------------------------------------- #
 def lettering_sheet(project: Project, ep_no: int, layout: dict, manifest: dict | None = None) -> Path:
     """The lettered scroll annotated with every balloon, tail and SFX bound."""
-    strip_path = None
-    for name in ("strip-master.png", "strip-master.jpg"):
-        cand = project.root / "output" / f"ep{ep_no:03d}" / name
-        if cand.exists():
-            strip_path = cand
-            break
-    if strip_path is None:
+    strip_file = strip_path(project.root / "output" / f"ep{ep_no:03d}")
+    if strip_file is None:
         raise FileNotFoundError("assemble the episode first (no strip-master found)")
-    with Image.open(strip_path) as im:
+    with Image.open(strip_file) as im:
         strip = im.convert("RGB")
     W = strip.width
     scale = W / 1080.0

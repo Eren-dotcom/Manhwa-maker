@@ -14,7 +14,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from . import refine as refine_mod
-from .project import Project, load_json
+from .project import Project, load_json, strip_path
 from .specs import PACING_GAPS, SHOT_PRESETS, in_band, scale_for
 
 END_BEATS = {"end_question", "cliffhanger", "sting", "reveal", "impact", "turn"}
@@ -253,7 +253,7 @@ def run_checks(project: Project, ep_no: int, ep: dict, manifest: dict | None = N
     # --------------------------------------------------------- delivery gate #
     if final:
         sheets_json = project.root / "output" / f"ep{ep_no:03d}" / "qc-sheets.json"
-        strip = project.root / "output" / f"ep{ep_no:03d}" / "strip-master.png"
+        strip = strip_path(project.root / "output" / f"ep{ep_no:03d}")
         if not sheets_json.exists():
             findings.append(_finding("error", "F004",
                 "no QC sheets -- run `manhwa.py sheets <ep>` (contact sheet + lettering QC are gates, "

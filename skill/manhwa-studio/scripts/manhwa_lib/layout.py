@@ -339,6 +339,11 @@ def assemble(project: Project, ep_no: int, ep: dict, opts: Options) -> dict:
     out_dir = Path(opts.out_dir) if opts.out_dir else project.root / "output" / f"ep{ep_no:03d}"
     out_dir.mkdir(parents=True, exist_ok=True)
     master_path = out_dir / f"strip-master.{'jpg' if opts.format == 'jpg' else 'png'}"
+    # a strip in the other format is a stale build: leaving it behind makes every gate
+    # and every crop that resolves by filename validate the wrong image
+    for stale in (out_dir / "strip-master.png", out_dir / "strip-master.jpg"):
+        if stale != master_path and stale.exists():
+            stale.unlink()
     if opts.format == "jpg":
         canvas.save(master_path, quality=opts.quality, subsampling=1)
     else:
@@ -397,6 +402,7 @@ def assemble(project: Project, ep_no: int, ep: dict, opts: Options) -> dict:
                                                        gutter_need.get(i, 0)) * exp_scale)}
                         for i, b in enumerate(boxes[:-1])],
         "fx": {b.panel.get("id"): b.fx_applied for b in boxes if b.fx_applied},
+        "strip_file": master_path.name,
         "pdf": str(pdf_path.relative_to(project.root)) if pdf_path else None,
         "per_panel": per_panel,
         "ai_disclosure": ep.get("ai_disclosure") or project.series.get("ai_disclosure"),
@@ -619,7 +625,8 @@ def _write_upload_readme(out_dir: Path, manifest: dict, ep: dict, series: dict) 
     lines += [
         "",
         "## Other deliverables",
-        f"- `strip-master.png` - the {manifest['master_width']}px master (archive this)",
+        f"- `{manifest.get('strip_file', 'strip-master.png')}` - the {manifest['master_width']}px "
+        f"master (archive this)",
         f"- `strip-web.jpg` - phone-friendly full-height review copy",
         f"- `delivery/` + `your_files/` - the {manifest['master_width']}x{int(round(1920*manifest['master_width']/1080))} PDF",
         f"- `../ch{manifest['episode']:03d}/panels|lettered/` - per-panel crops",

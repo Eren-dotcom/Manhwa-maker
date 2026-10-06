@@ -18,8 +18,11 @@ a skill/program that helps an AI make manhwa. This repo is the answer to all thr
 | **`docs/04-platform-specs-and-qc.md`** | Every platform's real px/MB limits + the QC gate list. |
 | **`docs/05-research-sources.md`** | Every source, with what it contributed and how much to trust it. |
 | **`docs/06-script-format.md`** | The JSON schema reference (what you and your AI write). |
+| **`docs/07-skill-file-reconciliation.md`** | Point-by-point analysis of the supplied spec: adopted / merged / new / conflicts, and how each one landed in code. |
+| **`docs/08-tool-directory.md`** | **Every tool that helps, by pipeline stage** — consistency stacks, backgrounds, lettering, upscalers, fonts, platform AI policy, and which three-tool combination to pick for your budget. |
 | **`prompts/manhwa-showrunner-prompt.md`** | A paste-in prompt that turns any LLM into a manhwa showrunner using this toolkit. |
-| **`examples/neon-archive/`** | A finished reference episode: real generated art, lettered, sliced, QC'd. |
+| **`examples/neon-archive/`** | A finished reference episode: 18 cuts, real generated art, lettered, sliced, QC'd, `GATE: PASS`. |
+| **`tests/smoke.py`** | Regression test — builds a demo and asserts the invariants that actually broke (strip vs manifest, gutter-balloon placement, pace-filled panels). `python3 tests/smoke.py` |
 | **`skill/manhwa-studio/requirements.txt`** | One dependency (Pillow). |
 
 ## Status of the attached SKILL.md — reconciled

@@ -369,10 +369,12 @@ class Letterer:
         if in_gutter:
             gx0, gy0, gx1, gy1 = gutter_rect
             gw, gh = gx1 - gx0, gy1 - gy0
-            # the reserved gutter is exactly as tall as the balloon needs
+            # the reserved gutter is exactly as tall as the balloon needs.
+            # gutter_rect is in strip coordinates, so subtract the panel origin here:
+            # bx/by stay panel-local and strip_rect adds the origin back once.
             if bh <= gh - 4:
-                bx = gx0 + max(0.0, (gw - bw) / 2)
-                by = gy0 + (gh - bh) / 2
+                bx = (gx0 - px0) + max(0.0, (gw - bw) / 2)
+                by = (gy0 - py0) + (gh - bh) / 2
             else:                                   # not reserved: fall back inside the panel
                 in_gutter = False
         if not in_gutter:

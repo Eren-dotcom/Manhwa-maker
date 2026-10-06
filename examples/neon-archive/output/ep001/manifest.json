@@ -7,8 +7,8 @@
   "master_width": 1080,
   "export_width": 800,
   "width": 1080,
-  "total_height": 37246,
-  "export_height": 27590,
+  "total_height": 38335,
+  "export_height": 28396,
   "panels": 19,
   "tiles": [
     {
@@ -39,7 +39,7 @@
       "height": 1280,
       "y0": 3456,
       "y1": 5184,
-      "bytes": 270620
+      "bytes": 270922
     },
     {
       "index": 4,
@@ -49,7 +49,7 @@
       "height": 1073,
       "y0": 5184,
       "y1": 6632,
-      "bytes": 152698
+      "bytes": 153283
     },
     {
       "index": 5,
@@ -79,7 +79,7 @@
       "height": 1280,
       "y0": 9838,
       "y1": 11566,
-      "bytes": 151294
+      "bytes": 151297
     },
     {
       "index": 8,
@@ -89,7 +89,7 @@
       "height": 1280,
       "y0": 11566,
       "y1": 13294,
-      "bytes": 91625
+      "bytes": 91587
     },
     {
       "index": 9,
@@ -119,27 +119,27 @@
       "height": 1280,
       "y0": 16172,
       "y1": 17900,
-      "bytes": 205698
+      "bytes": 204124
     },
     {
       "index": 12,
       "file": "upload/ep001_012.jpg",
       "format": "jpg",
       "width": 800,
-      "height": 1055,
+      "height": 1058,
       "y0": 17900,
-      "y1": 19324,
-      "bytes": 107213
+      "y1": 19328,
+      "bytes": 105942
     },
     {
       "index": 13,
       "file": "upload/ep001_013.jpg",
       "format": "jpg",
       "width": 800,
-      "height": 1222,
-      "y0": 19324,
-      "y1": 20974,
-      "bytes": 178839
+      "height": 1209,
+      "y0": 19328,
+      "y1": 20960,
+      "bytes": 176067
     },
     {
       "index": 14,
@@ -147,9 +147,9 @@
       "format": "jpg",
       "width": 800,
       "height": 1280,
-      "y0": 20974,
-      "y1": 22702,
-      "bytes": 283455
+      "y0": 20960,
+      "y1": 22688,
+      "bytes": 280091
     },
     {
       "index": 15,
@@ -157,9 +157,9 @@
       "format": "jpg",
       "width": 800,
       "height": 1280,
-      "y0": 22702,
-      "y1": 24430,
-      "bytes": 118258
+      "y0": 22688,
+      "y1": 24416,
+      "bytes": 126217
     },
     {
       "index": 16,
@@ -167,9 +167,9 @@
       "format": "jpg",
       "width": 800,
       "height": 1280,
-      "y0": 24430,
-      "y1": 26158,
-      "bytes": 162130
+      "y0": 24416,
+      "y1": 26144,
+      "bytes": 161993
     },
     {
       "index": 17,
@@ -177,19 +177,19 @@
       "format": "jpg",
       "width": 800,
       "height": 1073,
-      "y0": 26158,
-      "y1": 27606,
-      "bytes": 149814
+      "y0": 26144,
+      "y1": 27592,
+      "bytes": 152368
     },
     {
       "index": 18,
       "file": "upload/ep001_018.jpg",
       "format": "jpg",
       "width": 800,
-      "height": 1262,
-      "y0": 27606,
+      "height": 1273,
+      "y0": 27592,
       "y1": 29310,
-      "bytes": 270707
+      "bytes": 270893
     },
     {
       "index": 19,
@@ -199,7 +199,7 @@
       "height": 1262,
       "y0": 29310,
       "y1": 31014,
-      "bytes": 266793
+      "bytes": 266605
     },
     {
       "index": 20,
@@ -216,38 +216,48 @@
       "file": "upload/ep001_021.jpg",
       "format": "jpg",
       "width": 800,
-      "height": 1073,
+      "height": 1267,
       "y0": 32718,
-      "y1": 34166,
-      "bytes": 20321
+      "y1": 34428,
+      "bytes": 200930
     },
     {
       "index": 22,
       "file": "upload/ep001_022.jpg",
       "format": "jpg",
       "width": 800,
-      "height": 1073,
-      "y0": 34166,
-      "y1": 35614,
-      "bytes": 66146
+      "height": 1280,
+      "y0": 34428,
+      "y1": 36156,
+      "bytes": 209121
     },
     {
       "index": 23,
       "file": "upload/ep001_023.jpg",
       "format": "jpg",
       "width": 800,
-      "height": 1209,
-      "y0": 35614,
-      "y1": 37246,
-      "bytes": 28504
+      "height": 1280,
+      "y0": 36156,
+      "y1": 37884,
+      "bytes": 116675
+    },
+    {
+      "index": 24,
+      "file": "upload/ep001_024.jpg",
+      "format": "jpg",
+      "width": 800,
+      "height": 334,
+      "y0": 37884,
+      "y1": 38335,
+      "bytes": 3352
     }
   ],
-  "tile_count": 23,
+  "tile_count": 24,
   "tile_height_cap": 1280,
-  "total_bytes": 3917870,
+  "total_bytes": 4335222,
   "words": 75,
-  "est_read_seconds": 206.0,
-  "est_read_screens": 21.6,
+  "est_read_seconds": 210.7,
+  "est_read_screens": 22.2,
   "lettering": {
     "bubbles": 20,
     "words": 75,
@@ -256,10 +266,7 @@
     "prop": 1
   },
   "placement_issues": [],
-  "placeholders": [
-    "p016",
-    "p017"
-  ],
+  "placeholders": [],
   "gutter_reserved": {
     "p016": 305
   },
@@ -397,10 +404,11 @@
       "tremble"
     ]
   },
+  "strip_file": "strip-master.jpg",
   "pdf": "output/ep001/delivery/neon-archive-ch001.pdf",
   "per_panel": {
     "dir": "ch001",
-    "raw": 15,
+    "raw": 17,
     "lettered": 19
   },
   "ai_disclosure": "AI-assisted production. Story, character design, panel direction, lettering and editing by the creator; panel artwork generated with an AI model from locked character sheets, then retouched, composited and lettered by hand. Feedback welcome."
