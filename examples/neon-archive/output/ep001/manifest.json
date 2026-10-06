@@ -7,227 +7,247 @@
   "master_width": 1080,
   "export_width": 800,
   "width": 1080,
-  "total_height": 33171,
-  "export_height": 24571,
+  "total_height": 37246,
+  "export_height": 27590,
   "panels": 19,
   "tiles": [
     {
       "index": 1,
-      "file": "upload/ep001_001.png",
-      "format": "png",
+      "file": "upload/ep001_001.jpg",
+      "format": "jpg",
       "width": 800,
       "height": 1280,
       "y0": 0,
       "y1": 1728,
-      "bytes": 319021
+      "bytes": 90417
     },
     {
       "index": 2,
-      "file": "upload/ep001_002.png",
-      "format": "png",
+      "file": "upload/ep001_002.jpg",
+      "format": "jpg",
       "width": 800,
       "height": 1280,
       "y0": 1728,
       "y1": 3456,
-      "bytes": 1486486
+      "bytes": 325056
     },
     {
       "index": 3,
-      "file": "upload/ep001_003.png",
-      "format": "png",
+      "file": "upload/ep001_003.jpg",
+      "format": "jpg",
       "width": 800,
       "height": 1280,
       "y0": 3456,
       "y1": 5184,
-      "bytes": 1106490
+      "bytes": 270620
     },
     {
       "index": 4,
-      "file": "upload/ep001_004.png",
-      "format": "png",
+      "file": "upload/ep001_004.jpg",
+      "format": "jpg",
       "width": 800,
       "height": 1073,
       "y0": 5184,
       "y1": 6632,
-      "bytes": 843730
+      "bytes": 152698
     },
     {
       "index": 5,
-      "file": "upload/ep001_005.png",
-      "format": "png",
+      "file": "upload/ep001_005.jpg",
+      "format": "jpg",
       "width": 800,
       "height": 1234,
       "y0": 6632,
       "y1": 8298,
-      "bytes": 1173946
+      "bytes": 225290
     },
     {
       "index": 6,
-      "file": "upload/ep001_006.png",
-      "format": "png",
+      "file": "upload/ep001_006.jpg",
+      "format": "jpg",
       "width": 800,
       "height": 1141,
       "y0": 8298,
       "y1": 9838,
-      "bytes": 989934
+      "bytes": 190451
     },
     {
       "index": 7,
-      "file": "upload/ep001_007.png",
-      "format": "png",
+      "file": "upload/ep001_007.jpg",
+      "format": "jpg",
       "width": 800,
       "height": 1280,
       "y0": 9838,
       "y1": 11566,
-      "bytes": 887480
+      "bytes": 151294
     },
     {
       "index": 8,
-      "file": "upload/ep001_008.png",
-      "format": "png",
+      "file": "upload/ep001_008.jpg",
+      "format": "jpg",
       "width": 800,
       "height": 1280,
       "y0": 11566,
       "y1": 13294,
-      "bytes": 774947
+      "bytes": 91625
     },
     {
       "index": 9,
-      "file": "upload/ep001_009.png",
-      "format": "png",
+      "file": "upload/ep001_009.jpg",
+      "format": "jpg",
       "width": 800,
       "height": 1073,
       "y0": 13294,
       "y1": 14742,
-      "bytes": 671500
+      "bytes": 128922
     },
     {
       "index": 10,
-      "file": "upload/ep001_010.png",
-      "format": "png",
+      "file": "upload/ep001_010.jpg",
+      "format": "jpg",
       "width": 800,
-      "height": 1279,
+      "height": 1059,
       "y0": 14742,
-      "y1": 16468,
-      "bytes": 99631
+      "y1": 16172,
+      "bytes": 139578
     },
     {
       "index": 11,
-      "file": "upload/ep001_011.png",
-      "format": "png",
+      "file": "upload/ep001_011.jpg",
+      "format": "jpg",
       "width": 800,
-      "height": 1073,
-      "y0": 16468,
-      "y1": 17916,
-      "bytes": 231425
+      "height": 1280,
+      "y0": 16172,
+      "y1": 17900,
+      "bytes": 205698
     },
     {
       "index": 12,
-      "file": "upload/ep001_012.png",
-      "format": "png",
+      "file": "upload/ep001_012.jpg",
+      "format": "jpg",
       "width": 800,
-      "height": 1280,
-      "y0": 17916,
-      "y1": 19644,
-      "bytes": 181089
+      "height": 1055,
+      "y0": 17900,
+      "y1": 19324,
+      "bytes": 107213
     },
     {
       "index": 13,
-      "file": "upload/ep001_013.png",
-      "format": "png",
+      "file": "upload/ep001_013.jpg",
+      "format": "jpg",
       "width": 800,
-      "height": 1099,
-      "y0": 19644,
-      "y1": 21128,
-      "bytes": 164358
+      "height": 1222,
+      "y0": 19324,
+      "y1": 20974,
+      "bytes": 178839
     },
     {
       "index": 14,
-      "file": "upload/ep001_014.png",
-      "format": "png",
+      "file": "upload/ep001_014.jpg",
+      "format": "jpg",
       "width": 800,
-      "height": 1073,
-      "y0": 21128,
-      "y1": 22576,
-      "bytes": 73792
+      "height": 1280,
+      "y0": 20974,
+      "y1": 22702,
+      "bytes": 283455
     },
     {
       "index": 15,
-      "file": "upload/ep001_015.png",
-      "format": "png",
+      "file": "upload/ep001_015.jpg",
+      "format": "jpg",
       "width": 800,
       "height": 1280,
-      "y0": 22576,
-      "y1": 24304,
-      "bytes": 133606
+      "y0": 22702,
+      "y1": 24430,
+      "bytes": 118258
     },
     {
       "index": 16,
-      "file": "upload/ep001_016.png",
-      "format": "png",
+      "file": "upload/ep001_016.jpg",
+      "format": "jpg",
       "width": 800,
-      "height": 1265,
-      "y0": 24304,
-      "y1": 26012,
-      "bytes": 54363
+      "height": 1280,
+      "y0": 24430,
+      "y1": 26158,
+      "bytes": 162130
     },
     {
       "index": 17,
-      "file": "upload/ep001_017.png",
-      "format": "png",
+      "file": "upload/ep001_017.jpg",
+      "format": "jpg",
       "width": 800,
       "height": 1073,
-      "y0": 26012,
-      "y1": 27460,
-      "bytes": 27433
+      "y0": 26158,
+      "y1": 27606,
+      "bytes": 149814
     },
     {
       "index": 18,
-      "file": "upload/ep001_018.png",
-      "format": "png",
+      "file": "upload/ep001_018.jpg",
+      "format": "jpg",
       "width": 800,
-      "height": 1280,
-      "y0": 27460,
-      "y1": 29188,
-      "bytes": 39586
+      "height": 1262,
+      "y0": 27606,
+      "y1": 29310,
+      "bytes": 270707
     },
     {
       "index": 19,
-      "file": "upload/ep001_019.png",
-      "format": "png",
+      "file": "upload/ep001_019.jpg",
+      "format": "jpg",
       "width": 800,
-      "height": 1204,
-      "y0": 29188,
-      "y1": 30814,
-      "bytes": 97577
+      "height": 1262,
+      "y0": 29310,
+      "y1": 31014,
+      "bytes": 266793
     },
     {
       "index": 20,
-      "file": "upload/ep001_020.png",
-      "format": "png",
+      "file": "upload/ep001_020.jpg",
+      "format": "jpg",
       "width": 800,
-      "height": 1280,
-      "y0": 30814,
-      "y1": 32542,
-      "bytes": 53019
+      "height": 1262,
+      "y0": 31014,
+      "y1": 32718,
+      "bytes": 294041
     },
     {
       "index": 21,
-      "file": "upload/ep001_021.png",
-      "format": "png",
+      "file": "upload/ep001_021.jpg",
+      "format": "jpg",
       "width": 800,
-      "height": 466,
-      "y0": 32542,
-      "y1": 33171,
-      "bytes": 2211
+      "height": 1073,
+      "y0": 32718,
+      "y1": 34166,
+      "bytes": 20321
+    },
+    {
+      "index": 22,
+      "file": "upload/ep001_022.jpg",
+      "format": "jpg",
+      "width": 800,
+      "height": 1073,
+      "y0": 34166,
+      "y1": 35614,
+      "bytes": 66146
+    },
+    {
+      "index": 23,
+      "file": "upload/ep001_023.jpg",
+      "format": "jpg",
+      "width": 800,
+      "height": 1209,
+      "y0": 35614,
+      "y1": 37246,
+      "bytes": 28504
     }
   ],
-  "tile_count": 21,
+  "tile_count": 23,
   "tile_height_cap": 1280,
-  "total_bytes": 9411624,
+  "total_bytes": 3917870,
   "words": 75,
-  "est_read_seconds": 44.3,
-  "est_read_screens": 19.2,
+  "est_read_seconds": 206.0,
+  "est_read_screens": 21.6,
   "lettering": {
     "bubbles": 20,
     "words": 75,
@@ -237,15 +257,6 @@
   },
   "placement_issues": [],
   "placeholders": [
-    "p007",
-    "p008",
-    "p009",
-    "p010",
-    "p011",
-    "p012",
-    "p013",
-    "p014",
-    "p015",
     "p016",
     "p017"
   ],
@@ -389,7 +400,7 @@
   "pdf": "output/ep001/delivery/neon-archive-ch001.pdf",
   "per_panel": {
     "dir": "ch001",
-    "raw": 6,
+    "raw": 15,
     "lettered": 19
   },
   "ai_disclosure": "AI-assisted production. Story, character design, panel direction, lettering and editing by the creator; panel artwork generated with an AI model from locked character sheets, then retouched, composited and lettered by hand. Feedback welcome."

@@ -459,7 +459,10 @@ def build_parser():
     s.add_argument("--no-pdf", action="store_true")
     s.add_argument("--no-per-panel", action="store_true", help="skip chNN/panels + chNN/lettered crops")
     s.add_argument("--annotate", action="store_true")
-    s.add_argument("--format", default="png", choices=["png", "jpg", "both"])
+    s.add_argument("--format", default="jpg", choices=["png", "jpg", "both"],
+                   help="upload-tile format (the master stays PNG either way). JPG by default: "
+                        "at 800px it is visually indistinguishable and keeps the episode inside "
+                        "the platform's per-episode MB cap. Use png for lossless line art.")
     s.add_argument("--quality", type=int, default=92)
     s.add_argument("--bg")
     s.add_argument("--tile-search", type=int, default=320)

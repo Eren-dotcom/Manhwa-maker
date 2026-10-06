@@ -21,8 +21,11 @@ that can be fixed in the script must be fixed in the script.
 
 1. **Never ask an image model to draw text, speech bubbles, or panel layout.** They cannot spell and
    cannot count pixels. Text and geometry are composited by `manhwa.py`. If a generated image contains
-   lettering, reject it or inpaint it out. Signage, book spines and screens must be prompted as
-   **blank**; any words they need are added by the lettering pass.
+   lettering, reject it or inpaint it out.
+   **The signage policy:** environment signage may be *blank glass* or *abstract illegible
+   glyph-blocks and light bars* — shape that suggests language without being language, which is how
+   real letterers dress a background. It may never be readable text. Any word the story needs (a sign
+   someone reads, a case label, a screen) is drawn by the lettering pass as prop text.
 2. **Character consistency is a system, not a prompt.** Reference sheet → LoRA or reference-image
    conditioning → frozen `prompt_block` + fixed seed. All three. Never rely on the model "remembering".
 3. **Never lock a design until the user explicitly approves it.** Sheets come first, approval is

@@ -236,9 +236,11 @@ def run_checks(project: Project, ep_no: int, ep: dict, manifest: dict | None = N
             "so it prints in every QC report", "series"))
 
     # ------------------------------------------------------------------ art #
+    # black_out / white_out panels are filled by the compositor -- they never need art
     missing = [p.get("id", "?") for p in panels
                if project.panel_image_path(ep_no, p.get("id", ""), p.get("image")) is None
-               and not p.get("fill")]
+               and not p.get("fill")
+               and p.get("pace") not in ("black_out", "white_out")]
     if missing:
         sev = "error" if final else "info"
         findings.append(_finding(sev, "F001",
@@ -262,9 +264,13 @@ def run_checks(project: Project, ep_no: int, ep: dict, manifest: dict | None = N
 
     if manifest:
         secs = manifest.get("est_read_seconds", 0)
-        if secs > 14 * 60:
+        tier = str(ep.get("density_tier") or (project.series.get("production") or {})
+                   .get("target_panels_per_episode") or "standard")
+        limit_min = {"dense": 20, "reference": 30}.get(tier, 14)
+        if secs > limit_min * 60:
             findings.append(_finding("info", "T001",
-                f"~{secs/60:.1f} min read -- long for a weekly chapter", ""))
+                f"~{secs/60:.1f} min read -- long for a {tier}-tier chapter "
+                f"(guide {limit_min} min)", ""))
         if manifest.get("panels") and manifest["total_height"] / max(1, manifest["panels"]) < 220 * scale:
             findings.append(_finding("info", "T002",
                 "panels average under 220px (at 800) -- a run of very short beats reads choppy", ""))

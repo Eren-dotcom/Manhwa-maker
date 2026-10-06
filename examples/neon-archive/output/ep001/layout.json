@@ -1,7 +1,7 @@
 {
   "master_width": 1080,
   "export_width": 800,
-  "total_height": 33171,
+  "total_height": 37246,
   "panels": [
     {
       "id": "title",
@@ -233,10 +233,10 @@
         0,
         15193,
         1080,
-        16367
+        16639
       ],
-      "art": null,
-      "placeholder": true,
+      "art": "/home/user/Manhwa-maker/examples/neon-archive/art/ep001/p007.png",
+      "placeholder": false,
       "fill": null,
       "shot": "medium",
       "beat": "build",
@@ -246,9 +246,9 @@
         {
           "rect": [
             700,
-            15934,
+            16113,
             856,
-            16002
+            16181
           ],
           "style": "sfx",
           "text": "THUD",
@@ -261,9 +261,9 @@
         {
           "rect": [
             564,
-            15317,
+            15355,
             1026,
-            15398
+            15436
           ],
           "style": "technique",
           "text": "ARCHIVE PLAYBACK",
@@ -279,12 +279,12 @@
       "id": "p008",
       "rect": [
         0,
-        16637,
+        16909,
         1080,
-        17717
+        18519
       ],
-      "art": null,
-      "placeholder": true,
+      "art": "/home/user/Manhwa-maker/examples/neon-archive/art/ep001/p008.png",
+      "placeholder": false,
       "fill": null,
       "shot": "extreme_close",
       "beat": "reveal",
@@ -294,9 +294,9 @@
         {
           "rect": [
             54,
-            16746,
+            16989,
             956,
-            17046
+            17289
           ],
           "style": "thought",
           "text": "That's my coat. That's my hair...",
@@ -305,7 +305,7 @@
           "gutter": false,
           "tail": [
             505,
-            17155
+            17398
           ],
           "fx": null
         }
@@ -315,12 +315,12 @@
       "id": "p009",
       "rect": [
         0,
-        18527,
+        19329,
         1080,
-        19664
+        20939
       ],
-      "art": null,
-      "placeholder": true,
+      "art": "/home/user/Manhwa-maker/examples/neon-archive/art/ep001/p009.png",
+      "placeholder": false,
       "fill": null,
       "shot": "detail_hands",
       "beat": "reaction",
@@ -330,9 +330,9 @@
         {
           "rect": [
             275,
-            19351,
+            20532,
             805,
-            19522
+            20703
           ],
           "style": "urgent",
           "text": "That's me.",
@@ -341,7 +341,7 @@
           "gutter": false,
           "tail": [
             540,
-            19629
+            20810
           ],
           "fx": null
         }
@@ -351,12 +351,12 @@
       "id": "p010",
       "rect": [
         0,
-        19758,
+        21033,
         1080,
-        20358
+        22968
       ],
-      "art": null,
-      "placeholder": true,
+      "art": "/home/user/Manhwa-maker/examples/neon-archive/art/ep001/p010.png",
+      "placeholder": false,
       "fill": null,
       "shot": "wide",
       "beat": "past_life",
@@ -368,9 +368,9 @@
         {
           "rect": [
             234,
-            19880,
+            21528,
             414,
-            19972
+            21621
           ],
           "style": "sfx",
           "text": "FZZT",
@@ -383,9 +383,9 @@
         {
           "rect": [
             54,
-            20042,
+            22225,
             979,
-            20289
+            22472
           ],
           "style": "narration",
           "text": "Sector 9. Third night of the rains.",
@@ -401,12 +401,12 @@
       "id": "p011",
       "rect": [
         0,
-        21168,
+        23778,
         1080,
-        22368
+        25224
       ],
-      "art": null,
-      "placeholder": true,
+      "art": "/home/user/Manhwa-maker/examples/neon-archive/art/ep001/p011.png",
+      "placeholder": false,
       "fill": null,
       "shot": "medium_low",
       "beat": "villain",
@@ -416,9 +416,9 @@
         {
           "rect": [
             76,
-            21228,
+            23859,
             1004,
-            21472
+            24103
           ],
           "style": "dark",
           "text": "You weren't supposed to see that one.",
@@ -427,7 +427,7 @@
           "gutter": false,
           "tail": [
             778,
-            21569
+            24200
           ],
           "fx": null
         }
@@ -437,12 +437,12 @@
       "id": "p012",
       "rect": [
         0,
-        22638,
+        25494,
         1080,
-        24602
+        27429
       ],
-      "art": null,
-      "placeholder": true,
+      "art": "/home/user/Manhwa-maker/examples/neon-archive/art/ep001/p012.png",
+      "placeholder": false,
       "fill": null,
       "shot": "sfx_full",
       "beat": "impact",
@@ -455,9 +455,9 @@
         {
           "rect": [
             175,
-            23278,
+            26123,
             732,
-            23490
+            26335
           ],
           "style": "sfx",
           "text": "CRASH",
@@ -473,12 +473,12 @@
       "id": "p013",
       "rect": [
         0,
-        24872,
+        27699,
         1080,
-        26009
+        29309
       ],
-      "art": null,
-      "placeholder": true,
+      "art": "/home/user/Manhwa-maker/examples/neon-archive/art/ep001/p013.png",
+      "placeholder": false,
       "fill": null,
       "shot": "close",
       "beat": "reaction",
@@ -488,9 +488,9 @@
         {
           "rect": [
             54,
-            24931,
+            27825,
             734,
-            25131
+            28025
           ],
           "style": "hesitant",
           "text": "Kael, wait—",
@@ -499,7 +499,7 @@
           "gutter": false,
           "tail": [
             394,
-            25238
+            28132
           ],
           "fx": null
         }
@@ -509,12 +509,12 @@
       "id": "p014",
       "rect": [
         0,
-        26103,
+        29403,
         1080,
-        27374
+        31013
       ],
-      "art": null,
-      "placeholder": true,
+      "art": "/home/user/Manhwa-maker/examples/neon-archive/art/ep001/p014.png",
+      "placeholder": false,
       "fill": null,
       "shot": "detail_boots",
       "beat": "action",
@@ -528,12 +528,12 @@
       "id": "p015",
       "rect": [
         0,
-        27468,
+        31107,
         1080,
-        28642
+        32717
       ],
-      "art": null,
-      "placeholder": true,
+      "art": "/home/user/Manhwa-maker/examples/neon-archive/art/ep001/p015.png",
+      "placeholder": false,
       "fill": null,
       "shot": "medium",
       "beat": "build",
@@ -545,9 +545,9 @@
         {
           "rect": [
             627,
-            28272,
+            32225,
             885,
-            28354
+            32307
           ],
           "style": "sfx",
           "text": "WHUMP",
@@ -563,9 +563,9 @@
       "id": "p016",
       "rect": [
         0,
-        28736,
+        32811,
         1080,
-        29936
+        34011
       ],
       "art": null,
       "placeholder": true,
@@ -578,9 +578,9 @@
         {
           "rect": [
             78,
-            58690,
+            66840,
             1002,
-            58960
+            67110
           ],
           "style": "speech",
           "text": "He's not following. He's waiting.",
@@ -589,7 +589,7 @@
           "gutter": true,
           "tail": [
             410,
-            58452
+            66602
           ],
           "fx": null
         }
@@ -599,9 +599,9 @@
       "id": "p017",
       "rect": [
         0,
-        30241,
+        34316,
         1080,
-        31497
+        35572
       ],
       "art": null,
       "placeholder": true,
@@ -616,9 +616,9 @@
         {
           "rect": [
             54,
-            30419,
+            34494,
             917,
-            30666
+            34741
           ],
           "style": "continuing",
           "text": "You already played it. That's the part",
@@ -627,16 +627,16 @@
           "gutter": false,
           "tail": [
             367,
-            30779
+            34854
           ],
           "fx": null
         },
         {
           "rect": [
             54,
-            30683,
+            34758,
             906,
-            30930
+            35005
           ],
           "style": "continuing",
           "text": "he's going to come for.",
@@ -645,7 +645,7 @@
           "gutter": false,
           "tail": [
             480,
-            30570
+            34645
           ],
           "fx": null
         }
@@ -655,9 +655,9 @@
       "id": "p018",
       "rect": [
         0,
-        31767,
+        35842,
         1080,
-        32982
+        37057
       ],
       "art": null,
       "placeholder": false,
@@ -670,9 +670,9 @@
         {
           "rect": [
             107,
-            31835,
+            35910,
             973,
-            32039
+            36114
           ],
           "style": "speech",
           "text": "Who recorded it?",
@@ -681,7 +681,7 @@
           "gutter": false,
           "tail": [
             540,
-            32167
+            36242
           ],
           "fx": null
         }
@@ -691,213 +691,233 @@
   "tiles": [
     {
       "index": 1,
-      "file": "upload/ep001_001.png",
-      "format": "png",
+      "file": "upload/ep001_001.jpg",
+      "format": "jpg",
       "width": 800,
       "height": 1280,
       "y0": 0,
       "y1": 1728,
-      "bytes": 319021
+      "bytes": 90417
     },
     {
       "index": 2,
-      "file": "upload/ep001_002.png",
-      "format": "png",
+      "file": "upload/ep001_002.jpg",
+      "format": "jpg",
       "width": 800,
       "height": 1280,
       "y0": 1728,
       "y1": 3456,
-      "bytes": 1486486
+      "bytes": 325056
     },
     {
       "index": 3,
-      "file": "upload/ep001_003.png",
-      "format": "png",
+      "file": "upload/ep001_003.jpg",
+      "format": "jpg",
       "width": 800,
       "height": 1280,
       "y0": 3456,
       "y1": 5184,
-      "bytes": 1106490
+      "bytes": 270620
     },
     {
       "index": 4,
-      "file": "upload/ep001_004.png",
-      "format": "png",
+      "file": "upload/ep001_004.jpg",
+      "format": "jpg",
       "width": 800,
       "height": 1073,
       "y0": 5184,
       "y1": 6632,
-      "bytes": 843730
+      "bytes": 152698
     },
     {
       "index": 5,
-      "file": "upload/ep001_005.png",
-      "format": "png",
+      "file": "upload/ep001_005.jpg",
+      "format": "jpg",
       "width": 800,
       "height": 1234,
       "y0": 6632,
       "y1": 8298,
-      "bytes": 1173946
+      "bytes": 225290
     },
     {
       "index": 6,
-      "file": "upload/ep001_006.png",
-      "format": "png",
+      "file": "upload/ep001_006.jpg",
+      "format": "jpg",
       "width": 800,
       "height": 1141,
       "y0": 8298,
       "y1": 9838,
-      "bytes": 989934
+      "bytes": 190451
     },
     {
       "index": 7,
-      "file": "upload/ep001_007.png",
-      "format": "png",
+      "file": "upload/ep001_007.jpg",
+      "format": "jpg",
       "width": 800,
       "height": 1280,
       "y0": 9838,
       "y1": 11566,
-      "bytes": 887480
+      "bytes": 151294
     },
     {
       "index": 8,
-      "file": "upload/ep001_008.png",
-      "format": "png",
+      "file": "upload/ep001_008.jpg",
+      "format": "jpg",
       "width": 800,
       "height": 1280,
       "y0": 11566,
       "y1": 13294,
-      "bytes": 774947
+      "bytes": 91625
     },
     {
       "index": 9,
-      "file": "upload/ep001_009.png",
-      "format": "png",
+      "file": "upload/ep001_009.jpg",
+      "format": "jpg",
       "width": 800,
       "height": 1073,
       "y0": 13294,
       "y1": 14742,
-      "bytes": 671500
+      "bytes": 128922
     },
     {
       "index": 10,
-      "file": "upload/ep001_010.png",
-      "format": "png",
+      "file": "upload/ep001_010.jpg",
+      "format": "jpg",
       "width": 800,
-      "height": 1279,
+      "height": 1059,
       "y0": 14742,
-      "y1": 16468,
-      "bytes": 99631
+      "y1": 16172,
+      "bytes": 139578
     },
     {
       "index": 11,
-      "file": "upload/ep001_011.png",
-      "format": "png",
+      "file": "upload/ep001_011.jpg",
+      "format": "jpg",
       "width": 800,
-      "height": 1073,
-      "y0": 16468,
-      "y1": 17916,
-      "bytes": 231425
+      "height": 1280,
+      "y0": 16172,
+      "y1": 17900,
+      "bytes": 205698
     },
     {
       "index": 12,
-      "file": "upload/ep001_012.png",
-      "format": "png",
+      "file": "upload/ep001_012.jpg",
+      "format": "jpg",
       "width": 800,
-      "height": 1280,
-      "y0": 17916,
-      "y1": 19644,
-      "bytes": 181089
+      "height": 1055,
+      "y0": 17900,
+      "y1": 19324,
+      "bytes": 107213
     },
     {
       "index": 13,
-      "file": "upload/ep001_013.png",
-      "format": "png",
+      "file": "upload/ep001_013.jpg",
+      "format": "jpg",
       "width": 800,
-      "height": 1099,
-      "y0": 19644,
-      "y1": 21128,
-      "bytes": 164358
+      "height": 1222,
+      "y0": 19324,
+      "y1": 20974,
+      "bytes": 178839
     },
     {
       "index": 14,
-      "file": "upload/ep001_014.png",
-      "format": "png",
+      "file": "upload/ep001_014.jpg",
+      "format": "jpg",
       "width": 800,
-      "height": 1073,
-      "y0": 21128,
-      "y1": 22576,
-      "bytes": 73792
+      "height": 1280,
+      "y0": 20974,
+      "y1": 22702,
+      "bytes": 283455
     },
     {
       "index": 15,
-      "file": "upload/ep001_015.png",
-      "format": "png",
+      "file": "upload/ep001_015.jpg",
+      "format": "jpg",
       "width": 800,
       "height": 1280,
-      "y0": 22576,
-      "y1": 24304,
-      "bytes": 133606
+      "y0": 22702,
+      "y1": 24430,
+      "bytes": 118258
     },
     {
       "index": 16,
-      "file": "upload/ep001_016.png",
-      "format": "png",
+      "file": "upload/ep001_016.jpg",
+      "format": "jpg",
       "width": 800,
-      "height": 1265,
-      "y0": 24304,
-      "y1": 26012,
-      "bytes": 54363
+      "height": 1280,
+      "y0": 24430,
+      "y1": 26158,
+      "bytes": 162130
     },
     {
       "index": 17,
-      "file": "upload/ep001_017.png",
-      "format": "png",
+      "file": "upload/ep001_017.jpg",
+      "format": "jpg",
       "width": 800,
       "height": 1073,
-      "y0": 26012,
-      "y1": 27460,
-      "bytes": 27433
+      "y0": 26158,
+      "y1": 27606,
+      "bytes": 149814
     },
     {
       "index": 18,
-      "file": "upload/ep001_018.png",
-      "format": "png",
+      "file": "upload/ep001_018.jpg",
+      "format": "jpg",
       "width": 800,
-      "height": 1280,
-      "y0": 27460,
-      "y1": 29188,
-      "bytes": 39586
+      "height": 1262,
+      "y0": 27606,
+      "y1": 29310,
+      "bytes": 270707
     },
     {
       "index": 19,
-      "file": "upload/ep001_019.png",
-      "format": "png",
+      "file": "upload/ep001_019.jpg",
+      "format": "jpg",
       "width": 800,
-      "height": 1204,
-      "y0": 29188,
-      "y1": 30814,
-      "bytes": 97577
+      "height": 1262,
+      "y0": 29310,
+      "y1": 31014,
+      "bytes": 266793
     },
     {
       "index": 20,
-      "file": "upload/ep001_020.png",
-      "format": "png",
+      "file": "upload/ep001_020.jpg",
+      "format": "jpg",
       "width": 800,
-      "height": 1280,
-      "y0": 30814,
-      "y1": 32542,
-      "bytes": 53019
+      "height": 1262,
+      "y0": 31014,
+      "y1": 32718,
+      "bytes": 294041
     },
     {
       "index": 21,
-      "file": "upload/ep001_021.png",
-      "format": "png",
+      "file": "upload/ep001_021.jpg",
+      "format": "jpg",
       "width": 800,
-      "height": 466,
-      "y0": 32542,
-      "y1": 33171,
-      "bytes": 2211
+      "height": 1073,
+      "y0": 32718,
+      "y1": 34166,
+      "bytes": 20321
+    },
+    {
+      "index": 22,
+      "file": "upload/ep001_022.jpg",
+      "format": "jpg",
+      "width": 800,
+      "height": 1073,
+      "y0": 34166,
+      "y1": 35614,
+      "bytes": 66146
+    },
+    {
+      "index": 23,
+      "file": "upload/ep001_023.jpg",
+      "format": "jpg",
+      "width": 800,
+      "height": 1209,
+      "y0": 35614,
+      "y1": 37246,
+      "bytes": 28504
     }
   ]
 }

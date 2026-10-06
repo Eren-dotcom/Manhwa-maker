@@ -13,6 +13,9 @@ examples/*/output/**
 !examples/*/output/ep*/UPLOAD.md
 !examples/*/output/ep*/qc-report.md
 !examples/*/output/ep*/qc-report.json
+# reference sheets stay out of the repo: they are generation input, like raw art
+examples/*/assets/refs/
+examples/*/reference_sheets/
 examples/*/ch*/lettered/
 examples/*/ch*/panels/
 examples/*/ch*/lettering-qc.png

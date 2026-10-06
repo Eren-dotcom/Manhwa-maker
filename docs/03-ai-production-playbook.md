@@ -84,6 +84,8 @@ action · lighting/mood · composition instruction (bubble space) · <lora:...>
   bubble" whenever a panel has dialogue, then *still* verifies placement by scanning the finished
   panel. Asking is a hint; measuring is the guarantee.
 - **Negative** — always include the anti-text block: `text, letters, words, speech bubble, caption
+  box, watermark, signature, logo, ui elements`, plus `readable text, signage writing` for any panel
+  with signage, screens or books in it.
   box, watermark, signature, logo, ui elements`. Models cannot spell; let them stop trying.
 - **Aspect ratio** — don't fight it. Generate at a model-friendly ratio close to your panel's ratio
   (multiple of 64, ~1.15MP) and crop on assembly.

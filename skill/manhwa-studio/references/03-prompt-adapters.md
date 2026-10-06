@@ -22,7 +22,30 @@ stable ordering keeps the look stable between panels.
 
 Negative prompt always leads with the anti-text block:
 `text, letters, words, speech bubble, caption box, watermark, signature, logo, ui elements` — plus
+`readable text, signage writing` for city/street panels (see the signage policy below).
 anatomy and quality terms.
+
+---
+
+## The signage policy (city panels, screens, book spines)
+
+The rule "no text in generated art" collides with the fact that a neon city with every sign dead
+looks like a set with the lights off, and models will happily letter a street scene for you —
+usually in garbled script. The working policy:
+
+| Allowed | Never allowed |
+|---|---|
+| **Blank glass** — dark or lit sign faces with pale frames, no marks | any **readable** word, number or name |
+| **Abstract glyph-blocks** — geometric marks and light bars that suggest language at a glance, in the manner of signage blurred by distance | pseudo-letters that *almost* spell something |
+| **Shape and colour only** — brand-free blocks of glow, strips, arrows, dots | real logos, real brands, real script |
+
+Prompt it positively as well as negatively. Say *what signage should be* —
+"sign faces show only abstract illegible glyph blocks and light bars, no readable letters" — rather
+than only saying what it shouldn't. Negative-only instructions leak.
+
+Any word the story actually needs (a sign someone reads, a case label, a screen readout, a book
+title) is **prop text**: drawn by the lettering pass onto the art (`style: "prop"`), in a real font,
+at a real size. That is the only place readable words appear.
 
 ---
 

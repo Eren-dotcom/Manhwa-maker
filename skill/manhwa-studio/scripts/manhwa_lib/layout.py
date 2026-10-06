@@ -29,6 +29,8 @@ from .project import Project, save_json
 from .specs import MASTER_WIDTH, PACING_GAPS, SHOT_PRESETS, find_fonts, scale_for
 
 WORDS_PER_MINUTE = 200
+SEC_PER_SCREEN = 7.5      # a phone screen of art at a normal reading scroll
+SEC_PER_PANEL = 1.15      # beat dwell on top of that
 
 
 @dataclass
@@ -361,7 +363,10 @@ def assemble(project: Project, ep_no: int, ep: dict, opts: Options) -> dict:
 
     words = sum(len(str(d.get("text", "")).split())
                 for b in boxes for d in (b.panel.get("dialogue") or []))
-    est_seconds = words / (WORDS_PER_MINUTE / 60.0) + len(boxes) * 1.15
+    screens = web.height / 1280.0
+    est_seconds = (words / (WORDS_PER_MINUTE / 60.0)
+                   + screens * SEC_PER_SCREEN
+                   + len(boxes) * SEC_PER_PANEL)
 
     manifest = {
         "series": project.series.get("title"),
