@@ -1,0 +1,80 @@
+{
+  "version": "1.0",
+  "canvas": {
+    "platforms": {
+      "naver": { "width": 690, "maxHeight": "unbounded", "dpi": 72, "panelsPerEpisode": "45-70" },
+      "kakao": { "width": 690, "maxHeight": "unbounded", "dpi": 72, "panelsPerEpisode": "40-60" },
+      "webtoon": { "width": 800, "maxHeight": "unbounded", "dpi": 72, "panelsPerEpisode": "30-50" },
+      "tapas": { "width": 940, "maxHeight": "unbounded", "dpi": 72, "panelsPerEpisode": "25-45" },
+      "lezhin": { "width": 690, "maxHeight": "unbounded", "dpi": 72, "panelsPerEpisode": "40-60" },
+      "own-site": { "width": 1080, "maxHeight": "unbounded", "dpi": 72, "panelsPerEpisode": "flexible" }
+    },
+    "scrollUnitPx": [700, 1000],
+    "sideMarginPx": [24, 40],
+    "balloonSafeArea": { "x": [8, 92], "y": [6, 94] },
+    "speechTypePx": [24, 30],
+    "captionTypePx": [22, 26]
+  },
+  "shots": [
+    { "id": "establishing", "job": "place, scale, time", "height": [1.25, 1.6], "lines": "0-1" },
+    { "id": "wide", "job": "blocking, geography", "height": [1.0, 1.3], "lines": "0-2" },
+    { "id": "full", "job": "action readability", "height": [1.05, 1.35], "lines": "0-2" },
+    { "id": "medium", "job": "conversation, business", "height": [0.85, 1.05], "lines": "1-3" },
+    { "id": "medium-close", "job": "emotional exchange, hands", "height": [0.75, 0.95], "lines": "1-2" },
+    { "id": "close-up", "job": "reaction", "height": [0.6, 0.85], "lines": "1-2" },
+    { "id": "extreme-close", "job": "one detail at maximum pressure", "height": [0.5, 0.7], "lines": "0-1" },
+    { "id": "insert", "job": "information, foreshadow", "height": [0.45, 0.7], "lines": "0-1" },
+    { "id": "over-shoulder", "job": "power imbalance", "height": [0.8, 1.0], "lines": "1-2" },
+    { "id": "silhouette", "job": "conceal, threaten, icon", "height": [0.95, 1.5], "lines": "0-1" },
+    { "id": "panel-less", "job": "breath or catastrophe", "height": [1.3, 2.2], "lines": "0-1" }
+  ],
+  "angles": [
+    { "id": "eye", "effect": "equal footing" },
+    { "id": "low", "effect": "power, threat, heroism" },
+    { "id": "high", "effect": "vulnerability, judgement" },
+    { "id": "birds", "effect": "isolation, strategy, scale" },
+    { "id": "worms", "effect": "monumentality, awe" },
+    { "id": "dutch", "effect": "instability, wrongness" },
+    { "id": "top-down", "effect": "tableau, evidence, ritual" }
+  ],
+  "compositions": [
+    { "id": "center", "effect": "confrontation, icon" },
+    { "id": "thirds", "effect": "neutral, balloon room" },
+    { "id": "diagonal", "effect": "motion, urgency" },
+    { "id": "symmetry", "effect": "order, ritual, dread" },
+    { "id": "negative-space", "effect": "loneliness, breath" },
+    { "id": "frame-within", "effect": "surveillance, entrapment" },
+    { "id": "claustrophobic", "effect": "pressure" },
+    { "id": "leading-lines", "effect": "pull the eye down the scroll" }
+  ],
+  "gutters": [
+    { "px": [0, 40], "reads": "same instant / cut in action" },
+    { "px": [80, 140], "reads": "beat change (default)" },
+    { "px": [180, 260], "reads": "pause before a reveal" },
+    { "px": [280, 500], "reads": "deliberate silence / location change" },
+    { "px": [600, 1200], "reads": "chapter break (once per episode max)" }
+  ],
+  "rhythmTemplates": {
+    "standard8": [
+      { "fn": "hook", "shots": ["establishing", "insert"], "heights": [1.55, 0.6], "end": "quiet" },
+      { "fn": "setup", "shots": ["wide", "medium"], "heights": [1.1, 0.95], "end": "quiet" },
+      { "fn": "cast", "shots": ["medium-close", "over-shoulder", "close-up"], "heights": [0.9, 0.95, 0.8], "end": "turn" },
+      { "fn": "turn", "shots": ["wide", "close-up"], "heights": [1.55, 0.85], "end": "reveal" },
+      { "fn": "escalate", "shots": ["silhouette", "wide"], "heights": [1.25, 1.1], "end": "quiet" },
+      { "fn": "reveal", "shots": ["panel-less"], "heights": [1.9], "end": "cliff" },
+      { "fn": "breather", "shots": ["medium-close"], "heights": [0.95], "end": "quiet" },
+      { "fn": "stinger", "shots": ["panel-less", "extreme-close"], "heights": [1.3, 0.7], "end": "cliff" }
+    ],
+    "webtoon30": "compress setup and escalate; never compress breather or stinger",
+    "naver60": "split escalate and reveal into two visual sequences each"
+  },
+  "continuityRules": [
+    "respect the 180 degree line",
+    "match eyelines and screen direction",
+    "one key light direction per scene",
+    "cut on action: panel N begins, panel N+1 impacts",
+    "match exit and entry across the scroll boundary",
+    "silent panels must still change something",
+    "thumbnail test at 120px"
+  ]
+}

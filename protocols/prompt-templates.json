@@ -1,0 +1,100 @@
+{
+  "version": "1.0",
+  "styleLockTemplate": "[medium + lineage], [line quality], [shading model], [lighting logic], [palette + colour script], [level of detail], [framing], [finish rules], no text, no lettering, no speech bubbles",
+  "styleLockExample": "korean dark fantasy webtoon, intricate varied-weight ink lineart, painterly chiaroscuro shading, ember and moonlit rim lighting, gothic korean architecture, atmospheric depth haze, muted jewel palette of jade, ink-black and old gold, vertical 800x1280 panel, cinematic graphic composition, no text",
+  "styleLockRules": [
+    "No character descriptions inside the lock",
+    "No negations inside the lock — use the negative prompt",
+    "Keep under ~90 words",
+    "Include 'no text, no lettering, no speech bubbles'"
+  ],
+  "faceAnchorTemplate": "[name], [age]-year-old [nationality] [gender], [face shape], [eyes], [brows], [hair silhouette], [build], [permanent marks]",
+  "faceAnchorExample": "Han Yuwol, 34-year-old korean man, long high-cheekboned face, tired narrow eyes with faint dark circles, straight brows, straight black hair slightly too long at the nape, tall lean build, ink-stained fingers",
+  "faceAnchorRules": [
+    "20-35 words",
+    "Permanent identity only: skull shape, eyes, brows, hair silhouette, build, scars",
+    "Never include clothing, armour, props, emotion, lighting or pose",
+    "Pasted verbatim into every panel that features this character",
+    "Outfit lives in its own field and in per-panel overrides"
+  ],
+  "outfitTemplate": "[garment layers], [colour and material], [one distinctive detail], [state: dry/soaked/torn/bloodied]",
+  "versionBlockTemplate": "{{faceAnchor}}, wearing {{outfit}}, {{variant|evolution}} \\\"{{versionName}}\\\", preserve {{identityMarkers}}, {{versionDescription}}",
+  "referenceSheetPrompt": "character reference sheet, front / three-quarter / profile views, {{anchor}}, neutral grey background, {{styleLock}}, consistent design",
+  "referenceSheetShots": {
+    "portrait": "head and shoulders, neutral expression, front view",
+    "fullBody": "full body, front view, neutral stance, feet visible",
+    "turnaround": "front, three-quarter, profile and back views side by side",
+    "expressions": "six small heads: neutral, angry, shocked, smiling, determined, pained",
+    "poses": "six full-body poses: standing, running, attacking, blocking, falling, reaching"
+  },
+  "referenceAttachmentLine": "use the attached reference sheets as the visual reference; keep face shape, eye design, hair silhouette and costume identical",
+  "allowedChanges": [
+    "pose",
+    "expression",
+    "camera angle",
+    "lighting",
+    "damage",
+    "sweat/dirt",
+    "motion",
+    "temporary props"
+  ],
+  "forbiddenChanges": [
+    "face shape",
+    "eye design",
+    "hair silhouette",
+    "costume (unless a variant/evolution is bound)",
+    "signature marks",
+    "body proportions"
+  ],
+  "characterAnchorTemplate": "[name], [age]-year-old [nationality] [gender], [face: eyes, nose, brows], [hair], [build], [outfit with one distinctive detail], [prop], [palette]",
+  "characterAnchorExample": "Han Yuwol, 34-year-old korean man, tired narrow eyes with faint dark circles, straight black hair slightly too long at the nape, tall lean build, charcoal ferryman's long coat worn open, chipped jade badge on the left lapel, ink-stained fingers, carries a warm paper lantern at hip height",
+  "characterAnchorRules": [
+    "35-55 words",
+    "Only permanent features: bone structure, hair, clothes, props",
+    "Never include emotion, lighting or pose",
+    "Paste verbatim in every panel; never paraphrase"
+  ],
+  "panelPromptTemplate": "{{styleLock}}, {{shot}}, {{angle}}, {{composition}}, {{setting}}, {{action}}, {{characterAnchors}}, {{lighting}}, {{palette}} colour script, {{framing}}, identical facial structure and outfit to the character reference sheet",
+  "negativePrompt": "blurry lineart, extra fingers, extra limbs, deformed hands, watermark, signature, garbled text, latin lettering, speech bubbles, photorealistic, 3d render, anime screencap, oversaturated pastel, chibi, cropped head, duplicate character, inconsistent eye colour, modern clothing",
+  "negativeAdditions": {
+    "crowd": "two heads, fused bodies, melted faces",
+    "dramatic": "flat lighting, hazy low contrast",
+    "styleDrift": "western comic style, manga screentone",
+    "action": "static pose, stiff anatomy"
+  },
+  "seedPolicy": "one seed per episode; re-roll only character sheets; change one variable per iteration",
+  "promptOrder": [
+    "style lock",
+    "shot",
+    "angle",
+    "composition",
+    "setting",
+    "action",
+    "face anchor + outfit + version markers",
+    "reference attachment line",
+    "lighting",
+    "palette",
+    "framing"
+  ],
+  "shotPhrases": {
+    "establishing": "establishing shot, environment dominant, figure small in frame",
+    "wide": "wide shot, full bodies, clear blocking and spatial geography",
+    "full": "full-body shot, figure fills the vertical frame",
+    "medium": "medium shot, waist up",
+    "medium-close": "medium close-up, chest up, hands visible",
+    "close-up": "close-up on the face, emotion legible at thumbnail size",
+    "extreme-close": "extreme close-up, single detail fills the frame",
+    "insert": "insert shot, object detail, shallow depth of field",
+    "over-shoulder": "over-the-shoulder shot, foreground shoulder in silhouette",
+    "silhouette": "silhouette shot, subject backlit and unreadable",
+    "panel-less": "panel-less bleeding art, no frame border, full-bleed composition"
+  },
+  "lightingPhrases": {
+    "lantern": "warm practical lantern key from below, cold blue rim, deep falloff",
+    "overcast": "flat overcast ambient, low contrast, soft shadows",
+    "neon": "magenta and cyan edge lighting, wet reflective surfaces",
+    "interrogation": "hard top light, black background, single specular",
+    "golden": "low golden hour side light, long shadows, warm bounce"
+  },
+  "letteringNote": "Never let the image model render text. Letter in the studio: balloons, tails, captions and SFX are layout, not paint."
+}
