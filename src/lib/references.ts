@@ -61,13 +61,18 @@ export const sheetOf = (kind: SheetKind): SheetSpec => SHEETS.find((s) => s.kind
 export const refImages = (v?: CharacterVersion): string[] =>
   v ? SHEETS.map((s) => v.images[s.kind]).filter((x): x is string => !!x) : [];
 
-/** Reference images to attach when rendering one panel (portrait/full-body first, max 4). */
+/**
+ * Reference images to attach when rendering one panel, portrait/full-body first.
+ * The provider decides the real ceiling (see REF_CAP in ai/providers): FLUX 10,
+ * Gemini 14, gpt-image 16. Ten is the practical cap here so a cast of three
+ * cannot bury the prompt under sheets.
+ */
 export function refsForPanel(project: Project, panel: Panel): string[] {
   const out: string[] = [];
   for (const id of panel.characterIds) {
     const v = resolvedVersion(project, panel, id);
     for (const src of refImages(v)) {
-      if (!out.includes(src) && out.length < 4) out.push(src);
+      if (!out.includes(src) && out.length < 10) out.push(src);
     }
   }
   return out;

@@ -8,6 +8,8 @@ import { refinePanelPrompt, renderPanel } from '../ai/engine';
 import { blobToDataUrl, PROVIDER_LABEL, supportsReferences } from '../ai/providers';
 import { compilePanel } from '../lib/prompt';
 import { refsForPanel, versionsFor } from '../lib/references';
+import { analyzeRenders, buildRenderQaReport, type RenderQaReport } from '../lib/renderQA';
+import { copyText, download } from '../lib/export';
 
 export function RenderView() {
   const { project, episode, update, putAsset, removeAsset, resolve, toast } = useStudio();
@@ -17,6 +19,26 @@ export function RenderView() {
   const [focus, setFocus] = useState<string | null>(null);
   const [editText, setEditText] = useState('');
   const [editing, setEditing] = useState(false);
+  const [qa, setQa] = useState<RenderQaReport | null>(null);
+  const [qaBusy, setQaBusy] = useState(false);
+
+  const runQa = async () => {
+    setQaBusy(true);
+    try {
+      const report = await analyzeRenders(project, panels, resolve);
+      setQa(report);
+      toast(
+        report.analysed
+          ? `${report.analysed} render(s) analysed · ${report.warned} need a look`
+          : 'No rendered panels to analyse yet',
+        report.warned ? 'warn' : 'ok',
+      );
+    } catch (e) {
+      toast(e instanceof Error ? e.message : 'Could not analyse the renders', 'err');
+    } finally {
+      setQaBusy(false);
+    }
+  };
   const fileRef = useRef<HTMLInputElement>(null);
   const uploadTarget = useRef<string | null>(null);
 
@@ -228,6 +250,91 @@ export function RenderView() {
       </div>
 
       {!panels.length && <Card><div className="tiny dim">No panels yet — direct them in stage 4.</div></Card>}
+
+      <Card className="qa-card">
+        <div className="row between wrap gap-10">
+          <div>
+            <div className="card-title" style={{ marginBottom: 2 }}>Render QA</div>
+            <p className="tiny dim" style={{ maxWidth: '62ch', lineHeight: 1.6 }}>
+              Measured, not opinionated: resolution against the canvas, aspect against the plan, contrast and exposure, dead
+              borders, and whether the silhouette survives at 120px.
+            </p>
+          </div>
+          <div className="row gap-6">
+            {qa && (
+              <>
+                <Btn
+                  size="sm"
+                  variant="ghost"
+                  icon="copy"
+                  onClick={async () => {
+                    const ok = await copyText(buildRenderQaReport(project, qa));
+                    toast(ok ? 'QA report copied' : 'Copy failed', ok ? 'ok' : 'err');
+                  }}
+                >
+                  Copy report
+                </Btn>
+                <Btn
+                  size="sm"
+                  variant="ghost"
+                  icon="download"
+                  onClick={() => download(`${project.meta.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-render-qa.md`, buildRenderQaReport(project, qa), 'text/markdown')}
+                >
+                  .md
+                </Btn>
+              </>
+            )}
+            <Btn size="sm" variant="soft" icon="shield" loading={qaBusy} disabled={!rendered} onClick={() => void runQa()}>
+              {qa ? 'Re-analyse' : 'Analyse renders'}
+            </Btn>
+          </div>
+        </div>
+
+        {qa && (
+          <div className="qa-table-wrap">
+            <table className="qa-table">
+              <thead>
+                <tr>
+                  <th>P</th>
+                  <th>px</th>
+                  <th>aspect</th>
+                  <th>mean</th>
+                  <th>contrast</th>
+                  <th>120px edge</th>
+                  <th>findings</th>
+                </tr>
+              </thead>
+              <tbody>
+                {qa.panels.map((row) => (
+                  <tr key={row.panelId} className={row.issues.some((i) => i.level === 'warn') ? 'is-warn' : ''}>
+                    <td className="mono">P{String(row.panelNo).padStart(2, '0')}</td>
+                    <td className="mono">{row.width}×{row.height}</td>
+                    <td className="mono">{row.actualAspect.toFixed(2)}/{row.plannedAspect.toFixed(2)}</td>
+                    <td className="mono">{row.meanLuma.toFixed(0)}</td>
+                    <td className="mono">{row.contrast.toFixed(0)}</td>
+                    <td className="mono">{row.thumbEdge.toFixed(1)}</td>
+                    <td>
+                      {row.issues.length ? (
+                        <ul className="qa-findings">
+                          {row.issues.map((i) => (
+                            <li key={i.text} className={i.level}>{i.text}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <span className="tiny dim">pass</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <p className="tiny dim" style={{ marginTop: 8 }}>
+              {qa.analysed} analysed · {qa.warned} flagged · {qa.skipped} unreadable. Nothing here judges whether the panel is
+              good — only whether it will survive a phone.
+            </p>
+          </div>
+        )}
+      </Card>
 
       <input
         ref={fileRef}

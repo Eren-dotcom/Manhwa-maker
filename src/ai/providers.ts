@@ -20,6 +20,7 @@ export const DEFAULT_BASE: Record<string, string> = {
   openai: 'https://api.openai.com/v1',
   anthropic: 'https://api.anthropic.com',
   gemini: 'https://generativelanguage.googleapis.com',
+  flux: 'https://api.bfl.ai',
   openrouter: 'https://openrouter.ai/api/v1',
   ollama: 'http://localhost:11434',
   custom: '',
@@ -219,16 +220,81 @@ export function extractJson<T>(text: string): T {
 export const IMAGE_MODELS: Record<string, string[]> = {
   openai: ['gpt-image-1', 'gpt-image-1-mini', 'dall-e-3'],
   gemini: ['gemini-2.5-flash-image', 'gemini-2.0-flash-preview-image-generation'],
+  flux: ['flux-2-pro', 'flux-2-max', 'flux-kontext-pro', 'flux-kontext-max'],
   pollinations: ['flux', 'turbo'],
   upload: [],
   placeholder: [],
 };
 
+/**
+ * How many reference images each provider will actually accept. These are
+ * provider ceilings, not studio preferences: FLUX.2 takes up to 10, Gemini up
+ * to 14, gpt-image up to 16. Sending more is silently ignored or errors.
+ */
+export const REF_CAP: Record<string, number> = {
+  openai: 16,
+  gemini: 14,
+  flux: 10,
+  pollinations: 0,
+  upload: 0,
+  placeholder: 0,
+};
+
 /** Can this provider condition on the studio's character reference sheets? */
 export function supportsReferences(cfg: AiConfig): boolean {
   if (cfg.imageProvider === 'gemini') return true;
+  if (cfg.imageProvider === 'flux') return true;
   if (cfg.imageProvider === 'openai') return (cfg.imageModel || 'gpt-image-1').includes('gpt-image');
   return false;
+}
+
+const rawBase64 = (url: string): string => splitDataUrl(url)?.b64 ?? url;
+
+/** BFL is asynchronous: POST returns a polling URL, then you GET until Ready. */
+async function callFlux(cfg: AiConfig, prompt: string, opts: ImageOptions, refs: string[]): Promise<string> {
+  const base = trimBase(cfg.baseUrl || DEFAULT_BASE.flux);
+  const key = cfg.apiKey.trim();
+  if (!key) throw new Error('FLUX needs a Black Forest Labs API key.');
+  const model = cfg.imageModel || 'flux-2-pro';
+
+  const [w, h] = (opts.aspect ?? '2x3').split('x').map(Number);
+  const ratio = w && h ? h / w : 1.5;
+  const aspectRatio = ratio > 1.2 ? '2:3' : ratio < 0.83 ? '3:2' : '1:1';
+
+  const body: Record<string, unknown> = {
+    prompt: opts.negative ? `${prompt}\n\nAvoid: ${opts.negative}` : prompt,
+    aspect_ratio: aspectRatio,
+    output_format: 'png',
+    safety_tolerance: 2,
+  };
+  if (opts.seed) body.seed = Math.abs(Math.round(opts.seed)) % 2147483647;
+  // FLUX.2 / Kontext take reference images as input_image, input_image_2, ...
+  refs.forEach((r, i) => {
+    body[i === 0 ? 'input_image' : `input_image_${i + 1}`] = rawBase64(r);
+  });
+
+  const start = await postJson(`${base}/v1/${model}`, { 'x-key': key }, body, 60000);
+  const polling: string | undefined = start.polling_url;
+  const id: string | undefined = start.id;
+  if (!polling && !id) throw new Error('FLUX did not return a job id.');
+  const url = polling ?? `${base}/v1/get_result?id=${id}`;
+
+  for (let attempt = 0; attempt < 60; attempt += 1) {
+    await new Promise((r) => setTimeout(r, attempt < 5 ? 1200 : 2500));
+    const res = await fetch(url, { headers: { 'x-key': key, accept: 'application/json' } });
+    if (!res.ok) throw new Error(`FLUX polling failed (${res.status}).`);
+    const data = await res.json();
+    const status = String(data.status ?? '');
+    if (status === 'Ready') {
+      const sample = data.result?.sample;
+      if (!sample) throw new Error('FLUX finished without an image.');
+      const img = await fetch(sample);
+      return await blobToDataUrl(await img.blob());
+    }
+    if (status && status !== 'Pending' && status !== 'Queued' && status !== 'Processing')
+      throw new Error(`FLUX job ended as "${status}". ${data.result?.error ?? ''}`.trim());
+  }
+  throw new Error('FLUX timed out after ~2 minutes. Try again or a smaller model.');
 }
 
 export interface ImageOptions {
@@ -256,7 +322,7 @@ function dataUrlToBlob(url: string): Blob {
 /** Image generation. Returns a data URL, or null when using the storyboard engine. */
 export async function callImage(cfg: AiConfig, prompt: string, opts: ImageOptions = {}): Promise<string | null> {
   if (cfg.imageProvider === 'placeholder') return null;
-  const refs = (opts.refs ?? []).filter(Boolean).slice(0, 4);
+  const refs = (opts.refs ?? []).filter(Boolean).slice(0, REF_CAP[cfg.imageProvider] ?? 0);
   const fullPrompt = opts.negative ? `${prompt}\n\nAvoid: ${opts.negative}` : prompt;
 
   if (cfg.imageProvider === 'pollinations') {
@@ -267,6 +333,10 @@ export async function callImage(cfg: AiConfig, prompt: string, opts: ImageOption
     if (!res.ok) throw new Error(`Pollinations returned ${res.status}. Try again or use your own key.`);
     const blob = await res.blob();
     return await blobToDataUrl(blob);
+  }
+
+  if (cfg.imageProvider === 'flux') {
+    return callFlux(cfg, fullPrompt, opts, refs);
   }
 
   if (cfg.imageProvider === 'gemini') {

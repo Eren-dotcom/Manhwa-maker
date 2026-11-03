@@ -67,6 +67,31 @@ Before rendering a single panel:
 
 Text alone will not hold a face across forty panels. A reference image plus a fixed anchor plus a fixed seed will get close.
 
+## Which image model, and how many references it takes
+
+Reference-conditioned generation is the only reliable consistency tool, so the practical question is
+how many reference images a provider actually accepts, and what it does with them:
+
+| Provider | Reference images | Character | Best at |
+| --- | --- | --- | --- |
+| **FLUX.2 / Kontext** (Black Forest Labs) | up to 10 | strongest identity preservation across an edit chain | keeping a face through background swaps and re-lighting |
+| **Gemini image** (Nano Banana line) | up to 14, ~5 people | strong, cheap, fast | instruction-following and multi-image fusion |
+| **gpt-image** (OpenAI) | up to 16 (first 5 at higher fidelity) | good with careful prompting | text inside images and mask-based precision edits |
+
+Two consequences for this studio:
+
+1. **Send the right sheets, not all the sheets.** Portrait and full body carry identity; turnaround
+   carries angle; expressions and poses are there for matching acting, not for identity. The studio
+   orders them that way and stops where the provider stops (10 for FLUX, 14 for Gemini, 16 for
+   gpt-image).
+2. **Match the model to the job.** Awakenings and costume swaps want FLUX or Gemini; panels with
+   in-world signage or a mask-guided fix want gpt-image. Consistency across an edit *chain* — editing
+   the same panel five times — is where identity models separate from generalists: a generalist
+   re-draws by the second edit, an identity model is still recognisable at the fifth.
+
+Honest caveat: browser-direct calls can be blocked by a provider's CORS policy. FLUX is asynchronous
+(job id → polling URL) and may need a proxy; OpenAI and Gemini are plain requests.
+
 ## Seeds, variation and re-rolling
 
 - Choose one seed per episode and keep it. It stabilises the model's "handwriting".

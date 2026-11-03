@@ -166,13 +166,82 @@ export const COMPOSITIONS: { id: Composition; label: string; note: string }[] = 
 ];
 
 /** Release cadence + canvas rules per platform — this is what writers actually get paid against. */
-export const PLATFORMS: { id: Platform; name: string; canvas: string; cadence: string; panels: string }[] = [
-  { id: 'naver', name: 'Naver Series', canvas: '690 × variable, 72 dpi', cadence: 'weekly', panels: '45–70 per episode' },
-  { id: 'kakao', name: 'KakaoPage', canvas: '690 × variable, 72 dpi', cadence: 'weekly', panels: '40–60 per episode' },
-  { id: 'webtoon', name: 'WEBTOON (Global)', canvas: '800 × variable, 72 dpi', cadence: 'weekly', panels: '30–50 per episode' },
-  { id: 'tapas', name: 'Tapas', canvas: '940 × variable', cadence: 'weekly / 2×', panels: '25–45 per episode' },
-  { id: 'lezhin', name: 'Lezhin', canvas: '690 × variable', cadence: 'weekly', panels: '40–60 per episode' },
-  { id: 'own-site', name: 'Your own site', canvas: '1080 × variable', cadence: 'you decide', panels: 'flexible' },
+export interface UploadSpec {
+  /** Export width the platform expects. */
+  width: number;
+  /** Max height of one uploaded image — taller strips are auto-sliced by the platform. */
+  maxSectionHeight: number;
+  maxFileMB: number;
+  maxEpisodeMB: number;
+  maxImages: number;
+  /** True when the numbers are a community norm rather than a published spec. */
+  approximate?: boolean;
+  source?: string;
+}
+
+export const PLATFORMS: {
+  id: Platform;
+  name: string;
+  canvas: string;
+  cadence: string;
+  panels: string;
+  upload?: UploadSpec;
+}[] = [
+  {
+    id: 'naver',
+    name: 'Naver Series',
+    canvas: '690 × variable, 72 dpi',
+    cadence: 'weekly',
+    panels: '45–70 per episode',
+    upload: { width: 720, maxSectionHeight: 1280, maxFileMB: 10, maxEpisodeMB: 50, maxImages: 200, approximate: true },
+  },
+  {
+    id: 'kakao',
+    name: 'KakaoPage',
+    canvas: '690 × variable, 72 dpi',
+    cadence: 'weekly',
+    panels: '40–60 per episode',
+    upload: { width: 720, maxSectionHeight: 1280, maxFileMB: 10, maxEpisodeMB: 50, maxImages: 200, approximate: true },
+  },
+  {
+    id: 'webtoon',
+    name: 'WEBTOON (Global)',
+    canvas: '800 × variable, 72 dpi',
+    cadence: 'weekly',
+    panels: '30–50 per episode',
+    upload: {
+      width: 800,
+      maxSectionHeight: 1280,
+      maxFileMB: 2,
+      maxEpisodeMB: 20,
+      maxImages: 100,
+      source: 'WEBTOON Canvas Creator Resource Handbook — 800×1280 per image, ≤2 MB each, ≤20 MB per episode, up to 100 images.',
+    },
+  },
+  {
+    id: 'tapas',
+    name: 'Tapas',
+    canvas: '940 × variable',
+    cadence: 'weekly / 2×',
+    panels: '25–45 per episode',
+    upload: { width: 940, maxSectionHeight: 1600, maxFileMB: 5, maxEpisodeMB: 40, maxImages: 150, approximate: true },
+  },
+  {
+    id: 'lezhin',
+    name: 'Lezhin',
+    canvas: '690 × variable',
+    cadence: 'weekly',
+    panels: '40–60 per episode',
+    upload: { width: 720, maxSectionHeight: 1280, maxFileMB: 10, maxEpisodeMB: 50, maxImages: 200, approximate: true },
+  },
+  {
+    id: 'own-site',
+    name: 'Your own site',
+    canvas: '1080 × variable',
+    cadence: 'you decide',
+    panels: 'flexible',
+    upload: { width: 1080, maxSectionHeight: 20000, maxFileMB: 25, maxEpisodeMB: 500, maxImages: 500, approximate: true },
+  },
 ];
 
 export const GENRE_PRESETS: {

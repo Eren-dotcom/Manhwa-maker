@@ -204,14 +204,16 @@
       ],
       "outputs": {
         "image": "asset ref | url | storyboard",
-        "attachedReferences": "string[] (portrait/full body/turnaround of every version bound to the panel, max 4)"
+        "attachedReferences": "string[] (portrait/full body/turnaround of every version bound to the panel, max 4)",
+        "measuredQA": "per panel: intrinsic size, aspect vs plan, mean luma, contrast, dead-border flag, 120px edge energy"
       },
       "gate": [
         "composition readable at 120px",
         "every recurring character in the panel has a portrait + full body reference",
         "bound version sheets attached as image inputs where the provider supports it",
         "continuity of outfit/props/weather",
-        "unified grade"
+        "unified grade",
+        "no panel is narrower than the canvas, flat, or dead-bordered"
       ],
       "aiInstruction": "image generation only; never letter text inside the image"
     },
@@ -253,12 +255,15 @@
           "bible",
           "reader html",
           "storyboard print"
-        ]
+        ],
+        "uploadSections": "{ width, maxSectionHeight, sections[{filename, from, to, panels}] } validated against the platform's file/bytes/image caps",
+        "uploadPlan": "markdown manifest: section table, strip geometry, warnings"
       },
       "gate": [
         "score >= 85",
         "no blockers",
-        "phone read passes"
+        "phone read passes",
+        "section count and file sizes fit the platform caps"
       ],
       "aiInstruction": "audit and report with specific fixes"
     }

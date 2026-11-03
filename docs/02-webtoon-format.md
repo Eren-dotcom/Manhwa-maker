@@ -8,7 +8,7 @@
 | --- | --- | --- | --- |
 | Naver Webtoon / Series | 690px | variable (no hard cap) | 72 dpi, sRGB. Heights of 20,000–60,000px per episode are normal. |
 | KakaoPage | 690px | variable | Similar to Naver; wait-to-free monetisation. |
-| WEBTOON (global) | 800px | variable | English-first; 800px is the de-facto standard for international release. |
+| WEBTOON (global) | 800px | 1,280px **per uploaded image** | English-first; 800px is the de-facto standard for international release. An episode is a stack of ≤1,280px-tall images, not one tall file. |
 | Tapas | 940px | variable | Slightly wider; useful for detailed art. |
 | Lezhin | 690px | variable | Paid/coin model; often higher panel counts. |
 | Your own site | 1080px+ | variable | Only if you also serve a mobile view; these readers are mostly desktop. |
@@ -104,11 +104,42 @@ Webtoons are colour-first, and colour is a narrative instrument:
 - Keep skin tones consistent across characters within a scene — mixed lighting is a legitimate choice, but it must be a *decision*, not drift.
 - Reduce saturation for flashbacks, increase contrast for violence, desaturate everything except one accent colour for shock.
 
+## Upload sectioning (the part that surprises people)
+
+A finished episode is usually **not** uploaded as one enormous PNG. WEBTOON Canvas stacks images of
+bounded height, and the exact numbers matter more than any art decision:
+
+| Spec | WEBTOON Canvas | Notes |
+| --- | --- | --- |
+| Image width | 800px | Wider images are accepted but silently sliced and re-encoded |
+| Image height | ≤1,280px **each** | Taller strips are auto-sliced by the platform |
+| Images per episode | up to 100 | Community norm lands around 60–80 panels |
+| File size | ≤2 MB per image, ≤20 MB per episode | Both limits apply |
+| Format / colour | JPG or PNG, RGB | Never CMYK; DPI is print metadata and does nothing on screen |
+| Series thumbnail | 1080×1080 (<500 KB) or 1080×1920 (<700 KB) | Square for the grid, tall for the feature rail |
+| Episode thumbnail | 202×142 | Rectangular |
+
+Naver, Kakao and Lezhin sit around 690–720px; Tapas recommends 940px. Treat every non-WEBTOON number
+as a community norm and re-check the creator dashboard before a release — platforms change their
+handling without changing their help pages.
+
+**Why sectioning is a craft decision, not a chore.** A section boundary is a hard cut the reader can
+see if it lands badly: cutting through a face or a balloon looks like a rendering bug. Because the
+studio authored every panel and gutter, it knows the exact pixel geometry of the strip and can cut
+where the gutters already are, instead of letting the platform guess. That is what the **Upload plan**
+in stage 8 computes: 800 × total-height, sliced every 1,280px, with a warning when a cut lands inside
+the middle 40% of a panel.
+
+**Nudge gutters, don't re-draw.** If a cut lands badly, adding 60–120px to the gutter above that
+panel moves the boundary into empty space at zero art cost.
+
 ## Delivery checklist (format)
 
 - [ ] Width matches the platform exactly.
 - [ ] No panel wider than the canvas; full-bleed panels align to the canvas edge.
-- [ ] Episode height under the platform's upload cap (usually 2,000,000px of area is fine; individual files should be split if the tool chokes).
+- [ ] Episode sliced into upload sections (WEBTOON: 800×1280, ≤2 MB each, ≤20 MB total, ≤100 files).
+- [ ] No section boundary cuts through a face, a balloon or a key prop — move the gutter instead.
+- [ ] Section files named in reading order (`ep01_01.png` …) so the platform stacks them correctly.
 - [ ] Text at least 24px at 800px width for speech, 22px for captions.
 - [ ] No critical content within 20px of any panel edge.
 - [ ] File naming: `series-ep042-p07.png` — episode and panel always, because you will re-cut these.

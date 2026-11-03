@@ -781,3 +781,19 @@
   .qc-item { flex-wrap: wrap; }
   .qc-actions { width: 100%; padding-left: 18px; }
 }
+
+/* ---------- Render QA (measured, not opinionated) ---------- */
+.qa-card { padding: 16px 18px; }
+.qa-table-wrap { margin-top: 14px; overflow-x: auto; }
+.qa-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+.qa-table th {
+  text-align: left; font-weight: 600; font-size: 10px; letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--dim); padding: 6px 8px; border-bottom: 1px solid var(--line-strong); white-space: nowrap;
+}
+.qa-table td { padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--muted); }
+.qa-table tr.is-warn td { background: rgba(245, 179, 80, 0.05); }
+.qa-table td.mono { font-family: var(--font-mono, ui-monospace, monospace); white-space: nowrap; color: var(--text-soft); }
+.qa-findings { margin: 0; padding-left: 14px; display: flex; flex-direction: column; gap: 3px; }
+.qa-findings li { line-height: 1.45; }
+.qa-findings li.warn { color: #f5c98a; }
+.qa-findings li.info { color: var(--dim); }

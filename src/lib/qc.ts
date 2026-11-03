@@ -1,6 +1,7 @@
 import type { Panel, Project, QcIssue, StageId } from '../store/types';
 import { SAMPLE_BUBBLE_LIMITS } from '../store/constants';
 import { castWithoutReferences, danglingBindings, REQUIRED_SHEETS, versionsUsed, VERSION_LABEL } from './references';
+import { planUpload } from './upload';
 
 // ---------------------------------------------------------------------------
 // QC engine — the editor that never sleeps. Checks are deterministic and run on
@@ -321,6 +322,35 @@ export function auditProject(project: Project): QcIssue[] {
     detail: `Roughly ${wpm} words per minute of scroll — target 120–180 for a weekly episode.`,
     fix: 'If you are far over, the episode is a novel wearing a comic’s clothes.',
   });
+
+  // ---------- delivery ----------
+  if (panels.length) {
+    const plan = planUpload(project, ep);
+    if (plan.sections.length > plan.spec.maxImages)
+      add({
+        stage: 'qc',
+        level: 'error',
+        title: `${plan.sections.length} upload sections exceeds ${plan.specLabel}'s ceiling`,
+        detail: `${plan.specLabel} accepts up to ${plan.spec.maxImages} images per episode at ≤${plan.spec.maxSectionHeight}px tall. This strip is ${plan.totalHeight}px, which slices into ${plan.sections.length}.`,
+        fix: 'Split the episode in two, or widen the canvas so each panel covers more vertical distance.',
+      });
+    const focusCuts = plan.sections.filter((x) => x.cutsFocus);
+    if (focusCuts.length)
+      add({
+        stage: 'qc',
+        level: 'info',
+        title: `${focusCuts.length} upload cut(s) land mid-panel`,
+        detail: `Sections ${focusCuts.map((x) => x.index).join(', ')} break inside the middle of a panel. It still uploads — the platform slices there anyway — but a cut through a face reads as a glitch.`,
+        fix: 'Nudge the gutters around those panels so a section boundary lands in the gap.',
+      });
+    add({
+      stage: 'qc',
+      level: 'info',
+      title: `${plan.sections.length} upload sections · ${plan.width} × ${plan.totalHeight}px`,
+      detail: `${plan.specLabel}: ${plan.width}px wide, ≤${plan.spec.maxSectionHeight}px tall, ≤${plan.spec.maxFileMB} MB per image, ≤${plan.spec.maxEpisodeMB} MB per episode. Export the plan from the delivery pack.`,
+      fix: 'Download the upload plan, then slice the flattened strip at those boundaries.',
+    });
+  }
 
   if (ep.targetPanels && Math.abs(panels.length - ep.targetPanels) / ep.targetPanels > 0.35)
     add({

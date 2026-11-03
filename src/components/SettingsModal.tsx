@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useStudio } from '../store/studio';
 import { Btn, Field, Modal, Select, Slider, TextInput } from './ui';
-import { callLlm, DEFAULT_BASE, IMAGE_MODELS, MODEL_SUGGESTIONS, PROVIDER_LABEL, supportsReferences } from '../ai/providers';
+import { callLlm, DEFAULT_BASE, IMAGE_MODELS, MODEL_SUGGESTIONS, PROVIDER_LABEL, REF_CAP, supportsReferences } from '../ai/providers';
 import type { AiConfig } from '../store/types';
 
 const PROVIDERS: AiConfig['provider'][] = ['offline', 'openai', 'anthropic', 'gemini', 'openrouter', 'ollama', 'custom'];
@@ -132,13 +132,20 @@ export function SettingsModal({ open, onClose }: { open: boolean; onClose: () =>
                 <option value="placeholder">Storyboard art (offline)</option>
                 <option value="openai">OpenAI Images · accepts refs</option>
                 <option value="gemini">Google Gemini image · accepts refs</option>
+                <option value="flux">Black Forest Labs FLUX · accepts refs</option>
                 <option value="pollinations">Pollinations (no key, experimental)</option>
                 <option value="upload">Upload my own art</option>
               </Select>
             </Field>
             <Field
               label="Image model"
-              hint={supportsReferences(ai) ? 'Reference sheets will be attached to each render.' : 'This provider ignores reference sheets.'}
+              hint={
+                ai.imageProvider === 'flux'
+                  ? 'FLUX batches asynchronously. If the browser blocks the request (CORS), run it behind a proxy or use OpenAI/Gemini.'
+                  : supportsReferences(ai)
+                    ? `Reference sheets will be attached up to this provider's limit (${REF_CAP[ai.imageProvider] ?? 0}).`
+                    : 'This provider ignores reference sheets.'
+              }
             >
               <TextInput
                 list="image-models"

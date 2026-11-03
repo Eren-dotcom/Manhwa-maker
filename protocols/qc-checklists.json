@@ -85,6 +85,12 @@
       "stage": "bible",
       "check": "faceAnchor has no garment/armour words",
       "fix": "Move wardrobe into outfit; a costume change must never be able to redesign the face."
+    },
+    {
+      "id": "upload-sections-over-cap",
+      "stage": "qc",
+      "check": "ceil(stripHeight / maxSectionHeight) <= platform.maxImages",
+      "fix": "Split the episode, or widen the canvas so panels cover more vertical distance."
     }
   ],
   "notes": [
@@ -172,6 +178,26 @@
       "id": "provider-ignores-refs",
       "check": "image provider supports reference images when refs are attached",
       "fix": "Use gpt-image or a Gemini image model, or accept text-only rendering knowingly."
+    },
+    {
+      "id": "cut-through-panel",
+      "check": "no section boundary lands in the middle 40% of a panel",
+      "fix": "Add 60-120px to the gutter above that panel so the cut lands in empty space."
+    },
+    {
+      "id": "render-upscaled",
+      "check": "intrinsic render width >= canvas width",
+      "fix": "Render at or above the canvas width; upscaling softens lineart first."
+    },
+    {
+      "id": "render-flat",
+      "check": "contrast >= 18 and 18 <= mean luma <= 242",
+      "fix": "Re-light the panel or push the blacks; flat panels read as fog on a phone."
+    },
+    {
+      "id": "render-dead-border",
+      "check": "outer 2% band is not uniform-and-different",
+      "fix": "Crop the border or re-render full-bleed; bars become visible seams in the scroll."
     }
   ],
   "readability": [

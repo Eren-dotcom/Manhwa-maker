@@ -221,7 +221,7 @@ export interface AiConfig {
   baseUrl: string;
   apiKey: string;
   temperature: number;
-  imageProvider: 'placeholder' | 'openai' | 'gemini' | 'pollinations' | 'upload';
+  imageProvider: 'placeholder' | 'openai' | 'gemini' | 'flux' | 'pollinations' | 'upload';
   imageModel: string;
 }
 

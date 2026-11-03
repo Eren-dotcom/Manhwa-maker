@@ -15,6 +15,7 @@ import {
   slug,
 } from '../lib/export';
 import { qcScore, auditProject } from '../lib/qc';
+import { buildUploadManifest, composeUploadSections, planUpload } from '../lib/upload';
 import { applyAllFixes, applyFix, canAutoFix } from '../lib/fixes';
 import { useNavigate } from '../components/nav';
 import { localCritique } from '../ai/engine';
@@ -67,6 +68,38 @@ export function QcView({ issues, score }: { issues: QcIssue[]; score: number }) 
       applied ? `${applied} problem${applied === 1 ? '' : 's'} repaired across ${rules} rule${rules === 1 ? '' : 's'}` : 'Nothing left that the studio can repair on its own',
       applied ? 'ok' : 'info',
     );
+  };
+
+  const uploadPlan = useMemo(() => (episode ? planUpload(project, episode) : null), [project, episode]);
+  const [slicing, setSlicing] = useState(false);
+
+  const downloadSections = async () => {
+    if (!episode) return;
+    setSlicing(true);
+    try {
+      const files = await composeUploadSections(project, episode, (ref) => assets[ref ?? ''] ?? ref);
+      const over = files.filter((f) => f.bytes > uploadPlan!.spec.maxFileMB * 1024 * 1024);
+      // sequential, spaced — browsers only allow so many programmatic downloads
+      for (const f of files) {
+        const a = document.createElement('a');
+        a.href = f.dataUrl;
+        a.download = f.filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        await new Promise((r) => setTimeout(r, 400));
+      }
+      toast(
+        over.length
+          ? `${files.length} sections exported — ${over.length} exceed ${uploadPlan!.spec.maxFileMB} MB each`
+          : `${files.length} sections exported at ${uploadPlan!.width}px`,
+        over.length ? 'warn' : 'ok',
+      );
+    } catch (e) {
+      toast(e instanceof Error ? e.message : 'Could not export sections', 'err');
+    } finally {
+      setSlicing(false);
+    }
   };
 
   const errors = issues.filter((i) => i.level === 'error').length;
@@ -155,6 +188,23 @@ export function QcView({ issues, score }: { issues: QcIssue[]; score: number }) 
             </Btn>
             <Btn
               size="sm"
+              icon="download"
+              disabled={!episode}
+              onClick={() => episode && download(`${name}-ep${episode.no}-upload-plan.md`, buildUploadManifest(project, episode), 'text/markdown')}
+            >
+              Upload plan
+            </Btn>
+            <Btn
+              size="sm"
+              icon="panel"
+              loading={slicing}
+              disabled={!uploadPlan?.artComplete}
+              onClick={() => void downloadSections()}
+            >
+              Slice sections
+            </Btn>
+            <Btn
+              size="sm"
               icon="external"
               onClick={() => {
                 const w = window.open('', '_blank');
@@ -170,6 +220,37 @@ export function QcView({ issues, score }: { issues: QcIssue[]; score: number }) 
             <Toggle checked={inline} onChange={setInline} label="Include images inline (heavy)" />
             <span className="tiny dim">{inline ? 'Project exports carry base64 art.' : 'Exports reference image assets.'}</span>
           </div>
+        </Card>
+
+        <Card className="qc-release-card">
+          <div className="row between" style={{ marginBottom: 10 }}>
+            <div className="eyebrow" style={{ marginBottom: 0 }}>Upload sections</div>
+            {uploadPlan && <Badge tone={uploadPlan.artComplete ? 'ok' : 'neutral'}>{uploadPlan.sections.length} files</Badge>}
+          </div>
+          {uploadPlan ? (
+            <>
+              <ul className="checklist">
+                <li className={uploadPlan.sections.length <= uploadPlan.spec.maxImages ? 'ok' : ''}>
+                  {uploadPlan.width}px wide · {uploadPlan.totalHeight.toLocaleString()}px tall
+                </li>
+                <li className={uploadPlan.sections.every((x) => x.height <= uploadPlan.spec.maxSectionHeight) ? 'ok' : ''}>
+                  Every section ≤{uploadPlan.spec.maxSectionHeight}px tall
+                </li>
+                <li className={uploadPlan.sections.some((x) => x.cutsFocus) ? '' : 'ok'}>
+                  {uploadPlan.sections.filter((x) => x.cutsFocus).length || 'No'} cut(s) through a panel centre
+                </li>
+                <li className={uploadPlan.artComplete ? 'ok' : ''}>
+                  {uploadPlan.artComplete ? 'All panels have art — sections can be sliced' : 'Storyboard panels block section export'}
+                </li>
+              </ul>
+              <p className="tiny dim" style={{ marginTop: 8, lineHeight: 1.55 }}>
+                {uploadPlan.specLabel}: {uploadPlan.spec.maxSectionHeight}px max per image, ≤{uploadPlan.spec.maxFileMB} MB each
+                {uploadPlan.spec.approximate ? ' (approximate — verify with the platform)' : ''}.
+              </p>
+            </>
+          ) : (
+            <div className="tiny dim">No episode to plan.</div>
+          )}
         </Card>
 
         <Card className="qc-release-card">

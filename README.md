@@ -61,6 +61,27 @@ Prompt wording is a suggestion; a reference image is a fact. Every character own
 
 Chapter: [`docs/11-reference-memory.md`](docs/11-reference-memory.md).
 
+### Delivery: upload sections, not one giant PNG
+
+Platforms stack bounded images, not a single tall file. WEBTOON Canvas takes **800×1280 per image,
+≤2 MB each, ≤20 MB and ≤100 images per episode**; Naver/Kakao/Lezhin sit near 690–720px; Tapas
+recommends 940px. The studio knows every panel and gutter, so stage 8 computes the real strip
+geometry and cuts **at the gutters**, not through a face:
+
+- **Upload plan** (`.md`) — per-file table: filename, size, y-range, panels covered, and whether the
+  cut lands mid-panel; plus the full strip geometry.
+- **Slice sections** — rasterises the strip at the platform width (only when every panel has real
+  art) and downloads one PNG per section, drawn exactly like the reader: cover-fit, clipped, seam-exact.
+- **QC knows the caps** — section count against the image ceiling is an error, mid-panel cuts are a
+  note, and platform limits that are only community norms say so.
+
+### Render QA — measured, not opinionated
+
+Stage 6 can analyse the actual pixels of every rendered panel, locally and without a model: resolution
+against the canvas, aspect against the plan, mean/contrast exposure, dead uniform borders, and whether
+the silhouette survives at **120px** (edge energy on a downscaled copy). Results are a table plus a
+portable markdown report. It never judges whether a panel is good — only whether it survives a phone.
+
 Plus:
 
 - **Reader preview** — the real thing: continuous vertical strip, scaled balloons, gutters as time, phone/tablet/desktop widths, "only rendered" mode.
@@ -78,6 +99,9 @@ Click **Settings** in the sidebar footer.
 | --- | --- |
 | **Offline protocol engine** *(default)* | No key, no network. Builds a structured, QC-clean scaffolding from the same doctrine: concept, world, cast, 8-unit beats, panels with shot grammar. It deliberately does **not** ghostwrite dialogue. |
 | **OpenAI** | `gpt-4o-mini`, `gpt-4.1`, etc. JSON mode enabled. |
+| **OpenAI Images** | `gpt-image` — accepts up to 16 reference images, strongest at text and mask-based edits. |
+| **Google Gemini image** | cheap, fast, best instruction-following; accepts up to 14 references. |
+| **Black Forest Labs FLUX** | `flux-2-pro` / `flux-kontext-pro` — strongest identity preservation across an edit chain; accepts up to 10 references. Asynchronous: job id → polling URL, and browser calls may hit CORS. |
 | **Anthropic** | Claude models, direct browser access header included. |
 | **Google Gemini** | `generateContent` with JSON mime type. |
 | **OpenRouter** | One key, many models. |
@@ -171,7 +195,7 @@ public/demo/  rendered key panels for the reference episode
 
 ## Design notes
 
-- **No build-time UI libraries.** React + hand-written CSS; 38 source files, ~175 KB JS gzipped + ~13 KB CSS.
+- **No build-time UI libraries.** React + hand-written CSS; 40 source files, ~188 KB JS gzipped + ~13 KB CSS.
 - **Storyboard art is real.** When you have no image key, panels are drawn as deterministic SVG frames from the style lock — palette, composition guides, shot scale, figure silhouettes — so you can direct and read the episode before spending a single render.
 - **Images never bloat the project.** Rendered art lives in IndexedDB and is referenced by an asset key; undo snapshots and autosaves stay small.
 - **QC is deterministic, and it repairs.** The audit runs on every keystroke, scores the episode, and offers a real fix where one exists — style lock, anchors, version bindings, beat assignment, panel rhythm, balloon safe area, empty balloons, reading order. Anything that needs story stays a human decision, with a link to the stage.

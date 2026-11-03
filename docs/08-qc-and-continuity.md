@@ -57,6 +57,24 @@ lie.
 The rule of thumb: **if a fix would change what the story says, a human decides. If it only changes
 whether the file is well-formed, the studio decides.**
 
+## Measured checks (on the rendered pixels)
+
+The audit engine reads the project. The **Render QA** pass reads the actual images, locally, with no
+model call — because a prompt can promise contrast and a PNG can fail to deliver it:
+
+| Measure | How | Fails when |
+| --- | --- | --- |
+| Resolution vs canvas | intrinsic width vs project width | render is narrower than the canvas → upscaled and soft |
+| Aspect vs plan | image ratio vs the panel's planned ratio | more than ~8% off → cropping or letterboxing is inevitable |
+| Exposure | mean luminance of a downscaled frame | below ~18 → crushed darks; above ~242 → no blacks to anchor |
+| Contrast | standard deviation of luminance | below ~18 → flat, reads as fog on a phone |
+| Dead border | outer ~2% band is uniform *and* differs from the interior | letterboxed render or a baked-in margin → visible seam |
+| 120px survival | edge energy after downscaling to 120px wide | below the floor → the silhouette dissolves in a feed |
+
+None of this judges whether a panel is good. It judges whether the panel survives a phone, which is
+where it will actually be read. The report is text and portable — send it to an artist who never opens
+the app.
+
 ## Readability audit
 
 Do this at 360px physical width, one hand, in daylight:
