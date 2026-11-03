@@ -39,6 +39,7 @@ export function ReferenceMemory({
   const target = useRef<{ versionId: string; kind: SheetKind } | null>(null);
 
   const versions = character ? versionsFor(project, character.id) : [];
+  const activeEpisode = project.episodes.find((e) => e.id === project.activeEpisodeId) ?? project.episodes[0];
   const active =
     versions.find((v) => v.id === selectedId) ??
     versions.find((v) => v.type === 'base') ??
@@ -178,6 +179,22 @@ export function ReferenceMemory({
                   <span className="toggle-track"><span className="toggle-thumb" /></span>
                   <span className="toggle-label">Approved for render</span>
                 </label>
+                <Btn
+                  size="sm"
+                  variant="ghost"
+                  icon="lock"
+                  onClick={() =>
+                    patch(active.id, (v) => {
+                      v.pinnedEpisodeId = v.pinnedEpisodeId === activeEpisode?.id ? null : activeEpisode?.id ?? null;
+                    })
+                  }
+                >
+                  {active.pinnedEpisodeId === activeEpisode?.id
+                    ? `Pinned to ${activeEpisode?.title ?? 'this episode'}`
+                    : active.pinnedEpisodeId
+                      ? `Pinned to ${project.episodes.find((e) => e.id === active.pinnedEpisodeId)?.title ?? 'another episode'} — repin`
+                      : `Pin to ${activeEpisode?.title ?? 'this episode'}`}
+                </Btn>
               </div>
 
               <p className="tiny dim ref-rule">{VERSION_RULE[active.type]}</p>
@@ -291,8 +308,10 @@ export function ReferenceMemory({
               </div>
 
               <p className="tiny dim ref-foot">
-                Generate each sheet with the copied prompt in your image tool, then attach it here. Rendering a panel with a
-                character version that has no sheets is what causes drift — the studio only attaches sheets that exist.
+                Fast path: copy the <strong>Master (one image)</strong> prompt, generate a single sheet containing every
+                view, and attach just that — it is attached to every panel render like any other sheet. Otherwise generate
+                each sheet with its copied prompt. Rendering a panel with a character version that has no sheets is what
+                causes drift — the studio only attaches sheets that exist.
               </p>
             </>
           )}

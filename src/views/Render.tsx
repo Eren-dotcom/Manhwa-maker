@@ -9,6 +9,7 @@ import { blobToDataUrl, PROVIDER_LABEL, supportsReferences } from '../ai/provide
 import { compilePanel } from '../lib/prompt';
 import { refsForPanel, versionsFor } from '../lib/references';
 import { analyzeRenders, buildRenderQaReport, type RenderQaReport } from '../lib/renderQA';
+import { panelCropsForStrip } from '../lib/upload';
 import { copyText, download } from '../lib/export';
 
 export function RenderView() {
@@ -41,6 +42,46 @@ export function RenderView() {
   };
   const fileRef = useRef<HTMLInputElement>(null);
   const uploadTarget = useRef<string | null>(null);
+  const stripRef = useRef<HTMLInputElement>(null);
+  const [stripBusy, setStripBusy] = useState(false);
+
+  /** Slice one uploaded long strip (whole episode in a single image) into per-panel art. */
+  const importStrip = async (file: File) => {
+    if (!episode) return;
+    setStripBusy(true);
+    try {
+      const url = URL.createObjectURL(file);
+      const img = await new Promise<HTMLImageElement>((res, rej) => {
+        const el = new Image();
+        el.onload = () => res(el);
+        el.onerror = () => rej(new Error('Could not read that image'));
+        el.src = url;
+      });
+      const plan = panelCropsForStrip(project, episode, img.naturalWidth, img.naturalHeight);
+      URL.revokeObjectURL(url);
+      if (!plan) {
+        toast("That image's height doesn't match the episode strip — check panel heights/gutters match the source", 'err');
+        return;
+      }
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error('No canvas');
+      let done = 0;
+      for (const crop of plan.crops) {
+        canvas.width = crop.sw;
+        canvas.height = crop.sh;
+        ctx.drawImage(img, crop.sx, crop.sy, crop.sw, crop.sh, 0, 0, crop.sw, crop.sh);
+        const ref = await putAsset(canvas.toDataURL('image/png'));
+        setPanel(crop.id, { image: ref });
+        done += 1;
+      }
+      toast(`Sliced the strip into ${done} panel${done === 1 ? '' : 's'}`, 'ok');
+    } catch (e) {
+      toast(e instanceof Error ? e.message : 'Could not slice the strip', 'err');
+    } finally {
+      setStripBusy(false);
+    }
+  };
 
   const setPanel = (id: string, patch: Partial<Panel>) =>
     update((p) => {
@@ -116,6 +157,16 @@ export function RenderView() {
             </Badge>
             <Btn variant="ghost" icon="image" disabled={batch.running} onClick={() => void runBatch(keyPanels)}>
               Render key panels
+            </Btn>
+            <Btn
+              variant="ghost"
+              icon="upload"
+              loading={stripBusy}
+              disabled={batch.running || !panels.length}
+              onClick={() => stripRef.current?.click()}
+              title="Upload one tall image containing the whole episode; the studio cuts it at the panel gutters"
+            >
+              Import long strip
             </Btn>
             <Btn variant="primary" icon="wand" loading={batch.running} onClick={() => void runBatch(panels)}>
               Render all
@@ -335,6 +386,18 @@ export function RenderView() {
           </div>
         )}
       </Card>
+
+      <input
+        ref={stripRef}
+        type="file"
+        accept="image/*"
+        style={{ display: 'none' }}
+        onChange={async (e) => {
+          const file = e.target.files?.[0];
+          if (file) await importStrip(file);
+          e.target.value = '';
+        }}
+      />
 
       <input
         ref={fileRef}

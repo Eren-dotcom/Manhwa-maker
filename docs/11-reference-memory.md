@@ -76,6 +76,20 @@ Each version carries:
 Build order: portrait → full body → turnaround → expressions → poses. A version is *renderable* at
 portrait + full body; the other three raise consistency with every panel type you add.
 
+**Chapter snapshots (pinning).** Each version can be **pinned to an episode** ("Pin to this episode"
+in Reference memory). A pin freezes the design as that chapter's snapshot, so later variants or
+evolutions cannot silently rewrite an earlier episode's renders. QC warns when a panel uses a
+version pinned to a *different* episode (`pin-mismatch`), reminds you when an episode has no pinned
+version (`unpinned-episode`), and raises a **drift alarm** (`drift-risk`) when a character appears in
+3+ panels of the episode with no image reference at all.
+
+**Fast path — the master sheet (one image).** For a chapter where you want one reference to carry the
+whole cast look, generate a single **Master** image: one clean sheet grid containing the portrait,
+full body, four-view turnaround, six expressions and six poses of the same character in one picture.
+Attach that one image to the version's *Master (one image)* slot and it is attached to every panel
+render exactly like the individual sheets — and a version with only a master sheet already counts as
+having a reference, so the "no reference, no render" rule passes.
+
 Practical notes that save hours:
 
 - Render sheets at the same aspect ratio family as your panels and against a **flat neutral

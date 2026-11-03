@@ -69,6 +69,47 @@ export function stripGeometry(project: Project, episode: Episode, width = projec
   });
 }
 
+export interface PanelCrop {
+  id: string;
+  no: number;
+  /** crop rect in source-strip pixels (already scaled to the uploaded image's width) */
+  sx: number;
+  sy: number;
+  sw: number;
+  sh: number;
+}
+
+/**
+ * Reverse of the upload plan: given a flattened strip image (e.g. one tall image
+ * holding the whole episode, as many generators produce), compute the crop rect
+ * of every panel. Geometry is scaled from canvas width to the actual image width.
+ * Returns null when the image height doesn't match the strip's aspect closely.
+ */
+export function panelCropsForStrip(
+  project: Project,
+  episode: Episode,
+  imageWidth: number,
+  imageHeight: number,
+): { crops: PanelCrop[]; scale: number; heightMismatch: number } | null {
+  if (!imageWidth || !imageHeight) return null;
+  const strip = stripGeometry(project, episode, project.style.width);
+  const totalHeight = strip.length ? strip[strip.length - 1].top + strip[strip.length - 1].height : 0;
+  if (!totalHeight) return null;
+  const scale = imageWidth / project.style.width;
+  const expectedHeight = totalHeight * scale;
+  const heightMismatch = Math.abs(expectedHeight - imageHeight) / expectedHeight;
+  if (heightMismatch > 0.05) return null;
+  const crops = strip.map((s) => ({
+    id: s.id,
+    no: s.no,
+    sx: 0,
+    sy: Math.round(s.top * scale),
+    sw: imageWidth,
+    sh: Math.round(s.height * scale),
+  }));
+  return { crops, scale, heightMismatch };
+}
+
 export function planUpload(project: Project, episode: Episode): UploadPlan {
   const { spec, label } = uploadSpecFor(project);
   const width = spec.width;

@@ -3,7 +3,7 @@ import { useStudio } from '../store/studio';
 import type { Panel } from '../store/types';
 import { Badge, Btn, Card, Field, Icon, IconBtn, SectionHead, TextArea, TextInput } from '../components/ui';
 import { StageNav } from '../components/StageNav';
-import { buildStyleLock, characterSheetPrompt, compilePanel, faceOf } from '../lib/prompt';
+import { buildStyleLock, castSheetPrompt, characterSheetPrompt, compilePanel, faceOf } from '../lib/prompt';
 import { refsForPanel, versionsFor, VERSION_LABEL } from '../lib/references';
 import { buildJsonl, buildPromptPack, copyText, download, slug } from '../lib/export';
 

@@ -57,6 +57,24 @@
       "fix": "Write the line or delete the balloon."
     },
     {
+      "id": "balloon-overlap",
+      "stage": "lettering",
+      "check": "estimated balloon bounding boxes do not intersect",
+      "fix": "Run the auto-layouter: reading order top-to-bottom, no overlaps, inside the safe area. Auto-repairable."
+    },
+    {
+      "id": "balloon-size-mismatch",
+      "stage": "lettering",
+      "check": "size matches text length vs kind ceiling (sm <35%, md 35-75%, lg >75%)",
+      "fix": "Let the engine pick the type size. Auto-repairable."
+    },
+    {
+      "id": "sfx-clearance",
+      "stage": "lettering",
+      "check": "SFX boxes do not cover balloon boxes or panel centre",
+      "fix": "Nudge the SFX to open art. Auto-repaired with the layouter."
+    },
+    {
       "id": "no-cliffhanger",
       "stage": "beats",
       "check": "episode.cliffhanger non-empty",
@@ -133,6 +151,26 @@
       "id": "no-tail",
       "check": "speech balloons have tails in multi-character panels",
       "fix": "Add a tail pointing at the mouth."
+    },
+    {
+      "id": "balloon-overlap-note",
+      "check": "no two balloon boxes intersect (engine-estimated)",
+      "fix": "Auto-layouter restacks in reading order."
+    },
+    {
+      "id": "dialogue-space",
+      "check": "gap between any two balloon boxes >= 4% of panel; edge clearance >= 2%",
+      "fix": "Space engine (lettering engine) enforces MIN_BUBBLE_GAP=4, MIN_EDGE_GAP=2. Auto-repairable via balloon-spacing."
+    },
+    {
+      "id": "type-size",
+      "check": "one size per balloon kind, matched to line length",
+      "fix": "Engine auto-sizes sm/md/lg from fill ratio."
+    },
+    {
+      "id": "sfx-clearance",
+      "check": "SFX never covers a balloon or the panel centre",
+      "fix": "Nudge to open art."
     },
     {
       "id": "repeat-shot",

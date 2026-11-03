@@ -26,8 +26,9 @@ export interface SheetSpec {
   why: string;
 }
 
-/** The five sheets every version should eventually own, in build order. */
+/** The sheets every version should eventually own, in build order. `master` is the one-image fast path. */
 export const SHEETS: SheetSpec[] = [
+  { kind: 'master', label: 'Master (one image)', shot: 'ONE single image: a clean character-sheet grid containing a head-and-shoulders portrait, a full-body front view, a four-view turnaround (front, three-quarter, profile, back), six expression heads (neutral, angry, shocked, smiling, determined, pained) and six full-body poses (standing, running, attacking, blocking, falling, reaching), all of the same character, evenly lit', why: 'The fast path: generate all panels of a chapter from this one reference image instead of five separate sheets.' },
   { kind: 'portrait', label: 'Portrait', shot: 'head and shoulders, neutral expression, front view', why: 'Face identity for every close-up.' },
   { kind: 'fullBody', label: 'Full body', shot: 'full body, front view, neutral stance, feet visible', why: 'Proportions and the default outfit.' },
   { kind: 'turnaround', label: 'Turnaround', shot: 'front, three-quarter, profile and back views side by side', why: 'Holds the design from any camera angle.' },
@@ -96,9 +97,11 @@ export function refStatus(project: Project, characterId: string, versionId?: str
   };
 }
 
-/** True when at least one version has a usable portrait or full-body sheet. */
+/** True when at least one version has a usable sheet — the one-image master counts on its own. */
 export function hasReference(project: Project, characterId: string): boolean {
-  return versionsFor(project, characterId).some((v) => REQUIRED_SHEETS.some((k) => !!v.images[k]));
+  return versionsFor(project, characterId).some(
+    (v) => !!v.images.master || REQUIRED_SHEETS.some((k) => !!v.images[k]),
+  );
 }
 
 /** Recurring cast with no reference image at all — the "no reference, no render" rule. */

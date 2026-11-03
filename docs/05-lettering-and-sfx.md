@@ -74,6 +74,23 @@ Korean-specific: Hangul needs slightly larger size and more line height than Lat
 - Provide alt text or a captioned summary of each panel for platform accessibility features.
 - Avoid motion-sickness effects — flashing, extreme speed lines on consecutive panels — in sequences longer than three panels.
 
+## The lettering engine (studio automation)
+
+Stage 07 runs a small deterministic engine (`src/lib/lettering.ts`) over every panel:
+
+1. **Auto-size** — each balloon's type size is derived from its fill ratio against its kind's character ceiling (sm < 35%, md 35–75%, lg > 75%).
+2. **Reading-order layout** — balloons are renumbered top-to-bottom, left-to-right, then stacked so estimated bounding boxes never intersect and everything stays inside the safe area.
+3. **Tail logic** — speech balloons above the panel midpoint get an upward tail, below get a downward tail; narration and thought balloons get none.
+4. **SFX clearance** — sound effects are nudged off any balloon box.
+
+**Dialogue space engine.** Balloons need air: the engine measures the clearance between every pair of
+balloon boxes and from each box to the safe-area edge, and enforces a floor of **4% panel gap between
+boxes** and **2% edge clearance** (`MIN_BUBBLE_GAP` / `MIN_EDGE_GAP` in `src/lib/lettering.ts`,
+exposed as `spacingReport`). QC raises `balloon-spacing` when a panel is cramped and the fix re-runs
+the layouter.
+
+Pipeline: **Auto-place** fixes one panel; **Letter whole episode** runs the engine over every panel. In QC, `balloon-overlap` and `balloon-size` are raised automatically and are one-click repairable.
+
 ## Lettering QC checklist
 
 - [ ] Every balloon has a tail, or an explicit reason not to.

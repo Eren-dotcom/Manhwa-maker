@@ -1,6 +1,7 @@
 import type { Panel, Project, QcIssue, StageId } from '../store/types';
 import { SAMPLE_BUBBLE_LIMITS } from '../store/constants';
-import { castWithoutReferences, danglingBindings, REQUIRED_SHEETS, versionsUsed, VERSION_LABEL } from './references';
+import { castWithoutReferences, danglingBindings, hasReference, REQUIRED_SHEETS, versionById, versionsUsed, VERSION_LABEL } from './references';
+import { autoSize, hasOverlap, MIN_BUBBLE_GAP, MIN_EDGE_GAP, spacingReport } from './lettering';
 import { planUpload } from './upload';
 
 // ---------------------------------------------------------------------------
@@ -92,7 +93,7 @@ export function auditProject(project: Project): QcIssue[] {
       title: `${noRefs.length} character(s) without reference memory`,
       code: 'no-refs',
       detail: `${noRefs.map((c) => c.name).join(', ')} ${noRefs.length === 1 ? 'has' : 'have'} no portrait or full-body sheet. Prompt wording alone drifts after a few panels — a reference image is what actually holds a face.`,
-      fix: 'Open a cast card → Reference memory, then generate the portrait and full-body sheets before rendering that character.',
+      fix: 'Fast path: copy the Master (one image) prompt in a cast card → Reference memory, generate a single sheet and attach it. Or generate portrait + full body separately. In Prompt Compiler, "copy cast master sheet (1 image)" covers the whole cast at once.',
     });
   const noFace = project.cast.filter((c) => !c.faceAnchor.trim() && c.promptFragment.trim());
   if (noFace.length)
@@ -273,6 +274,40 @@ export function auditProject(project: Project): QcIssue[] {
       code: 'empty-balloon',
           detail: 'Placeholder balloon left blank.',
           fix: 'Write the line or delete the balloon.',
+          panelNo: p.no,
+        });
+    });
+    const spacing = spacingReport(p.bubbles);
+    if (p.bubbles.length > 1 && !spacing.ok)
+      add({
+        stage: 'lettering',
+        level: 'warn',
+        title: `P${p.no}: balloons cramped (gap ${Math.round(Math.min(spacing.minPairGap, spacing.minEdgeGap))}%)`,
+        code: 'balloon-spacing',
+        detail: `Minimum space between dialogue boxes should be ≥${MIN_BUBBLE_GAP}% (edge ≥${MIN_EDGE_GAP}%). Cramped balloons read as one shout and bury the art between them.`,
+        fix: 'Run the auto-layouter — it enforces the minimum gap.',
+        panelNo: p.no,
+      });
+    if (p.bubbles.length > 1 && hasOverlap(p.bubbles))
+      add({
+        stage: 'lettering',
+        level: 'warn',
+        title: `P${p.no}: balloons overlap`,
+        code: 'balloon-overlap',
+        detail: 'Two balloon boxes intersect — the reader cannot tell which line comes first and the art underneath is buried.',
+        fix: 'Run the auto-layouter (Lettering stage → Auto-place) to restack them in reading order.',
+        panelNo: p.no,
+      });
+    p.bubbles.forEach((b) => {
+      const ideal = autoSize(b);
+      if (b.text.trim() && ideal !== b.size)
+        add({
+          stage: 'lettering',
+          level: 'info',
+          title: `P${p.no}: balloon type size could be ${ideal}`,
+          code: 'balloon-size',
+          detail: `"${b.text.slice(0, 24)}…" at ${b.size} does not match its line length (${b.text.length}/${bubbleFontLimit(p, b.text)} chars).`,
+          fix: 'Let the auto-layouter pick the size, or set it manually.',
           panelNo: p.no,
         });
     });
