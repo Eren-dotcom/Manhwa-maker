@@ -1,0 +1,321 @@
+{
+  "version": "1.0",
+  "format": "vertical-scroll webtoon (manhwa)",
+  "stages": [
+    {
+      "id": "concept",
+      "n": 1,
+      "name": "Concept",
+      "purpose": "Fix the promise, the platform and the look before any production cost is committed.",
+      "inputs": [
+        "genre",
+        "platform",
+        "audience"
+      ],
+      "outputs": {
+        "title": "string",
+        "altTitle": "string (Korean or Sino-Korean)",
+        "logline": "string <=35 words: protagonist + goal + obstacle + stakes",
+        "hook": "string: one image or line readable in 3 panels",
+        "tone": "string",
+        "theme": "string: a question, not a moral",
+        "audience": "string",
+        "comparisons": "string[2-3]",
+        "styleLock": "string <=90 words, reusable verbatim",
+        "palette": "string[5]",
+        "seed": "integer"
+      },
+      "gate": [
+        "physical obstacle in logline",
+        "hook is an image",
+        "style lock frozen"
+      ],
+      "aiInstruction": "develop the concept; return JSON only"
+    },
+    {
+      "id": "bible",
+      "n": 2,
+      "name": "Story bible",
+      "purpose": "Build the rule system, the location strings and the character reference memory every later stage depends on.",
+      "inputs": [
+        "concept"
+      ],
+      "outputs": {
+        "premise": "string 120-180 words",
+        "rules": "string[3-5] with cost, limit, loophole",
+        "locations": "string[3-5] with sensory detail",
+        "glossary": "{term, meaning}[3-6]",
+        "visualMotifs": "string[3-5] drawable recurring images",
+        "cast": [
+          {
+            "name": "string",
+            "koreanName": "string",
+            "role": "protagonist|antagonist|deuteragonist|mentor|ally|rival|support",
+            "age": "string",
+            "want": "string",
+            "need": "string",
+            "flaw": "string",
+            "arc": "string",
+            "silhouette": "string",
+            "outfit": "string",
+            "voice": "string",
+            "faceAnchor": "string 20-35 words, permanent identity only: face shape, eyes, brows, hair silhouette, build, marks. NO clothing, NO mood",
+            "promptFragment": "string 35-55 words, hair/face/build/outfit/prop",
+            "refPrompt": "string",
+            "versions": "[{ type: base|variant|evolution, name, slug, inheritsFrom, description, identityMarkers: string[2-5], sheets: {portrait, fullBody, turnaround, expressions, poses}, approved }]"
+          }
+        ],
+        "referenceMemory": "per character: one base version minimum; portrait + fullBody attached before the character is renderable; variants/evolutions never overwrite base"
+      },
+      "gate": [
+        "every character has a face anchor with no clothing in it",
+        "every character has a base version",
+        "portrait + full body sheet attached before that character is rendered",
+        "every rule is breakable",
+        "3+ visual motifs",
+        "locations are reusable verbatim strings"
+      ],
+      "aiInstruction": "build world OR cast; return JSON only"
+    },
+    {
+      "id": "beats",
+      "n": 3,
+      "name": "Beat sheet",
+      "purpose": "Pace the episode in scroll units, each ending with a reason to continue.",
+      "inputs": [
+        "concept",
+        "bible"
+      ],
+      "outputs": {
+        "title": "string",
+        "logline": "string",
+        "hook": "string",
+        "cliffhanger": "string (physical event)",
+        "beats": [
+          {
+            "unit": "1..8",
+            "fn": "hook|setup|cast|turn|escalate|reveal|breather|stinger",
+            "summary": "string",
+            "purpose": "string",
+            "tension": "1..5",
+            "scrollEnd": "quiet|turn|reveal|cliff",
+            "panelTarget": "integer"
+          }
+        ]
+      },
+      "gate": [
+        "8 units",
+        "breather present",
+        "cliffhanger present",
+        "2+ non-quiet unit ends"
+      ],
+      "aiInstruction": "write one episode beat sheet; return JSON only"
+    },
+    {
+      "id": "panels",
+      "n": 4,
+      "name": "Panels",
+      "purpose": "Decide what the reader sees, from where, at what size and in what order.",
+      "inputs": [
+        "beats",
+        "bible"
+      ],
+      "outputs": {
+        "panels": [
+          {
+            "unit": "integer",
+            "shot": "establishing|wide|full|medium|medium-close|close-up|extreme-close|insert|over-shoulder|silhouette|panel-less",
+            "angle": "eye|low|high|birds|worms|dutch|top-down",
+            "composition": "center|thirds|diagonal|symmetry|negative-space|frame-within|claustrophobic|leading-lines",
+            "height": "number 0.5-2.2 (x canvas width)",
+            "fullBleed": "boolean",
+            "setting": "string",
+            "action": "string: one frozen instant, <=35 words",
+            "lighting": "string",
+            "characters": "string[] names from cast",
+            "caption": "string",
+            "bubbles": [
+              {
+                "kind": "speech|thought|shout|whisper|narration|offpanel|system",
+                "speaker": "string",
+                "text": "string",
+                "tail": "none|b|bl|br|l|r|tl|t|tr",
+                "size": "sm|md|lg",
+                "x": "number 8-92",
+                "y": "number 6-94"
+              }
+            ],
+            "note": "string"
+          }
+        ],
+        "versions": "Record<characterId, versionId> — omit for base design",
+        "outfits": "Record<characterId, string> — per-panel wardrobe override, never a face change"
+      },
+      "gate": [
+        "every panel staged",
+        "heights varied",
+        "5+ shot types",
+        "one splash"
+      ],
+      "aiInstruction": "break the beat sheet into panels; return JSON only"
+    },
+    {
+      "id": "prompts",
+      "n": 5,
+      "name": "Prompts",
+      "purpose": "Compile deterministic render briefs so 45 panels look like one artist.",
+      "inputs": [
+        "panels",
+        "bible",
+        "concept"
+      ],
+      "promptOrder": [
+        "style lock",
+        "shot",
+        "angle",
+        "composition",
+        "setting",
+        "action",
+        "character anchors (verbatim)",
+        "lighting",
+        "palette",
+        "framing"
+      ],
+      "outputs": {
+        "prompt": "string",
+        "negative": "string",
+        "seed": "integer",
+        "aspect": "WxH"
+      },
+      "gate": [
+        "style lock identical across panels",
+        "every cast anchor present",
+        "negative prompt set"
+      ],
+      "aiInstruction": "compile only; do not rewrite the story"
+    },
+    {
+      "id": "render",
+      "n": 6,
+      "name": "Render",
+      "purpose": "Produce art per panel conditioned on the character reference sheets, or a deliberate storyboard cut with identical framing.",
+      "inputs": [
+        "prompts"
+      ],
+      "outputs": {
+        "image": "asset ref | url | storyboard",
+        "attachedReferences": "string[] (portrait/full body/turnaround of every version bound to the panel, max 4)",
+        "measuredQA": "per panel: intrinsic size, aspect vs plan, mean luma, contrast, dead-border flag, 120px edge energy"
+      },
+      "gate": [
+        "composition readable at 120px",
+        "every recurring character in the panel has a portrait + full body reference",
+        "bound version sheets attached as image inputs where the provider supports it",
+        "continuity of outfit/props/weather",
+        "unified grade",
+        "no panel is narrower than the canvas, flat, or dead-bordered"
+      ],
+      "aiInstruction": "image generation only; never letter text inside the image"
+    },
+    {
+      "id": "lettering",
+      "n": 7,
+      "name": "Lettering",
+      "purpose": "Make the page readable in the correct order, at phone size.",
+      "inputs": [
+        "panels"
+      ],
+      "outputs": {
+        "bubbles": "typed, ordered, positioned, with tails",
+        "caption": "string",
+        "sfx": "{text, style, x, y, rotation, scale}[]"
+      },
+      "gate": [
+        "unique reading order",
+        "tails honest",
+        "safe areas clean",
+        "density budgets respected"
+      ],
+      "aiInstruction": "place and typeset; do not write new dialogue unless asked"
+    },
+    {
+      "id": "qc",
+      "n": 8,
+      "name": "QC & export",
+      "purpose": "Catch objective errors, then ship the pack.",
+      "inputs": [
+        "all previous stages"
+      ],
+      "outputs": {
+        "issues": "{level, stage, title, detail, fix}[]",
+        "score": "0-100",
+        "delivery": [
+          "project json",
+          "prompt pack",
+          "bible",
+          "reader html",
+          "storyboard print"
+        ],
+        "uploadSections": "{ width, maxSectionHeight, sections[{filename, from, to, panels}] } validated against the platform's file/bytes/image caps",
+        "uploadPlan": "markdown manifest: section table, strip geometry, warnings"
+      },
+      "gate": [
+        "score >= 85",
+        "no blockers",
+        "phone read passes",
+        "section count and file sizes fit the platform caps"
+      ],
+      "aiInstruction": "audit and report with specific fixes"
+    }
+  ],
+  "episodeSkeleton": [
+    {
+      "unit": 1,
+      "fn": "hook",
+      "scrollEnd": "quiet",
+      "panels": "2-4"
+    },
+    {
+      "unit": 2,
+      "fn": "setup",
+      "scrollEnd": "quiet",
+      "panels": "4-8"
+    },
+    {
+      "unit": 3,
+      "fn": "cast",
+      "scrollEnd": "turn",
+      "panels": "5-8"
+    },
+    {
+      "unit": 4,
+      "fn": "turn",
+      "scrollEnd": "reveal",
+      "panels": "5-8"
+    },
+    {
+      "unit": 5,
+      "fn": "escalate",
+      "scrollEnd": "quiet",
+      "panels": "5-8"
+    },
+    {
+      "unit": 6,
+      "fn": "reveal",
+      "scrollEnd": "cliff",
+      "panels": "4-6"
+    },
+    {
+      "unit": 7,
+      "fn": "breather",
+      "scrollEnd": "quiet",
+      "panels": "2-3"
+    },
+    {
+      "unit": 8,
+      "fn": "stinger",
+      "scrollEnd": "cliff",
+      "panels": "2-3"
+    }
+  ]
+}

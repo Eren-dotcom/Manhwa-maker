@@ -1,0 +1,9 @@
+node_modules/
+dist/
+smoke/
+.DS_Store
+*.local
+.env
+tsconfig.tsbuildinfo
+*.tsbuildinfo
+vite.smoke.config.ts

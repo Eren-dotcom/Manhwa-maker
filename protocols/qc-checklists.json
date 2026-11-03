@@ -1,0 +1,235 @@
+{
+  "version": "1.0",
+  "scoring": {
+    "start": 100,
+    "error": -9,
+    "warn": -2.5,
+    "info": 0,
+    "publishThreshold": 85
+  },
+  "blockers": [
+    {
+      "id": "no-logline",
+      "stage": "concept",
+      "check": "meta.logline non-empty",
+      "fix": "Write [protagonist] must [goal] or [stakes], but [obstacle]."
+    },
+    {
+      "id": "no-cast",
+      "stage": "bible",
+      "check": "cast.length > 0",
+      "fix": "Add protagonist and antagonist with visual anchors."
+    },
+    {
+      "id": "no-beats",
+      "stage": "beats",
+      "check": "episode.beats.length > 0",
+      "fix": "Generate an 8-unit beat sheet."
+    },
+    {
+      "id": "no-panels",
+      "stage": "panels",
+      "check": "episode.panels.length > 0",
+      "fix": "Break the beat sheet into panels."
+    },
+    {
+      "id": "unstaged-panel",
+      "stage": "panels",
+      "check": "panel.action or panel.setting",
+      "fix": "Describe the setting and the frozen moment."
+    },
+    {
+      "id": "balloon-out-of-safe-area",
+      "stage": "lettering",
+      "check": "8 <= x <= 92 and 6 <= y <= 94",
+      "fix": "Move the balloon inside the safe area."
+    },
+    {
+      "id": "duplicate-order",
+      "stage": "lettering",
+      "check": "reading order unique",
+      "fix": "Renumber top-to-bottom, left-to-right."
+    },
+    {
+      "id": "empty-balloon",
+      "stage": "lettering",
+      "check": "text non-empty",
+      "fix": "Write the line or delete the balloon."
+    },
+    {
+      "id": "no-cliffhanger",
+      "stage": "beats",
+      "check": "episode.cliffhanger non-empty",
+      "fix": "End on a physical event that costs the protagonist."
+    },
+    {
+      "id": "char-not-in-cast",
+      "stage": "panels",
+      "check": "characterIds subset of cast ids",
+      "fix": "Re-link the panel to a real character."
+    },
+    {
+      "id": "continuity-break",
+      "stage": "qc",
+      "check": "contradicts continuity ledger",
+      "fix": "Re-draw or re-write to match the ledger."
+    },
+    {
+      "id": "dangling-version-binding",
+      "stage": "panels",
+      "check": "panel.versions ids exist in project.versions and belong to the bound character",
+      "fix": "Re-pick the version in Panel Director, or clear the binding."
+    },
+    {
+      "id": "face-anchor-contains-outfit",
+      "stage": "bible",
+      "check": "faceAnchor has no garment/armour words",
+      "fix": "Move wardrobe into outfit; a costume change must never be able to redesign the face."
+    },
+    {
+      "id": "upload-sections-over-cap",
+      "stage": "qc",
+      "check": "ceil(stripHeight / maxSectionHeight) <= platform.maxImages",
+      "fix": "Split the episode, or widen the canvas so panels cover more vertical distance."
+    }
+  ],
+  "notes": [
+    {
+      "id": "balloon-density",
+      "check": "bubbles.length <= 3",
+      "fix": "Split into another panel or cut a line."
+    },
+    {
+      "id": "word-density",
+      "check": "<=35 words per panel",
+      "fix": "Halve the line; let the art carry the rest."
+    },
+    {
+      "id": "balloon-length",
+      "check": "speech <=90 chars, shout <=55",
+      "fix": "Shorten or split the balloon."
+    },
+    {
+      "id": "silent-run",
+      "check": "no 3+ silent panels in a row",
+      "fix": "Add a caption, SFX, or a reaction shot."
+    },
+    {
+      "id": "uniform-heights",
+      "check": "<60% of panels share a height",
+      "fix": "Stretch establishing/splash; compress reactions."
+    },
+    {
+      "id": "establishing-crowded",
+      "check": "establishing panels have <=2 balloons",
+      "fix": "Move dialogue to the next panel."
+    },
+    {
+      "id": "no-bleed",
+      "check": "at least one full-bleed panel",
+      "fix": "Mark the signature beat as full bleed."
+    },
+    {
+      "id": "no-tail",
+      "check": "speech balloons have tails in multi-character panels",
+      "fix": "Add a tail pointing at the mouth."
+    },
+    {
+      "id": "repeat-shot",
+      "check": "no identical shot twice in a row",
+      "fix": "Change angle or shot to argue something."
+    },
+    {
+      "id": "gutter-flat",
+      "check": "gutters vary",
+      "fix": "Use 200px before scroll turns."
+    },
+    {
+      "id": "no-anchor",
+      "check": "every cast member has promptFragment",
+      "fix": "Write a 35-55 word visual anchor."
+    },
+    {
+      "id": "style-lock-empty",
+      "check": "style.masterPrompt non-empty",
+      "fix": "Derive the lock from the chosen look."
+    },
+    {
+      "id": "no-reference-memory",
+      "check": "every recurring character owns a portrait or full-body sheet",
+      "fix": "Bible → Reference memory: generate or attach portrait + full body before rendering."
+    },
+    {
+      "id": "sheetless-bound-version",
+      "check": "every version bound to a panel owns a required sheet",
+      "fix": "Generate the sheets for that version, or unbind and keep the base design."
+    },
+    {
+      "id": "missing-lineage-markers",
+      "check": "variant/evolution lists 2+ identityMarkers",
+      "fix": "List the details that must survive the change — that is what makes it a transformation, not a recast."
+    },
+    {
+      "id": "location-wording-drift",
+      "check": "panels in the same scene reuse one location string",
+      "fix": "Pick the canonical location from the world list; identical wording keeps the place the same place."
+    },
+    {
+      "id": "provider-ignores-refs",
+      "check": "image provider supports reference images when refs are attached",
+      "fix": "Use gpt-image or a Gemini image model, or accept text-only rendering knowingly."
+    },
+    {
+      "id": "cut-through-panel",
+      "check": "no section boundary lands in the middle 40% of a panel",
+      "fix": "Add 60-120px to the gutter above that panel so the cut lands in empty space."
+    },
+    {
+      "id": "render-upscaled",
+      "check": "intrinsic render width >= canvas width",
+      "fix": "Render at or above the canvas width; upscaling softens lineart first."
+    },
+    {
+      "id": "render-flat",
+      "check": "contrast >= 18 and 18 <= mean luma <= 242",
+      "fix": "Re-light the panel or push the blacks; flat panels read as fog on a phone."
+    },
+    {
+      "id": "render-dead-border",
+      "check": "outer 2% band is not uniform-and-different",
+      "fix": "Crop the border or re-render full-bleed; bars become visible seams in the scroll."
+    }
+  ],
+  "readability": [
+    "Legible at 360px physical width",
+    "Contrast >= 4.5:1 on all text",
+    "Faces distinguishable between characters",
+    "Captions distinct from speech",
+    "No text over busy background",
+    "Nothing critical within 20px of an edge"
+  ],
+  "continuity": [
+    "Outfits and props carried forward",
+    "Wounds, wet clothes, dirt persist",
+    "Time of day and weather consistent",
+    "Eyeline and screen direction match",
+    "Same key light direction per scene",
+    "Names, titles and honorifics consistent",
+    "Knowledge: who knows what, and when"
+  ],
+  "platformReview": [
+    "Dimensions and file size within spec",
+    "Text readable on mobile",
+    "No copyrighted characters or living-artist style names",
+    "Content within declared rating",
+    "AI disclosure done where required",
+    "Reading order intact",
+    "Thumbnail matches genre"
+  ],
+  "accessibility": [
+    "Alt text per panel",
+    "No information by colour alone",
+    "No strobe sequences longer than three panels",
+    "Text summary per episode for screen readers"
+  ]
+}
