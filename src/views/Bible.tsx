@@ -322,8 +322,14 @@ export function Bible() {
                 if (!character) return;
                 update((p) => {
                   p.cast = p.cast.filter((c) => c.id !== character.id);
+                  // reference memory is meaningless without the character it describes
+                  p.versions = (p.versions ?? []).filter((v) => v.characterId !== character.id);
                   p.episodes.forEach((ep) =>
-                    ep.panels.forEach((pn) => (pn.characterIds = pn.characterIds.filter((id) => id !== character.id))),
+                    ep.panels.forEach((pn) => {
+                      pn.characterIds = pn.characterIds.filter((id) => id !== character.id);
+                      if (pn.versions) delete pn.versions[character.id];
+                      if (pn.outfits) delete pn.outfits[character.id];
+                    }),
                   );
                 });
                 setEditing(null);
