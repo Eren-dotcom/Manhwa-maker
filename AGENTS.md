@@ -26,7 +26,8 @@ src/store/demo.ts        the reference project ("The Lantern Bureau") — the pr
 src/store/studio.tsx     provider: project library, undo/redo, autosave, asset registry
 src/lib/prompt.ts        style lock + per-panel prompt compiler (face anchor + outfit + version block)
 src/lib/references.ts    reference memory: versions, sheets, panel→version resolution, ref attachments
-src/lib/qc.ts            deterministic audit engine (drives Overview + QC + nav badges)
+src/lib/qc.ts            deterministic audit engine (drives Overview + QC + nav badges); rules carry `code`
+src/lib/fixes.ts         repairs for mechanically fixable QC codes (undoable, never invents story/art)
 src/lib/export.ts        prompt pack, bible, JSON, standalone reader HTML, storyboard print
 src/lib/markdown.ts      tiny markdown renderer for docs
 src/lib/imageStore.ts    IndexedDB helpers

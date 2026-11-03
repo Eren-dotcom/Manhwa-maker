@@ -6,6 +6,7 @@ import {
   offlineAdvice,
   offlineBeats,
   offlineCast,
+  offlineCharacter,
   offlineConcept,
   offlinePanels,
   offlineWorld,
@@ -20,7 +21,7 @@ import { auditProject } from '../lib/qc';
 // draft project. Validation is permissive but never trusts shapes blindly.
 // ---------------------------------------------------------------------------
 
-export type ActionId = 'concept' | 'world' | 'cast' | 'beats' | 'panels' | 'critique' | 'chat';
+export type ActionId = 'concept' | 'world' | 'cast' | 'character' | 'beats' | 'panels' | 'critique' | 'chat';
 
 export interface RunResult {
   ok: boolean;
@@ -160,6 +161,64 @@ function applyWorld(data: Record<string, unknown>) {
   };
 }
 
+function applyCharacter(data: Record<string, unknown>) {
+  return (draft: Project) => {
+    const raw = (data.character ?? data) as Loose<Character> & { identityMarkers?: unknown };
+    const name = str(raw.name).trim();
+    if (!name) return;
+    const role = str(raw.role, 'support');
+    const faceAnchor = str(raw.faceAnchor).trim();
+    const outfit = str(raw.outfit).trim();
+    const promptFragment =
+      str(raw.promptFragment).trim() || [faceAnchor, outfit ? `wearing ${outfit}` : ''].filter(Boolean).join(', ');
+
+    const c: Character = {
+      id: uid('chr'),
+      name,
+      koreanName: str(raw.koreanName),
+      role: (['protagonist', 'antagonist', 'deuteragonist', 'mentor', 'ally', 'rival', 'support', 'cameo'].includes(role)
+        ? role
+        : 'support') as Character['role'],
+      age: str(raw.age),
+      pronouns: str(raw.pronouns),
+      want: str(raw.want),
+      need: str(raw.need),
+      flaw: str(raw.flaw),
+      arc: str(raw.arc),
+      silhouette: str(raw.silhouette),
+      outfit,
+      palette: str(raw.palette),
+      voice: str(raw.voice),
+      verbalTics: str(raw.verbalTics),
+      faceAnchor,
+      promptFragment,
+      refPrompt: str(raw.refPrompt),
+    };
+    draft.cast.push(c);
+
+    // a new character is not usable until it has visual memory — start the base version
+    const markers = arr<unknown>(raw.identityMarkers)
+      .map((m) => str(m).trim())
+      .filter(Boolean)
+      .slice(0, 5);
+    draft.versions = draft.versions ?? [];
+    draft.versions.push({
+      id: uid('ver'),
+      characterId: c.id,
+      slug: 'base',
+      name: 'Base design',
+      type: 'base',
+      inheritsFrom: null,
+      description: outfit ? `Default wardrobe: ${outfit}` : '',
+      identityMarkers: markers,
+      images: {},
+      approved: false,
+      createdAt: Date.now(),
+    });
+    draft.gates.bible = new Date().toISOString();
+  };
+}
+
 function applyCast(data: Record<string, unknown>) {
   return (draft: Project) => {
     const incoming = arr<Loose<Character>>(data.characters).filter((c) => str(c.name).trim());
@@ -278,7 +337,7 @@ export async function runAction(
     let source = 'offline engine';
 
     if (offline) {
-      payload = offlinePayload(action, project);
+      payload = offlinePayload(action, project, extra ?? '');
     } else {
       const userPrompt = [
         projectContext(project),
@@ -308,7 +367,7 @@ export async function runAction(
   }
 }
 
-function offlinePayload(action: ActionId, project: Project): Record<string, unknown> {
+function offlinePayload(action: ActionId, project: Project, brief = ''): Record<string, unknown> {
   switch (action) {
     case 'concept':
       return offlineConcept(project) as unknown as Record<string, unknown>;
@@ -316,6 +375,8 @@ function offlinePayload(action: ActionId, project: Project): Record<string, unkn
       return offlineWorld(project) as unknown as Record<string, unknown>;
     case 'cast':
       return offlineCast(project) as unknown as Record<string, unknown>;
+    case 'character':
+      return offlineCharacter(project, brief) as unknown as Record<string, unknown>;
     case 'beats':
       return offlineBeats(project) as unknown as Record<string, unknown>;
     case 'panels':
@@ -333,6 +394,8 @@ function buildApply(action: ActionId, payload: Record<string, unknown>) {
       return applyWorld(payload);
     case 'cast':
       return applyCast(payload);
+    case 'character':
+      return applyCharacter(payload);
     case 'beats':
       return applyBeats(payload);
     case 'panels':

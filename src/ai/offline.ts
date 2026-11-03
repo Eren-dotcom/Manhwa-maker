@@ -339,3 +339,87 @@ export function offlineAdvice(question: string): string {
   if (hits.length) return hits.slice(0, 2).map((h) => h.text).join('\n\n');
   return `I'm running in offline mode, so I'm answering from the built-in field manual rather than a language model. Ask about pacing, lettering, style consistency, hooks, cliffhangers, character, platform format, or Korean register and I'll give you the studio rule. For free-form direction, add an API key in Settings — the full showrunner protocol (in the Protocol Library) is sent with every request.`;
 }
+
+// ---------------------------------------------------------------------------
+// One-character builder. Offline, this is a scaffold: it reads the brief for
+// what it can (role, gender, age, a name) and fills the rest with editable,
+// physically specific defaults. The doctrine is the same as everywhere else —
+// it does not ghostwrite dialogue or invent a backstory it cannot infer.
+// ---------------------------------------------------------------------------
+
+export function offlineCharacter(project: Project, brief: string) {
+  const text = brief.trim();
+  const lower = text.toLowerCase();
+
+  const named = /(?:named|called)\s+([A-Z][a-zA-Z'’-]+(?:\s+[A-Z][a-zA-Z'’-]+)?)/.exec(text);
+  const name = named?.[1]?.trim() || 'The Stranger';
+
+  const role: Omit<Character, 'id'>['role'] = /villain|antagonist|enemy|rival hunter/.test(lower)
+    ? 'antagonist'
+    : /mentor|teacher|master/.test(lower)
+      ? 'mentor'
+      : /rival/.test(lower)
+        ? 'rival'
+        : /ally|friend|partner|brother|sister/.test(lower)
+          ? 'ally'
+          : project.cast.length === 0
+            ? 'protagonist'
+            : 'support';
+
+  const woman = /woman|female|girl|she\b|her\b|mother|sister/.test(lower);
+  const child = /child|kid|boy|girl|young|teen/.test(lower) && !/adult/.test(lower);
+  const ageMatch = /\b(\d{1,2})\s*(?:-| )?(?:year|yr|s\b)/.exec(lower);
+  const age = ageMatch ? ageMatch[1] : child ? 'appears 12' : role === 'mentor' ? '58' : '31';
+
+  const pronouns = woman ? 'she/her' : child ? 'they/them' : 'he/him';
+  const genderWord = woman ? 'woman' : child ? 'kid' : 'man';
+
+  const faceAnchor = [
+    name,
+    `${age}-year-old korean ${genderWord}`,
+    'long face, narrow eyes with visible lower lids',
+    woman ? 'straight black hair cut at the jaw' : 'black hair pushed back, longer at the nape',
+    child ? 'slight build, small hands' : 'lean build, square shoulders',
+    'one old scar across the left eyebrow',
+  ].join(', ');
+
+  const outfit = child
+    ? 'grey school anorak two sizes too big, scuffed trainers'
+    : role === 'mentor'
+      ? 'dark wool coat over a high-collared shirt, worn leather satchel'
+      : 'charcoal field jacket, rolled sleeves, utility belt, scuffed boots';
+
+  const identityMarkers = [
+    'scar across the left eyebrow',
+    woman ? 'hair cut at the jaw' : 'hair longer at the nape',
+    role === 'mentor' ? 'leather satchel, left shoulder' : 'utility belt, right hip',
+  ];
+
+  return {
+    assumption: text
+      ? `Offline scaffold built from the brief: "${text.slice(0, 120)}". Roles, wardrobe and backstory are placeholders — edit them.`
+      : 'No brief given, so this is a neutral scaffold. Edit every field before rendering.',
+    character: {
+      name,
+      koreanName: '',
+      role,
+      age,
+      pronouns,
+      want: text ? `To get what the brief implies: ${text.slice(0, 90)}.` : 'Something they can name out loud in the first scene.',
+      need: 'To stop treating the wound as an identity.',
+      flaw: 'Confuses control with safety.',
+      arc: 'From a person who manages the past to a person who answers for it.',
+      silhouette: child
+        ? 'Small and still, clothes too big, always holding something with both hands.'
+        : 'Vertical and economical, hands never empty, coat never buttoned.',
+      outfit,
+      palette: 'charcoal, bone white, one hot accent (amber or blood red)',
+      voice: 'Short sentences. Answers the question under the question.',
+      verbalTics: 'Repeats the last noun of the other person’s sentence back at them.',
+      faceAnchor,
+      promptFragment: `${faceAnchor}, wearing ${outfit}, one prop always in hand, korean webtoon lineart, painterly shading`,
+      refPrompt: `character reference sheet, front / three-quarter / profile, ${faceAnchor}, wearing ${outfit}, neutral grey background, korean webtoon lineart, painterly shading`,
+      identityMarkers,
+    },
+  };
+}

@@ -38,7 +38,7 @@ No backend. No accounts. Everything is stored in your browser (localStorage + In
 | **5 · Prompt Compiler** | Deterministic per-panel render briefs: style lock first, cast anchors verbatim, fixed seed, negative prompt. Copy one, copy all, export `.md` / `.jsonl`. |
 | **6 · Render** | Storyboard art generated in-app from the style lock, or real image generation (OpenAI `gpt-image` / Gemini image / Pollinations) with your character reference sheets attached, plus per-panel natural-language prompt editing. Upload your own art too. |
 | **7 · Lettering** | Draggable balloons with tails, reading order, captions, SFX, safe-area overlay, auto-place, and overflow checks. |
-| **8 · QC & Export** | Deterministic editorial audit with a score and specific fixes; export the project, prompt pack, production bible, standalone reader HTML and a printable storyboard. |
+| **8 · QC & Export** | Deterministic editorial audit with a score, specific fixes, and **one-click repairs** for the mechanically fixable ones; export the project, prompt pack, production bible, standalone reader HTML and a printable storyboard. |
 
 ### Reference memory (the anti-drift system)
 
@@ -174,7 +174,8 @@ public/demo/  rendered key panels for the reference episode
 - **No build-time UI libraries.** React + hand-written CSS; 38 source files, ~175 KB JS gzipped + ~13 KB CSS.
 - **Storyboard art is real.** When you have no image key, panels are drawn as deterministic SVG frames from the style lock — palette, composition guides, shot scale, figure silhouettes — so you can direct and read the episode before spending a single render.
 - **Images never bloat the project.** Rendered art lives in IndexedDB and is referenced by an asset key; undo snapshots and autosaves stay small.
-- **QC is deterministic.** The audit runs on every keystroke and produces a score with specific fixes, not vibes.
+- **QC is deterministic, and it repairs.** The audit runs on every keystroke, scores the episode, and offers a real fix where one exists — style lock, anchors, version bindings, beat assignment, panel rhythm, balloon safe area, empty balloons, reading order. Anything that needs story stays a human decision, with a link to the stage.
+- **Characters are built one at a time or in a cast.** Describe a character in a sentence and the studio fills every bible field — want, need, flaw, arc, silhouette, outfit, a face anchor with no clothing in it, a prompt fragment with a prop, and a base version with lineage markers.
 
 ---
 

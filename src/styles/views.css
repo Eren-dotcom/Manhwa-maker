@@ -773,3 +773,11 @@
 .chip-static { cursor: default; pointer-events: none; font-size: 10.5px; padding: 3px 8px; }
 .chip-static:hover { color: var(--muted); border-color: var(--line); }
 .ok-text { color: var(--ok); }
+
+/* ---------- QC: one-click repairs ---------- */
+.qc-actions { flex: none; display: flex; align-items: flex-start; gap: 6px; padding-top: 2px; }
+.qc-actions .btn { white-space: nowrap; }
+@media (max-width: 720px) {
+  .qc-item { flex-wrap: wrap; }
+  .qc-actions { width: 100%; padding-left: 18px; }
+}

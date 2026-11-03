@@ -14,7 +14,9 @@ import {
   serializeProject,
   slug,
 } from '../lib/export';
-import { qcScore } from '../lib/qc';
+import { qcScore, auditProject } from '../lib/qc';
+import { applyAllFixes, applyFix, canAutoFix } from '../lib/fixes';
+import { useNavigate } from '../components/nav';
 import { localCritique } from '../ai/engine';
 import { renderMarkdown } from '../lib/markdown';
 
@@ -22,6 +24,7 @@ const LEVEL_TONE: Record<string, 'err' | 'warn' | 'info'> = { error: 'err', warn
 
 export function QcView({ issues, score }: { issues: QcIssue[]; score: number }) {
   const { project, episode, assets, update, toast } = useStudio();
+  const navigate = useNavigate();
   const [inline, setInline] = useState(false);
   const [critique, setCritique] = useState<string | null>(null);
 
@@ -36,6 +39,35 @@ export function QcView({ issues, score }: { issues: QcIssue[]; score: number }) 
       (g) => g.list.length,
     );
   }, [issues]);
+
+  const fixable = issues.filter(canAutoFix);
+  const fixableCount = fixable.reduce((n, i) => n + 1, 0);
+
+  const fixOne = (code: string) => {
+    let note = '';
+    let applied = 0;
+    update((draft) => {
+      const res = applyFix(draft, code);
+      applied = res.applied;
+      note = res.note;
+    });
+    toast(applied ? note : `Nothing to change — ${note.charAt(0).toLowerCase()}${note.slice(1)}`, applied ? 'ok' : 'info');
+  };
+
+  const fixAll = () => {
+    let applied = 0;
+    let rules = 0;
+    update((draft) => {
+      // re-audit inside the recipe so we fix what the draft actually contains
+      const res = applyAllFixes(draft, auditProject(draft));
+      applied = res.applied;
+      rules = res.rules;
+    });
+    toast(
+      applied ? `${applied} problem${applied === 1 ? '' : 's'} repaired across ${rules} rule${rules === 1 ? '' : 's'}` : 'Nothing left that the studio can repair on its own',
+      applied ? 'ok' : 'info',
+    );
+  };
 
   const errors = issues.filter((i) => i.level === 'error').length;
   const warns = issues.filter((i) => i.level === 'warn').length;
@@ -59,6 +91,9 @@ export function QcView({ issues, score }: { issues: QcIssue[]; score: number }) 
               }}
             >
               Editor’s verdict
+            </Btn>
+            <Btn variant="soft" icon="wand" disabled={!fixableCount} onClick={fixAll}>
+              Fix automatically{fixableCount ? ` (${fixableCount})` : ''}
             </Btn>
             <Btn
               variant="primary"
@@ -143,7 +178,18 @@ export function QcView({ issues, score }: { issues: QcIssue[]; score: number }) 
             <li className={episode?.cliffhanger ? 'ok' : ''}>Cliffhanger on the final scroll</li>
             <li className={(episode?.panels.length ?? 0) >= 25 ? 'ok' : ''}>Panel count in platform range</li>
             <li className={project.style.masterPrompt ? 'ok' : ''}>Style lock frozen</li>
-            <li className={project.cast.every((c) => c.promptFragment) ? 'ok' : ''}>Every character has an anchor</li>
+            <li className={project.cast.every((c) => c.faceAnchor || c.promptFragment) ? 'ok' : ''}>Every character has an anchor</li>
+            <li
+              className={
+                project.cast.every((c) =>
+                  (project.versions ?? []).some((v) => v.characterId === c.id && (v.images.portrait || v.images.fullBody)),
+                )
+                  ? 'ok'
+                  : ''
+              }
+            >
+              Every character has reference sheets
+            </li>
             <li className={project.meta.rating ? 'ok' : ''}>Rating declared for the store listing</li>
           </ul>
         </Card>
@@ -185,6 +231,17 @@ export function QcView({ issues, score }: { issues: QcIssue[]; score: number }) 
                     <div className="qc-item-title">{i.title}</div>
                     <p className="tiny muted">{i.detail}</p>
                     <p className="qc-fix"><strong>Fix:</strong> {i.fix}</p>
+                  </div>
+                  <div className="qc-actions">
+                    {canAutoFix(i) ? (
+                      <Btn size="sm" variant="soft" icon="check" onClick={() => fixOne(i.code!)}>
+                        Repair
+                      </Btn>
+                    ) : (
+                      <Btn size="sm" variant="ghost" icon="arrow" onClick={() => navigate(i.stage)}>
+                        Open stage
+                      </Btn>
+                    )}
                   </div>
                 </div>
               ))}

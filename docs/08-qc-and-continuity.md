@@ -34,6 +34,29 @@ Maintain a **continuity ledger** per series: one line per fact, with the episode
 - A repeated shot type back to back.
 - No full-bleed panel in the episode.
 
+## Detecting versus repairing
+
+A checklist that only describes the problem is a nag. This studio splits its checks into two kinds,
+and says which is which:
+
+**Repairable, mechanically.** The audit names a defect that has exactly one correct correction, so the
+studio performs it — style lock unfrozen (derive it from the look, line weight, shading and palette),
+character with no anchor (scaffold one from name, age, silhouette and outfit), character with no visual
+memory (create the base version), panel bound to a deleted version (clear the binding), panel not tied
+to a beat (assign it to the beat its position falls into), uniform panel heights (re-stretch them into a
+rhythm), balloon inside the trim margin (clamp it into the safe area), speech balloon with no tail
+(add one when more than one figure is on panel), empty balloon (delete it), duplicate reading order
+(renumber top-to-bottom, left-to-right). Each is one click, all of them are a single "Fix
+automatically" pass, and every repair goes through undo.
+
+**Not repairable, by design.** Loglines, hooks, cliffhangers, dialogue that overflows, crowded
+establishing shots, sheetless variants, empty panels. Anything that requires inventing story or art
+stays with the author — the studio offers a link to the right stage instead of a plausible-looking
+lie.
+
+The rule of thumb: **if a fix would change what the story says, a human decides. If it only changes
+whether the file is well-formed, the studio decides.**
+
 ## Readability audit
 
 Do this at 360px physical width, one hand, in daylight:

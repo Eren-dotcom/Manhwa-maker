@@ -31,6 +31,8 @@ export function Bible() {
   const [tab, setTab] = useState<Tab>('world');
   const [editing, setEditing] = useState<string | null>(null);
   const [refsFor, setRefsFor] = useState<string | null>(null);
+  const [briefOpen, setBriefOpen] = useState(false);
+  const [brief, setBrief] = useState('');
   const refsCharacter = project.cast.find((c) => c.id === refsFor) ?? null;
 
   const setWorld = (patch: Partial<typeof project.world>) => update((p) => Object.assign(p.world, patch));
@@ -72,6 +74,7 @@ export function Bible() {
         right={
           <>
             <Btn variant="ghost" icon="spark" loading={busy === 'world'} onClick={() => void run('world')}>Build world</Btn>
+            <Btn variant="ghost" icon="user" onClick={() => setBriefOpen(true)}>Build one</Btn>
             <Btn variant="primary" icon="users" loading={busy === 'cast'} onClick={() => void run('cast')}>Cast the series</Btn>
           </>
         }
@@ -343,6 +346,62 @@ export function Bible() {
         }
       >
         {character && <CharacterForm character={character} />}
+      </Modal>
+
+      <Modal
+        open={briefOpen}
+        onClose={() => setBriefOpen(false)}
+        title="Build one character"
+        footer={
+          <>
+            <Btn variant="ghost" onClick={() => setBriefOpen(false)}>Cancel</Btn>
+            <Btn
+              variant="primary"
+              icon="spark"
+              loading={busy === 'character'}
+              onClick={async () => {
+                const res = await run('character', brief);
+                if (res.ok) {
+                  setBriefOpen(false);
+                  setBrief('');
+                  setTab('cast');
+                }
+              }}
+            >
+              Build character
+            </Btn>
+          </>
+        }
+      >
+        <div className="stack gap-14">
+          <Field
+            label="Who is this?"
+            hint="One or two sentences. Role, age, what they look like, what they want. The more physical, the better the anchor."
+          >
+            <TextArea
+              rows={4}
+              value={brief}
+              onChange={(e) => setBrief(e.target.value)}
+              placeholder="A 40-year-old former prosecutor, now the Bureau’s night clerk. Exhausted, immaculate. Wants the file on his brother’s death."
+            />
+          </Field>
+          <div className="row gap-6 wrap">
+            {[
+              'A 19-year-old laundromat worker who can hear the dead through the machines',
+              'A 58-year-old sword instructor with one hand, hired to train the antagonist',
+              'A rival hunter, 26, who smiles at everything and has never lost',
+            ].map((example) => (
+              <button key={example} className="chip" onClick={() => setBrief(example)} title="Use this brief">
+                {example.slice(0, 46)}…
+              </button>
+            ))}
+          </div>
+          <p className="tiny dim" style={{ lineHeight: 1.6 }}>
+            You get every field the bible needs — want, need, flaw, arc, silhouette, outfit, a face anchor with no clothing in
+            it, a prompt fragment, and a base version with lineage markers. Everything stays editable, and the offline engine
+            scaffolds rather than inventing a backstory.
+          </p>
+        </div>
       </Modal>
 
       <ReferenceMemory character={refsCharacter} open={!!refsCharacter} onClose={() => setRefsFor(null)} />

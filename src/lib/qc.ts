@@ -40,6 +40,7 @@ export function auditProject(project: Project): QcIssue[] {
       stage: 'concept',
       level: 'warn',
       title: 'Style lock not frozen',
+      code: 'style-lock',
       detail: 'The style lock is empty; renders will drift between panels.',
       fix: 'Open Prompt Compiler → Style Lock and freeze the look (or click "Derive from look").',
     });
@@ -67,6 +68,7 @@ export function auditProject(project: Project): QcIssue[] {
         stage: 'bible',
         level: 'warn',
         title: `${c.name}: no visual anchor`,
+      code: 'char-anchor',
         detail: 'Without a stable prompt fragment the model will redesign this character every panel.',
         fix: 'Describe hair, face, build, outfit and one prop — the same words every time.',
       });
@@ -87,6 +89,7 @@ export function auditProject(project: Project): QcIssue[] {
       stage: 'bible',
       level: 'info',
       title: `${noRefs.length} character(s) without reference memory`,
+      code: 'no-refs',
       detail: `${noRefs.map((c) => c.name).join(', ')} ${noRefs.length === 1 ? 'has' : 'have'} no portrait or full-body sheet. Prompt wording alone drifts after a few panels — a reference image is what actually holds a face.`,
       fix: 'Open a cast card → Reference memory, then generate the portrait and full-body sheets before rendering that character.',
     });
@@ -96,6 +99,7 @@ export function auditProject(project: Project): QcIssue[] {
       stage: 'bible',
       level: 'info',
       title: `${noFace.length} character(s) with a combined face + outfit anchor`,
+      code: 'face-split',
       detail: `A single anchor string mixes permanent identity with wardrobe, so a costume change quietly redesigns the face.`,
       fix: 'Split the anchor: face and body in "face anchor", wardrobe in "outfit" (or a per-panel outfit override).',
     });
@@ -137,6 +141,7 @@ export function auditProject(project: Project): QcIssue[] {
       stage: 'panels',
       level: 'error',
       title: `${dangling.length} panel binding(s) point at a deleted version`,
+      code: 'dangling-version',
       detail: `Panels ${[...new Set(dangling.map((d) => d.panel.no))].join(', ')} are bound to character versions that no longer exist, so their prompts silently fall back to the base design.`,
       fix: 'In Panel Director, re-pick the version for those panels — or clear the binding.',
     });
@@ -150,6 +155,7 @@ export function auditProject(project: Project): QcIssue[] {
       stage: 'render',
       level: 'info',
       title: `${sheetlessVariants.length} bound version(s) have no reference sheet`,
+      code: 'sheetless-version',
       detail: `${sheetlessVariants.map((v) => `${v.name} (${VERSION_LABEL[v.type]})`).join(', ')} ${sheetlessVariants.length === 1 ? 'is' : 'are'} bound to panels but owns no portrait or full-body image — the model will improvise the change, and improvising is how a scar moves.`,
       fix: 'Generate the sheets for those versions in Bible → Reference memory, then re-render the panels that use them.',
     });
@@ -160,6 +166,7 @@ export function auditProject(project: Project): QcIssue[] {
       stage: 'panels',
       level: 'warn',
       title: `${orphased.length} panel(s) not tied to a beat`,
+      code: 'orphan-panels',
       detail: `Panels ${orphased.map((p) => p.no).join(', ')} are floating — they will read as filler.`,
       fix: 'Assign each panel to a beat, or cut it.',
     });
@@ -192,6 +199,7 @@ export function auditProject(project: Project): QcIssue[] {
       stage: 'panels',
       level: 'warn',
       title: 'Panel heights are uniform',
+      code: 'uniform-heights',
       detail: `${dominant}% of panels share the same height. The scroll becomes a metronome instead of a beat.`,
       fix: 'Stretch the establishing and splash panels; compress reaction shots to 0.6–0.8.',
     });
@@ -241,6 +249,7 @@ export function auditProject(project: Project): QcIssue[] {
           stage: 'lettering',
           level: 'warn',
           title: `P${p.no}: balloon in the trim margin`,
+      code: 'balloon-trim',
           detail: `"${b.text.slice(0, 24)}…" sits at ${Math.round(b.x)}%,${Math.round(b.y)}% — inside the safe-area margin.`,
           fix: 'Keep balloons inside 8–92% horizontally and 6–94% vertically.',
           panelNo: p.no,
@@ -250,6 +259,7 @@ export function auditProject(project: Project): QcIssue[] {
           stage: 'lettering',
           level: 'info',
           title: `P${p.no}: speech balloon has no tail`,
+      code: 'balloon-tail',
           detail: 'A speech balloon without a tail is ambiguous unless the speaker is the only figure on panel.',
           fix: 'Add a tail, or switch it to narration.',
           panelNo: p.no,
@@ -259,6 +269,7 @@ export function auditProject(project: Project): QcIssue[] {
           stage: 'lettering',
           level: 'warn',
           title: `P${p.no}: empty balloon`,
+      code: 'empty-balloon',
           detail: 'Placeholder balloon left blank.',
           fix: 'Write the line or delete the balloon.',
           panelNo: p.no,
@@ -270,6 +281,7 @@ export function auditProject(project: Project): QcIssue[] {
         stage: 'lettering',
         level: 'warn',
         title: `P${p.no}: duplicate reading order`,
+      code: 'order-duplicate',
         detail: 'Two balloons share the same order number, so reading order is undefined.',
         fix: 'Renumber balloons top-to-bottom, left-to-right.',
         panelNo: p.no,

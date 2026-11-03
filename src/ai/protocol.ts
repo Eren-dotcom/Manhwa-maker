@@ -71,6 +71,11 @@ Rules must be breakable, and each break should be a future plot.`;
 Return JSON:
 {"assumption":string,"characters":[{"name":string,"koreanName":string,"role":"protagonist"|"antagonist"|"deuteragonist"|"mentor"|"ally"|"rival"|"support","age":string,"pronouns":string,"want":string,"need":string,"flaw":string,"arc":string,"silhouette":string,"outfit":string,"palette":string,"voice":string,"verbalTics":string,"promptFragment":string (one comma-separated line, 35-55 words, hair/face/build/outfit/prop, no emotions),"refPrompt":string}]}
 3-4 characters. promptFragment must be reusable verbatim in every panel prompt.`;
+    case 'character':
+      return `TASK: build ONE character for this series from the brief below. Everything must be specific, physical and drawable — no vibes.
+Return JSON:
+{"assumption":string,"character":{"name":string,"koreanName":string,"role":"protagonist"|"antagonist"|"deuteragonist"|"mentor"|"ally"|"rival"|"support"|"cameo","age":string,"pronouns":string,"want":string,"need":string,"flaw":string,"arc":string,"silhouette":string,"outfit":string,"palette":string,"voice":string,"verbalTics":string,"faceAnchor":string (20-35 words of PERMANENT identity: skull shape, eyes, brows, hair silhouette, build, marks — NO clothing, NO armour, NO emotion),"promptFragment":string (35-55 words: face anchor plus wardrobe and one prop),"refPrompt":string,"identityMarkers":string[3-5] (short, checkable details that must survive every render)}}
+The brief is the constraint, not the whole design. Keep the name Korean or Korean-readable unless the brief says otherwise.`;
     case 'beats':
       return `TASK: write one episode beat sheet for the vertical scroll.
 Return JSON:

@@ -271,6 +271,8 @@ export interface QcIssue {
   detail: string;
   fix: string;
   panelNo?: number;
+  /** Stable rule key — lets the studio offer a real, one-click repair. */
+  code?: string;
 }
 
 export const uid = (prefix = 'id') =>
