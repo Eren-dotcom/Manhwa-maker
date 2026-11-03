@@ -36,7 +36,7 @@ No backend. No accounts. Everything is stored in your browser (localStorage + In
 | **3 · Beat Sheet** | Eight scroll units (hook → setup → cast → turn → escalate → reveal → breather → stinger), tension curve, scroll-end types, panel budgets, cliffhanger. |
 | **4 · Panel Director** | Per-panel shot, angle, composition, vertical weight, gutter, full-bleed, staging, cast, lighting and direction notes — plus a live rhythm bar. |
 | **5 · Prompt Compiler** | Deterministic per-panel render briefs: style lock first, cast anchors verbatim, fixed seed, negative prompt. Copy one, copy all, export `.md` / `.jsonl`. |
-| **6 · Render** | Storyboard art generated in-app from the style lock, or real image generation (OpenAI `gpt-image` / Gemini image / Pollinations) with your character reference sheets attached, plus per-panel natural-language prompt editing. Upload your own art too. |
+| **6 · Render** | Storyboard art generated in-app from the style lock, or real image generation (OpenAI `gpt-image` / Gemini image / Pollinations) with your character reference sheets attached, plus per-panel natural-language prompt editing. Upload your own art too — including **one tall long strip of the whole episode**, which the studio slices into panels at the gutters. |
 | **7 · Lettering** | Draggable balloons with tails, reading order, captions, SFX, safe-area overlay, auto-place, and overflow checks. |
 | **8 · QC & Export** | Deterministic editorial audit with a score, specific fixes, and **one-click repairs** for the mechanically fixable ones; export the project, prompt pack, production bible, standalone reader HTML and a printable storyboard. |
 

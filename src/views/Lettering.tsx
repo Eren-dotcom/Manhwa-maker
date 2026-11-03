@@ -19,6 +19,7 @@ import {
 } from '../components/ui';
 import { ArtStage } from '../components/PanelArt';
 import { StageNav } from '../components/StageNav';
+import { clearSfx, layoutBubbles, letterEpisode } from '../lib/lettering';
 
 const TAILS: { id: Bubble['tail']; label: string }[] = [
   { id: 'b', label: '↓' },
@@ -89,17 +90,20 @@ export function Lettering() {
 
   const autoPlace = () => {
     if (!panel) return;
-    const list = [...panel.bubbles];
-    list.sort((a, b) => a.order - b.order);
-    const placed = list.map((b, i) => ({
-      ...b,
-      order: i + 1,
-      x: list.length === 1 ? 50 : i % 2 === 0 ? 30 : 68,
-      y: 14 + i * Math.min(24, 72 / Math.max(1, list.length)),
-      tail: b.kind === 'narration' ? ('none' as const) : b.y > 50 ? ('t' as const) : ('b' as const),
-    }));
-    patchPanel({ bubbles: placed });
-    toast('Balloons laid out top-to-bottom', 'ok');
+    const laid = layoutBubbles(panel.bubbles);
+    patchPanel({ bubbles: laid, sfx: clearSfx(laid, panel.sfx) });
+    toast('Balloons laid out in reading order with minimum gaps', 'ok');
+  };
+
+  /** Pipeline: run the lettering/space engine over every panel of the episode. */
+  const letterAll = () => {
+    update((p) => {
+      const ep = p.episodes.find((e) => e.id === p.activeEpisodeId) ?? p.episodes[0];
+      if (!ep) return;
+      ep.panels = letterEpisode(ep.panels);
+      p.gates.lettering = new Date().toISOString();
+    });
+    toast(`Lettering engine ran over ${panels.length} panel(s)`, 'ok');
   };
 
   const addSfx = () => {
@@ -126,6 +130,7 @@ export function Lettering() {
           <>
             <Toggle checked={safeArea} onChange={setSafeArea} label="Safe area" />
             <Btn variant="ghost" icon="move" onClick={autoPlace}>Auto-place</Btn>
+            <Btn variant="ghost" icon="wand" onClick={letterAll} disabled={!panels.length}>Letter whole episode</Btn>
             <Btn variant="primary" icon="plus" onClick={() => addBubble('speech')}>Add balloon</Btn>
           </>
         }

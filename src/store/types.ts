@@ -70,7 +70,7 @@ export type Composition =
 
 export type VersionType = 'base' | 'variant' | 'evolution';
 
-export type SheetKind = 'portrait' | 'fullBody' | 'turnaround' | 'expressions' | 'poses';
+export type SheetKind = 'master' | 'portrait' | 'fullBody' | 'turnaround' | 'expressions' | 'poses';
 
 /** Visual reference memory for one character design state. */
 export interface CharacterVersion {
@@ -85,6 +85,8 @@ export interface CharacterVersion {
   identityMarkers: string[];
   images: Partial<Record<SheetKind, string>>;
   approved: boolean;
+  /** Episode this design is frozen for ("chapter snapshot"). Null = not pinned. */
+  pinnedEpisodeId?: string | null;
   createdAt: number;
 }
 

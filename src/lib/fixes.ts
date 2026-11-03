@@ -1,6 +1,7 @@
 import type { Panel, Project, QcIssue } from '../store/types';
 import { buildStyleLock } from './prompt';
 import { ensureBaseVersions, versionById } from './references';
+import { layoutBubbles } from './lettering';
 
 // ---------------------------------------------------------------------------
 // Repairs. QC can name a problem; these functions actually fix it.
@@ -35,6 +36,7 @@ export const AUTOMATIC_FIXES = [
   'uniform-heights',
   'balloon-trim',
   'balloon-tail',
+  'balloon-spacing',
   'empty-balloon',
   'order-duplicate',
 ] as const;
@@ -159,6 +161,22 @@ export function applyFix(project: Project, code: string): FixResult {
         }),
       );
       return { applied: n, note: `${n} balloon(s) moved inside the safe area` };
+    }
+
+    case 'balloon-overlap':
+    case 'balloon-spacing':
+    case 'balloon-size': {
+      let n = 0;
+      panels.forEach((p) => {
+        const before = JSON.stringify(p.bubbles.map((b) => [b.x, b.y, b.size, b.order, b.tail]));
+        const lettered = layoutBubbles(p.bubbles);
+        const after = JSON.stringify(lettered.map((b) => [b.x, b.y, b.size, b.order, b.tail]));
+        if (before !== after) {
+          p.bubbles = lettered;
+          n += 1;
+        }
+      });
+      return { applied: n, note: `${n} panel(s) relaid out in reading order with matched type sizes` };
     }
 
     case 'empty-balloon': {

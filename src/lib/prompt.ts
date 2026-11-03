@@ -205,6 +205,27 @@ export function characterSheetPrompt(project: Project, c: Character): string {
   return c.refPrompt?.trim() || sheetPrompt(project, c, baseVersion(project, c.id), 'turnaround');
 }
 
+/**
+ * One-image cast sheet: every character of the episode in a single labelled grid,
+ * so a whole chapter can be anchored from one generation.
+ */
+export function castSheetPrompt(project: Project): string {
+  const styleLock = project.style.masterPrompt?.trim() || buildStyleLock(project);
+  const rows = project.cast.map((c) => {
+    const v = baseVersion(project, c.id);
+    const markers = v?.identityMarkers?.length ? `, identity markers: ${v.identityMarkers.join(', ')}` : '';
+    return `${c.name}: ${faceOf(c)}${c.outfit ? `, wearing ${c.outfit}` : ''}${markers}`;
+  });
+  return [
+    styleLock,
+    `ONE single image: a character lineup sheet of ${project.cast.length} character${project.cast.length === 1 ? '' : 's'} standing side by side on a plain flat grey background, each with a small name label, full body front view plus a head-and-shoulders portrait above each figure`,
+    ...rows,
+    'even neutral lighting, identical art style for every character, no text other than the name labels, no watermark, every character on-model and clearly separated',
+  ]
+    .filter(Boolean)
+    .join(', ');
+}
+
 /** Everything the studio hands to an image model for one episode. */
 export function buildPromptPack(project: Project, panels: Panel[]): string {
   const styleLock = project.style.masterPrompt?.trim() || buildStyleLock(project);
